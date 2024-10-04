@@ -1,17 +1,11 @@
 package com.model.tank;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.model.tank.utils.TankRegister;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -24,10 +18,14 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.injection.struct.InjectorGroupInfo;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Map;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ModelTank.MODID)
@@ -39,7 +37,7 @@ public class ModelTank
     private static final Logger LOGGER = LogUtils.getLogger();
     
 
-    public ExampleMod()
+    public ModelTank()
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -50,7 +48,18 @@ public class ModelTank
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
+        try {
+            String path = getClass().getResource("/assets/" + MODID + "/tank.json").getPath();
+            File file = new File(path);
+            FileReader reader = new FileReader(file);
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
+            TankRegister tankRegister = new TankRegister(jsonObject);
+            TankRegister.ENTITY_TYPES.register(modEventBus);
 
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -71,16 +80,14 @@ public class ModelTank
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {
-        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS)
-            event.accept(EXAMPLE_BLOCK_ITEM);
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)
     {
+
         // Do something when the server starts
-        LOGGER.info("HELLO from server starting");
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
