@@ -17,12 +17,13 @@ public class HitBox {
         this.height = height;
         this.weight = weight;
         this.length = length;
-        minx = position.x - weight/2;
+        this.position = position;
+        minz = position.x - weight/2;
         miny = position.y - height/2;
-        minz = position.z - length/2;
-        maxx = position.x + weight/2;
+        minx = position.z - length/2;
+        maxz = position.x + weight/2;
         maxy = position.y + height/2;
-        maxz = position.z + length/2;
+        maxx = position.z + length/2;
     }
     public boolean onHit(HitBox h){
         return this.minx <= h.minx && this.maxx >= h.maxx &&

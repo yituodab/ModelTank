@@ -26,7 +26,25 @@ public class Model {
         return Type.UNKNOWN;
     }
     public static class Armor{
+        public static enum Direction{
+            RIGHT,
+            LEFT,
+            FRONT,
+            BACK,
+            TOP,
+            BOTTOM
+        }
+        // e 给你看看
+        public static Direction StringToDirection(String direction){
+            for(Direction d : Direction.values()){
+                if(d.toString().equals(direction))return d;
+            }
+            return Direction.TOP;
+        }
+        public HitBox hitbox;
+        public Vec3 position;
         public double angle;
+        public Direction direction;
         public int thickness;
         public double length;
         public double weight;
@@ -34,8 +52,26 @@ public class Model {
         public Armor(double angle,int thickness,double length,double weight){
 
         }
-        public Armor(int thickness,double length,double weight){
-
+        public Armor(Direction direction,int thickness,double length,double weight,Vec3 position){
+            this.direction = direction;
+            this.thickness = thickness;
+            this.length = length;
+            this.weight = weight;
+            this.position = position;
+            HitBox hitbox;
+                switch (direction) {
+                    case RIGHT, LEFT -> {
+                        hitbox = new HitBox(position,weight, (double) thickness /1000,length);
+                    }
+                    case FRONT, BACK -> {
+                        hitbox = new HitBox(position,weight,length,(double) thickness /1000);
+                    }
+                    case TOP, BOTTOM ->{
+                        hitbox = new HitBox(position, (double) thickness /1000,weight,length);
+                    }
+                    default -> hitbox = new HitBox(position,0,0,0);
+                }
+            this.hitbox = hitbox;
         }
     }
 }

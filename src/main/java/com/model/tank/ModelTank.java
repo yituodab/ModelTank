@@ -20,12 +20,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.injection.struct.InjectorGroupInfo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Map;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ModelTank.MODID)
@@ -54,8 +52,7 @@ public class ModelTank
             FileReader reader = new FileReader(file);
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
-            TankRegister tankRegister = new TankRegister(jsonObject);
-            TankRegister.ENTITY_TYPES.register(modEventBus);
+            TankRegister.register(modEventBus, jsonObject);
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
