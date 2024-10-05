@@ -2,7 +2,12 @@
   "M1A2": {
     "models": [
       {
-        "type": "SB"
+      }
+    ],
+    "armors": [
+      {
+        "direction": "RIGHT"
+
       }
     ]
   }
