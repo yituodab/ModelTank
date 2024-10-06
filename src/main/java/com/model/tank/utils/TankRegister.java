@@ -31,21 +31,28 @@ public class TankRegister {
             JsonObject tanks = json.get(name).getAsJsonObject();
             tank.modelLocation = new ResourceLocation(ModelTank.MODID,json.get("modelLocation").getAsString());
             tank.textureLocation = new ResourceLocation(ModelTank.MODID,tanks.get("textureLocation").getAsString());
-            float hitBoxLength = tanks.get("length").getAsFloat();
+            float hitBoxLength = tanks.get("width").getAsFloat();
             float hitBoxHeight = tanks.get("height").getAsFloat();
             for(var models : tanks.get("models").getAsJsonArray()){
                 JsonObject model = models.getAsJsonObject();
-                Vec3 position = new Vec3(model.get("x").getAsDouble(),model.get("y").getAsDouble(),model.get("z").getAsDouble());
-                HitBox hitbox = new HitBox(position, model.get("height").getAsDouble(),model.get("weight").getAsDouble(),model.get("length").getAsDouble());
+                Vec3 position = new Vec3(model.get("x").getAsDouble(),
+                	model.get("y").getAsDouble(),
+                	model.get("z").getAsDouble());
+                HitBox hitbox = new HitBox(position, 
+                	model.get("height").getAsDouble(),
+                	model.get("width").getAsDouble(),
+                    model.get("length").getAsDouble());
                 tank.models.add(new Model(position, hitbox, Model.StringToType(model.get("type").getAsString())));
             }
             for(var armors : tanks.get("armors").getAsJsonArray()){
                 JsonObject armor = armors.getAsJsonObject();
-                Vec3 position = new Vec3(armor.get("x").getAsDouble(),armor.get("y").getAsDouble(),armor.get("z").getAsDouble());
+                Vec3 position = new Vec3(armor.get("x").getAsDouble(),
+                	armor.get("y").getAsDouble(),
+                    armor.get("z").getAsDouble());
                 tank.armors.add(new Model.Armor(Model.Armor.StringToDirection(armor.get("direction").getAsString()),
                         armor.get("thickness").getAsInt(),
                         armor.get("length").getAsDouble(),
-                        armor.get("weight").getAsDouble(),
+                        armor.get("width").getAsDouble(),
                         position));
             }
             RegistryObject<EntityType<TankEntity>> tankEntity;

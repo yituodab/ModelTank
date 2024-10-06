@@ -47,27 +47,27 @@ public class Model {
         public Direction direction;
         public int thickness;
         public double length;
-        public double weight;
+        public double width;
         @Deprecated
-        public Armor(double angle,int thickness,double length,double weight){
+        public Armor(double angle,int thickness,double length,double width){
 
         }
-        public Armor(Direction direction,int thickness,double length,double weight,Vec3 position){
+        public Armor(Direction direction,int thickness,double length,double width,Vec3 position){
             this.direction = direction;
             this.thickness = thickness;
             this.length = length;
-            this.weight = weight;
+            this.width = width;
             this.position = position;
             HitBox hitbox;
                 switch (direction) {
                     case RIGHT, LEFT -> {
-                        hitbox = new HitBox(position,weight, (double) thickness /1000,length);
+                        hitbox = new HitBox(position,width, (double) thickness /1000,length);
                     }
                     case FRONT, BACK -> {
-                        hitbox = new HitBox(position,weight,length,(double) thickness /1000);
+                        hitbox = new HitBox(position,width,length,(double) thickness /1000);
                     }
                     case TOP, BOTTOM ->{
-                        hitbox = new HitBox(position, (double) thickness /1000,weight,length);
+                        hitbox = new HitBox(position, (double) thickness /1000,width,length);
                     }
                     default -> hitbox = new HitBox(position,0,0,0);
                 }

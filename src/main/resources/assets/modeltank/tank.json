@@ -1,13 +1,29 @@
 {
   "M1A2": {
+    "modelLocation": "models/model.geo.json",
+    "textureLocation": "textures/texture.png",
+    "width": 1,
+    "height": 1,
     "models": [
       {
+        "type": "OIL_TANK",
+        "x": 1,
+        "y": 1,
+        "z": 1,
+        "height": 1,
+        "width": 1,
+        "length": 1
       }
     ],
     "armors": [
       {
-        "direction": "RIGHT"
-
+        "direction": "RIGHT",
+        "x": 1,
+        "y": 1,
+        "z": 1,
+        "thickness": 1,
+        "width": 1,
+        "length": 1
       }
     ]
   }

@@ -12,16 +12,16 @@ public class HitBox {
     public double maxz;
     public double height;
     public double length;
-    public double weight;
-    public HitBox(Vec3 position, double height, double weight, double length){
+    public double width;
+    public HitBox(Vec3 position, double height, double width, double length){
         this.height = height;
-        this.weight = weight;
+        this.width = width;
         this.length = length;
         this.position = position;
-        minz = position.x - weight/2;
+        minz = position.x - width/2;
         miny = position.y - height/2;
         minx = position.z - length/2;
-        maxz = position.x + weight/2;
+        maxz = position.x + width/2;
         maxy = position.y + height/2;
         maxx = position.z + length/2;
     }
