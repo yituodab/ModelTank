@@ -6,12 +6,12 @@ import software.bernie.geckolib.model.GeoModel;
 public class TankModel extends GeoModel<TankEntity> {
     @Override
     public ResourceLocation getModelResource(TankEntity tankEntity) {
-        return tankEntity.tank.modelLocation;
+        return tankEntity.getTank().modelLocation;
     }
 
     @Override
     public ResourceLocation getTextureResource(TankEntity tankEntity) {
-        return tankEntity.tank.textureLocation;
+        return tankEntity.getTank().textureLocation;
     }
 
     @Override

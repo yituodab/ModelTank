@@ -20,47 +20,55 @@ public class TankRegister {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, ModelTank.MODID);
     public static final HashMap<String, Tank> TANKS = new HashMap<>();
     public static final HashMap<Tank, RegistryObject<EntityType<TankEntity>>> TANKENTITYS = new HashMap<>();
-    public static final HashMap<Tank, RegistryObject<Item>> TANKITEMS = new HashMap<>();
+    public static final RegistryObject<Item> TANKITEM = ITEMS.register("tank_item", ()->
+            new TankItem(new Item.Properties().stacksTo(1)));
 
     public static void register(IEventBus eventBus, JsonObject json){
-        ENTITY_TYPES.register(eventBus);
-        ITEMS.register(eventBus);
+
         for (var entry : json.entrySet()){
             String name = entry.getKey();
             Tank tank = new Tank(name);
             JsonObject tanks = json.get(name).getAsJsonObject();
-            tank.modelLocation = new ResourceLocation(ModelTank.MODID,json.get("modelLocation").getAsString());
+            tank.modelLocation = new ResourceLocation(ModelTank.MODID,tanks.get("modelLocation").getAsString());
             tank.textureLocation = new ResourceLocation(ModelTank.MODID,tanks.get("textureLocation").getAsString());
-            float hitBoxLength = tanks.get("width").getAsFloat();
-            float hitBoxHeight = tanks.get("height").getAsFloat();
-            for(var models : tanks.get("models").getAsJsonArray()){
+            float hitBoxLength = tanks.has("width") ? tanks.get("width").getAsFloat() : 1;
+            float hitBoxHeight = tanks.has("height") ? tanks.get("height").getAsFloat() : 1;
+            if(tanks.has("models"))
+                for(var models : tanks.get("models").getAsJsonArray()){
                 JsonObject model = models.getAsJsonObject();
-                Vec3 position = new Vec3(model.get("x").getAsDouble(),
-                	model.get("y").getAsDouble(),
-                	model.get("z").getAsDouble());
+                Vec3 position = new Vec3(
+                        model.has("x") ? model.get("x").getAsDouble() : 1,
+                	    model.has("y") ? model.get("y").getAsDouble() : 1,
+                	    model.has("z") ? model.get("z").getAsDouble() : 1);
                 HitBox hitbox = new HitBox(position, 
-                	model.get("height").getAsDouble(),
-                	model.get("width").getAsDouble(),
-                    model.get("length").getAsDouble());
+                	model.has("height") ? model.get("height").getAsDouble() : 1,
+                	model.has("width") ? model.get("width").getAsDouble() : 1,
+                    model.has("length") ? model.get("length").getAsDouble() : 1);
                 tank.models.add(new Model(position, hitbox, Model.StringToType(model.get("type").getAsString())));
             }
-            for(var armors : tanks.get("armors").getAsJsonArray()){
+            if(tanks.has("armors"))
+                for(var armors : tanks.get("armors").getAsJsonArray()){
                 JsonObject armor = armors.getAsJsonObject();
-                Vec3 position = new Vec3(armor.get("x").getAsDouble(),
-                	armor.get("y").getAsDouble(),
-                    armor.get("z").getAsDouble());
+                Vec3 position = new Vec3(
+                        armor.has("x") ? armor.get("x").getAsDouble() : 1,
+                        armor.has("y") ? armor.get("y").getAsDouble() : 1,
+                        armor.has("z") ? armor.get("z").getAsDouble() : 1);
                 tank.armors.add(new Model.Armor(Model.Armor.StringToDirection(armor.get("direction").getAsString()),
-                        armor.get("thickness").getAsInt(),
-                        armor.get("length").getAsDouble(),
-                        armor.get("width").getAsDouble(),
+                        armor.has("width") ? armor.get("thickness").getAsInt() : 500,
+                        armor.has("width") ? armor.get("length").getAsDouble() : 1,
+                        armor.has("width") ? armor.get("width").getAsDouble() : 1,
                         position));
             }
             RegistryObject<EntityType<TankEntity>> tankEntity;
-            tankEntity = ENTITY_TYPES.register(name, () -> EntityType.Builder.
-                    <TankEntity>of(TankEntity::new, MobCategory.MISC).sized(hitBoxLength, hitBoxHeight).
-                    build(new ResourceLocation(ModelTank.MODID, name).toString()));
+            tankEntity = ENTITY_TYPES.register(name.toLowerCase(), () -> EntityType.Builder.
+                            <TankEntity>of(TankEntity::new, MobCategory.MISC).sized(hitBoxLength, hitBoxHeight).
+                    build(new ResourceLocation(ModelTank.MODID, name.toLowerCase()).toString()));
             TANKENTITYS.put(tank, tankEntity);
-            TANKITEMS.put(tank, ITEMS.register(name, ()->new TankItem(new Item.Properties().stacksTo(1),tank)));
+            TANKS.put(name, tank);
+            //TANKITEMS.put(tank, ITEMS.register(name.toLowerCase(), ()->new TankItem(new Item.Properties().stacksTo(1),tank)));
+
         }
+        ENTITY_TYPES.register(eventBus);
+        ITEMS.register(eventBus);
     }
 }
