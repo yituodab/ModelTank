@@ -22,13 +22,13 @@ public class TankEntity extends Entity implements GeoEntity {
     }
     public TankEntity(EntityType<?> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);
-        this.tank = TankRegister.TANKS.get("default");
+        this.tank = TankRegister.TANKS.get("M1A2");
     }
 
     @Override
     public void load(CompoundTag p_20259_) {
         super.load(p_20259_);
-        this.tank = TankRegister.TANKS.get(p_20259_.getString("tank"));
+        //this.tank = TankRegister.TANKS.get(p_20259_.getString("tank"));
     }
 
     public Tank getTank() {

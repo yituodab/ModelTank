@@ -59,7 +59,7 @@ public class ModelTank
             jsonObject = gson.fromJson(reader, JsonObject.class);
             TankRegister.register(modEventBus, jsonObject);
         } catch (Exception e) {
-            LOGGER.error("Couldn’t load Json file:",e);
+            LOGGER.error("Couldn’t register tanks,because ",e);
         }
         ModCreativeTab.CREATIVE_MODE_TABS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
@@ -69,18 +69,14 @@ public class ModelTank
     public  void copyResourceToFile(String resourcePath, String targetPath) {
         // 获取Minecraft实例目录
         File mcDir = FMLPaths.GAMEDIR.get().toFile();
-
         // 构建目标目录
         File targetDir = new File(mcDir, targetPath).getParentFile();
-
         // 创建目录
         if (!targetDir.exists() && !targetDir.mkdirs()) {
             throw new IllegalStateException("Could not create directory: " + targetDir.getAbsolutePath());
         }
-
         // 构建目标文件
         File targetFile = new File(targetDir, new File(targetPath).getName());
-
         // 使用Java NIO来复制文件，简化代码
         try (InputStream in = getClass().getResourceAsStream(resourcePath)) {
             if (in == null) {
@@ -95,6 +91,7 @@ public class ModelTank
         if(event.getTab() == ModCreativeTab.TANK_TAB.get()){
             TankRegister.TANKS.forEach((name, tank) -> {
                 ItemStack item = TankRegister.TANKITEM.get().getDefaultInstance();
+                item.setHoverName(name);
                 item.getOrCreateTag().putString("tank", name);
                 event.accept(item);
             });
