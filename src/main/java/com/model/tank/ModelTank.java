@@ -91,7 +91,7 @@ public class ModelTank
         if(event.getTab() == ModCreativeTab.TANK_TAB.get()){
             TankRegister.TANKS.forEach((name, tank) -> {
                 ItemStack item = TankRegister.TANKITEM.get().getDefaultInstance();
-                item.setHoverName(name);
+                //item.setHoverName(name);
                 item.getOrCreateTag().putString("tank", name);
                 event.accept(item);
             });
