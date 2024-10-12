@@ -13,6 +13,7 @@ public class HitBox {
     public double height;
     public double length;
     public double width;
+    public Vec3[] points = new Vec3[8];
     public HitBox(Vec3 position, double height, double width, double length){
         this.height = height;
         this.width = width;
@@ -24,13 +25,24 @@ public class HitBox {
         maxz = position.x + width/2;
         maxy = position.y + height/2;
         maxx = position.z + length/2;
+        points[0] = new Vec3(minx,miny,minz);
+        points[1] = new Vec3(minx,miny,maxz);
+        points[2] = new Vec3(maxx,miny,minz);
+        points[3] = new Vec3(maxx,miny,maxz);
+        points[4] = new Vec3(minx,maxy,minz);
+        points[5] = new Vec3(minx,maxy,maxz);
+        points[6] = new Vec3(maxx,maxy,minz);
+        points[7] = new Vec3(maxx,maxy,maxz);
+    }
+    public void tick(double rotation){
+
     }
     //public boolean onHit(HitBox h){
         //return this.minx <= h.minx && this.maxx >= h.maxx &&
                 //this.miny <= h.miny && this.maxy >= h.maxy &&
                 //this.minz <= h.minz && this.maxz >= h.maxz;
     //}
-    float dotProduct(const Vec2& a, const Vec2& b) {
+    /*float dotProduct(const Vec2& a, const Vec2& b) {
     return a.x * b.x + a.y * b.y;
 }
 
@@ -90,5 +102,5 @@ bool isOBBColliding(const OBB& a, const OBB& b) {
         }
     }
     return true;
-}
+}*/
 }
