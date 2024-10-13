@@ -1,10 +1,8 @@
 package com.model.tank.entities.tanks;
 
 import com.model.tank.utils.Tank;
-import com.model.tank.utils.TankRegister;
+import com.model.tank.init.TankRegister;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.commands.SummonCommand;
-import net.minecraft.server.commands.data.DataCommands;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -20,6 +18,12 @@ public class TankEntity extends Entity implements GeoEntity {
         super(p_19870_, p_19871_);
         this.tank = tank;
     }
+
+    @Override
+    public void tick() {
+        super.tick();
+    }
+
     public TankEntity(EntityType<?> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);
         this.tank = TankRegister.TANKS.get("M1A2");

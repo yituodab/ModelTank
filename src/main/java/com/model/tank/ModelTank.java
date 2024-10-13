@@ -2,10 +2,14 @@ package com.model.tank;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.model.tank.entities.tanks.TankEntity;
+import com.model.tank.entities.tanks.TankRender;
 import com.model.tank.utils.ModCreativeTab;
-import com.model.tank.utils.TankRegister;
+import com.model.tank.init.TankRegister;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
@@ -58,6 +62,7 @@ public class ModelTank
             JsonObject jsonObject;
             jsonObject = gson.fromJson(reader, JsonObject.class);
             TankRegister.register(modEventBus, jsonObject);
+            LOGGER.info("Load Successful");
         } catch (Exception e) {
             LOGGER.error("Couldn’t register tanks,because ",e);
         }
@@ -91,7 +96,7 @@ public class ModelTank
         if(event.getTab() == ModCreativeTab.TANK_TAB.get()){
             TankRegister.TANKS.forEach((name, tank) -> {
                 ItemStack item = TankRegister.TANKITEM.get().getDefaultInstance();
-                //item.setHoverName(name);
+                item.setHoverName(Component.translatable(name));
                 item.getOrCreateTag().putString("tank", name);
                 event.accept(item);
             });
@@ -131,6 +136,11 @@ public class ModelTank
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
+            event.enqueueWork(()->{
+                TankRegister.TANKENTITYS.forEach((e,a)-> {
+                    EntityRenderers.register(a.get(), TankRender::new);
+                });
+            });
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());

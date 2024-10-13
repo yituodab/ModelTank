@@ -1,8 +1,12 @@
-package com.model.tank.utils;
+package com.model.tank.init;
 
 import com.google.gson.JsonObject;
 import com.model.tank.ModelTank;
 import com.model.tank.entities.tanks.TankEntity;
+import com.model.tank.utils.HitBox;
+import com.model.tank.utils.Model;
+import com.model.tank.utils.Tank;
+import com.model.tank.utils.TankItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -40,7 +44,7 @@ public class TankRegister {
                         model.has("x") ? model.get("x").getAsDouble() : 1,
                 	    model.has("y") ? model.get("y").getAsDouble() : 1,
                 	    model.has("z") ? model.get("z").getAsDouble() : 1);
-                HitBox hitbox = new HitBox(position, 
+                HitBox hitbox = new HitBox(position,
                 	model.has("height") ? model.get("height").getAsDouble() : 1,
                 	model.has("width") ? model.get("width").getAsDouble() : 1,
                     model.has("length") ? model.get("length").getAsDouble() : 1);
