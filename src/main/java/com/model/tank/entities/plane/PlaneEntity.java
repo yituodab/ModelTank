@@ -1,6 +1,6 @@
-package com.model.tank.entities.tanks;
+package com.model.tank.entities.plane;
 
-import com.model.tank.utils.Tank;
+import com.model.tank.utils.Plane;
 import com.model.tank.init.TankRegister;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -12,12 +12,12 @@ import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 
-public class TankEntity extends Entity implements GeoEntity {
+public class PlaneEntity extends Entity implements GeoEntity {
     //public static List<Tank> tanks = new ArrayList<Tank>();
-    private Tank tank;
-    public TankEntity(EntityType<?> p_19870_, Level p_19871_, Tank tank) {
+    private Plane plane;
+    public PlaneEntity(EntityType<?> p_19870_, Level p_19871_, Plane plane) {
         super(p_19870_, p_19871_);
-        this.tank = tank;
+        this.plane = plane;
     }
 
     @Override
@@ -25,9 +25,9 @@ public class TankEntity extends Entity implements GeoEntity {
         super.tick();
     }
 
-    public TankEntity(EntityType<?> p_19870_, Level p_19871_) {
+    public PlaneEntity(EntityType<?> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);
-        this.tank = TankRegister.TANKS.get("M1A2");
+        this.plane = null;//TankRegister.TANKS.get("M1A2");
     }
 
     @Override
@@ -36,8 +36,8 @@ public class TankEntity extends Entity implements GeoEntity {
         //this.tank = TankRegister.TANKS.get(p_20259_.getString("tank"));
     }
 
-    public Tank getTank() {
-        return tank;
+    public Plane getPlane() {
+        return plane;
     }
 
     @Override
