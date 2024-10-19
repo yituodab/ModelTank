@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 
 public class TankEntity extends Entity implements GeoEntity {
@@ -59,6 +60,7 @@ public class TankEntity extends Entity implements GeoEntity {
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return null;
+
+        return GeckoLibUtil.createInstanceCache(this);
     }
 }

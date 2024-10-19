@@ -39,7 +39,7 @@ public class HitBox {
         Vec3 divice = new Vec3(dhit.x/distance,dhit.y/distance,dhit.z/distance);
         double Angle = Math.acos(divice.x);
         double dangle = (Angle - pangle)*Math.PI/180;
-        Vec3 vec3 = new Vec3(Math.cos(dangle),dhit.y, Math.sin(dangle));
+        Vec3 vec3 = new Vec3(Math.cos(dangle)*distance,dhit.y, Math.sin(dangle)*distance);
         return this.minx<=vec3.x&&vec3.x<=this.maxx&&
                 this.miny<=vec3.y&&vec3.y<=this.maxy&&
                 this.minz<=vec3.z&&vec3.z<=this.maxz;

@@ -1,6 +1,6 @@
 {
   "M1A2": {
-    "modelLocation": "model.geo.json",
+    "modelLocation": "geo/model.geo.json",
     "textureLocation": "textures/texture.png",
     "width": 1,
     "height": 1,
