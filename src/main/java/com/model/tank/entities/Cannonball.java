@@ -13,7 +13,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 
 public class Cannonball extends Projectile {
-    public HitBox hitBox = new HitBox(this.position(),0.1,0.1,0.1);
+    public HitBox hitBox = new HitBox(this.position(),0.1,0.1,0.1,0);
     protected Cannonball(EntityType<? extends Projectile> p_37248_, Level p_37249_) {
         super(p_37248_, p_37249_);
     }

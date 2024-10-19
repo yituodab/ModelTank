@@ -1,5 +1,7 @@
 package com.model.tank.utils;
 
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class HitBox {
@@ -13,29 +15,34 @@ public class HitBox {
     public double height;
     public double length;
     public double width;
-    public Vec3[] points = new Vec3[8];
-    public HitBox(Vec3 position, double height, double width, double length){
+    public double angle;
+    public HitBox(Vec3 position, double height, double width, double length, double angle){
         this.height = height;
         this.width = width;
         this.length = length;
         this.position = position;
         minz = position.x - width/2;
-        miny = position.y - height/2;
+        miny = position.y;
         minx = position.z - length/2;
         maxz = position.x + width/2;
-        maxy = position.y + height/2;
+        maxy = position.y + height;
         maxx = position.z + length/2;
-        points[0] = new Vec3(minx,miny,minz);
-        points[1] = new Vec3(minx,miny,maxz);
-        points[2] = new Vec3(maxx,miny,minz);
-        points[3] = new Vec3(maxx,miny,maxz);
-        points[4] = new Vec3(minx,maxy,minz);
-        points[5] = new Vec3(minx,maxy,maxz);
-        points[6] = new Vec3(maxx,maxy,minz);
-        points[7] = new Vec3(maxx,maxy,maxz);
+        this.angle = angle;
     }
     public void tick(double rotation){
 
+    }
+    public boolean onHit(Vec3 hit){
+        double pangle = angle - 0;
+        Vec3 dhit = hit.subtract(this.position);
+        double distance = hit.distanceTo(this.position);
+        Vec3 divice = new Vec3(dhit.x/distance,dhit.y/distance,dhit.z/distance);
+        double Angle = Math.acos(divice.x);
+        double dangle = (Angle - pangle)*Math.PI/180;
+        Vec3 vec3 = new Vec3(Math.cos(dangle),dhit.y, Math.sin(dangle));
+        return this.minx<=vec3.x&&vec3.x<=this.maxx&&
+                this.miny<=vec3.y&&vec3.y<=this.maxy&&
+                this.minz<=vec3.z&&vec3.z<=this.maxz;
     }
     //public boolean onHit(HitBox h){
         //return this.minx <= h.minx && this.maxx >= h.maxx &&

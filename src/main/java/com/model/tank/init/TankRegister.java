@@ -47,7 +47,8 @@ public class TankRegister {
                 HitBox hitbox = new HitBox(position,
                 	model.has("height") ? model.get("height").getAsDouble() : 1,
                 	model.has("width") ? model.get("width").getAsDouble() : 1,
-                    model.has("length") ? model.get("length").getAsDouble() : 1);
+                    model.has("length") ? model.get("length").getAsDouble() : 1,
+                        0);
                 tank.models.add(new Model(position, hitbox, Model.StringToType(model.get("type").getAsString())));
             }
             if(tanks.has("armors"))
