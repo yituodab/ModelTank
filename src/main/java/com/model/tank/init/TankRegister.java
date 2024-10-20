@@ -3,10 +3,7 @@ package com.model.tank.init;
 import com.google.gson.JsonObject;
 import com.model.tank.ModelTank;
 import com.model.tank.entities.tanks.TankEntity;
-import com.model.tank.utils.HitBox;
-import com.model.tank.utils.Model;
-import com.model.tank.utils.Tank;
-import com.model.tank.utils.TankItem;
+import com.model.tank.utils.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -23,12 +20,12 @@ public class TankRegister {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, ModelTank.MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, ModelTank.MODID);
     public static final HashMap<String, Tank> TANKS = new HashMap<>();
+    public static final HashMap<String, Plane> PLANES = new HashMap<>();
     public static final HashMap<Tank, RegistryObject<EntityType<TankEntity>>> TANKENTITYS = new HashMap<>();
     public static final RegistryObject<Item> TANKITEM = ITEMS.register("tank_item", ()->
             new TankItem(new Item.Properties().stacksTo(1)));
 
     public static void register(IEventBus eventBus, JsonObject json){
-
         for (var entry : json.entrySet()){
             String name = entry.getKey();
             Tank tank = new Tank(name);
