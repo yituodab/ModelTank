@@ -10,6 +10,7 @@ public class Plane{
     public final int mass;//kg,1kg=9.8N
     public final int WingS;
     public final float MaxCl;
+    public final float maxSpeed;
     public static final float AIR_DENSITY = 1.22f;
     public List<Model> models = new ArrayList<>();
     //public List<Model.Armor> armors = new ArrayList<>();

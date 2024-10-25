@@ -15,6 +15,8 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 public class PlaneEntity extends Entity implements GeoEntity {
     //public static List<Tank> tanks = new ArrayList<Tank>();
     private Plane plane;
+    public double tick_speed;
+    public final float maxSpeed = plane.maxSpeed;
     public PlaneEntity(EntityType<?> p_19870_, Level p_19871_, Plane plane) {
         super(p_19870_, p_19871_);
         this.plane = plane;
