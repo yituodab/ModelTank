@@ -7,9 +7,9 @@ import java.util.List;
 
 public class Plane{
     public final String name;
-    public final int weight;//1kg=9.8N
+    public final int mass;//kg,1kg=9.8N
     public final int WingS;
-    public float CI;
+    public final float MaxCl;
     public static final float AIR_DENSITY = 1.22f;
     public List<Model> models = new ArrayList<>();
     //public List<Model.Armor> armors = new ArrayList<>();
@@ -18,7 +18,12 @@ public class Plane{
     public Plane(String name) {
         this.name = name;
     }
-    public double getLift(double speed){
-        return (AIR_DENSITY * speed * speed * CI * WingS) / 2;
+    public double getLift(double speed,double angle){
+        double Cl = MaxCl / 85 * angle;
+        return (AIR_DENSITY * speed * speed * Cl * WingS) / 2;
+    }
+    public double getFlySpeed(){
+        double Cl = MaxCl / 85 * 5;
+        return (AIR_DENSITY*WingS*Cl*2*mass*9.8);
     }
 }

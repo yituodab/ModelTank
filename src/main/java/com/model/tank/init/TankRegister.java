@@ -42,9 +42,9 @@ public class TankRegister {
                 	    model.has("y") ? model.get("y").getAsDouble() : 1,
                 	    model.has("z") ? model.get("z").getAsDouble() : 1);
                 HitBox hitbox = new HitBox(position,
-                	model.has("height") ? model.get("height").getAsDouble() : 1,
+                	model.has("length") ? model.get("length").getAsDouble() : 1,
                 	model.has("width") ? model.get("width").getAsDouble() : 1,
-                    model.has("length") ? model.get("length").getAsDouble() : 1,
+                    model.has("height") ? model.get("height").getAsDouble() : 1,
                         0);
                 tank.models.add(new Model(position, hitbox, Model.StringToType(model.get("type").getAsString())));
             }
@@ -56,8 +56,8 @@ public class TankRegister {
                         armor.has("y") ? armor.get("y").getAsDouble() : 1,
                         armor.has("z") ? armor.get("z").getAsDouble() : 1);
                 tank.armors.add(new Model.Armor(Model.Armor.StringToDirection(armor.get("direction").getAsString()),
-                        armor.has("width") ? armor.get("thickness").getAsInt() : 500,
-                        armor.has("width") ? armor.get("length").getAsDouble() : 1,
+                        armor.has("thickness") ? armor.get("thickness").getAsInt() : 500,
+                        armor.has("length") ? armor.get("length").getAsDouble() : 1,
                         armor.has("width") ? armor.get("width").getAsDouble() : 1,
                         position));
             }

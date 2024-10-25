@@ -16,17 +16,17 @@ public class HitBox {
     public double length;
     public double width;
     public double angle;
-    public HitBox(Vec3 position, double height, double width, double length, double angle){
+    public HitBox(Vec3 position, double length, double width, double height, double angle){
         this.height = height;
         this.width = width;
         this.length = length;
         this.position = position;
-        minz = position.x - width/2;
-        miny = position.y;
-        minx = position.z - length/2;
-        maxz = position.x + width/2;
-        maxy = position.y + height;
-        maxx = position.z + length/2;
+        minx = position.x - width/2;
+        miny = position.y - height/2;
+        minz = position.z - length/2;
+        maxx = position.x + width/2;
+        maxy = position.y + height/2;
+        maxz = position.z + length/2;
         this.angle = angle;
     }
     public void tick(double rotation){

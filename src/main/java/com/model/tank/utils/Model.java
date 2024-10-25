@@ -61,13 +61,13 @@ public class Model {
             HitBox hitbox;
                 switch (direction) {
                     case RIGHT, LEFT -> {
-                        hitbox = new HitBox(position,width, (double) thickness /1000,length,0);
+                        hitbox = new HitBox(position,length, (double) thickness /1000,width,0);
                     }
                     case FRONT, BACK -> {
-                        hitbox = new HitBox(position,width,length,(double) thickness /1000,90);
+                        hitbox = new HitBox(position,(double) thickness /1000,length,width,90);
                     }
                     case TOP, BOTTOM ->{
-                        hitbox = new HitBox(position, (double) thickness /1000,width,length,0);
+                        hitbox = new HitBox(position, length,width,(double) thickness /1000,0);
                     }
                     default -> hitbox = new HitBox(position,0,0,0,0);
                 }
