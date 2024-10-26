@@ -5,6 +5,7 @@ import com.model.tank.init.TankRegister;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -34,6 +35,11 @@ public class TankEntity extends Entity implements GeoEntity {
     public void load(CompoundTag p_20259_) {
         super.load(p_20259_);
         //this.tank = TankRegister.TANKS.get(p_20259_.getString("tank"));
+    }
+
+    @Override
+    protected boolean canRide(Entity p_20339_) {
+        return true;
     }
 
     public Tank getTank() {
