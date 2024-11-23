@@ -105,7 +105,7 @@ public class ModelTank
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-        // Some common setup code
+        /* Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
 
         if (Config.logDirtBlock)
@@ -113,7 +113,7 @@ public class ModelTank
 
         LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
 
-        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
+        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));*/
     }
 
     // Add the example block item to the building blocks tab
@@ -141,9 +141,6 @@ public class ModelTank
                     EntityRenderers.register(a.get(), TankRender::new);
                 });
             });
-            // Some client setup code
-            LOGGER.info("HELLO FROM CLIENT SETUP");
-            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
     }
 }
