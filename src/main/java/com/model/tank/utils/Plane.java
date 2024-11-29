@@ -19,6 +19,7 @@ public class Plane{
     public Plane(String name) {
         this.name = name;
     }
+    
     public double getLift(double speed,double angle){
         double Cl = MaxCl / 85 * angle;
         return (AIR_DENSITY * speed * speed * Cl * WingS) / 2;
