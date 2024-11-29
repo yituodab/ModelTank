@@ -1,6 +1,7 @@
 package com.model.tank.entities.tanks;
 
-import com.model.tank.utils.Tank;
+import java.util.*;
+import com.model.tank.utils.*;
 import com.model.tank.init.TankRegister;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.model.tank.entities.tanks.TankEntity;
 import com.model.tank.entities.tanks.TankRender;
-import com.model.tank.utils.ModCreativeTab;
+import com.model.tank.init.ModCreativeTab;
 import com.model.tank.init.TankRegister;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;

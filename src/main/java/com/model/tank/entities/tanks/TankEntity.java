@@ -1,6 +1,8 @@
 package com.model.tank.entities.tanks;
 
+import net.minecraft.resources.ResourceLocation;
 import com.model.tank.utils.*;
+import java.util.*;
 import com.model.tank.init.TankRegister;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -15,6 +17,8 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class TankEntity extends Entity implements GeoEntity {
     //public static List<Tank> tanks = new ArrayList<Tank>();
+    public ResourceLocation modelLocation;
+    public ResourceLocation textureLocation;
     public List<Model> modules = new ArrayList<>();
     public double maxSpeed;// m/s
     private double tickSpeed = maxSpeed / 20;
@@ -32,7 +36,6 @@ public class TankEntity extends Entity implements GeoEntity {
 
     public TankEntity(EntityType<?> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);
-        this.tank = TankRegister.TANKS.get("M1A2");
     }
 
     @Override
