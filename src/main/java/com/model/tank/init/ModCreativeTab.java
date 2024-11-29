@@ -1,4 +1,4 @@
-package com.model.tank.utils;
+package com.model.tank.init;
 
 import com.model.tank.ModelTank;
 import com.model.tank.init.TankRegister;

@@ -1,6 +1,6 @@
 package com.model.tank.entities.tanks;
 
-import com.model.tank.utils.Tank;
+import com.model.tank.utils.*;
 import com.model.tank.init.TankRegister;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -15,10 +15,14 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class TankEntity extends Entity implements GeoEntity {
     //public static List<Tank> tanks = new ArrayList<Tank>();
-    private Tank tank;
+    public List<Model> modules = new ArrayList<>();
+    public double maxSpeed;// m/s
+    private double tickSpeed = maxSpeed / 20;
     public TankEntity(EntityType<?> p_19870_, Level p_19871_, Tank tank) {
         super(p_19870_, p_19871_);
-        this.tank = tank;
+        for(Model m : tank.models){
+            modules.add(m.copy());
+        }
     }
 
     @Override
@@ -42,27 +46,14 @@ public class TankEntity extends Entity implements GeoEntity {
         return true;
     }
 
-    public Tank getTank() {
-        return tank;
-    }
-
     @Override
-    protected void defineSynchedData() {
-
-    }
-
+    protected void defineSynchedData() {}
     @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
-    }
-
+    protected void readAdditionalSaveData(CompoundTag compoundTag) {}
     @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
-    }
-
+    protected void addAdditionalSaveData(CompoundTag compoundTag) {}
     @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-
-    }
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {

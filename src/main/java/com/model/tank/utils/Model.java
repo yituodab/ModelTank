@@ -25,14 +25,16 @@ public class Model {
         }
         return Type.UNKNOWN;
     }
+    public Model copy(){
+        Vec3 pos = new Vec3(position.x, position.y, position.z);
+        Type p = Type.UNKNOWN;
+        for(Type t : Type.values()){if(t == this.type)p = t;}
+        HitBox hitBox = new HitBox(hitbox.position, hitbox.length, hitbox.width, hitbox.height, hitbox.angle);
+        return new Model(pos, hitBox, p);
+    }
     public static class Armor{
         public static enum Direction{
-            RIGHT,
-            LEFT,
-            FRONT,
-            BACK,
-            TOP,
-            BOTTOM
+            RIGHT,LEFT,FRONT,BACK,TOP,BOTTOM
         }
         // e 给你看看
         public static Direction StringToDirection(String direction){

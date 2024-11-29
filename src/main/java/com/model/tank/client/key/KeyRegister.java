@@ -1,4 +1,4 @@
-package com.model.tank.key;
+package com.model.tank.client.key;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
