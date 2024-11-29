@@ -28,7 +28,7 @@ public abstract class AbstractTank extends Entity implements GeoEntity {
         super.tick();
     }
 
-    public AbstractTankEntity(EntityType<?> p_19870_, Level p_19871_) {
+    public AbstractTank(EntityType<?> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);
         this.tank = TankRegister.TANKS.get("M1A2");
     }
