@@ -1,8 +1,15 @@
-package com.model.tank.utils;
+package com.model.tank.resource.data;
 
+import com.google.gson.annotations.SerializedName;
+import com.model.tank.utils.HitBox;
 import net.minecraft.world.phys.Vec3;
 
-public class Model {
+public class Module {
+    public Module(Vec3 position,HitBox hitbox, Type type){
+        this.type = type;
+        this.hitbox = hitbox;
+        this.position = position;
+    }
     public static enum Type{
         UNKNOWN,
         ENGINE,
@@ -11,26 +18,34 @@ public class Model {
         CANNON,
         LATCH
     }
-    public final Type type;
-    public final Vec3 position;
-    public final HitBox hitbox;
-    public Model(Vec3 position, HitBox hitbox,Type type){
-        this.position = position;
-        this.hitbox = hitbox;
-        this.type = type;
-    }
+    @SerializedName("type")
+    public Type type;
+    @SerializedName("x")
+    public double x;
+    @SerializedName("y")
+    public double y;
+    @SerializedName("z")
+    public double z;
+    @SerializedName("length")
+    public double length;
+    @SerializedName("width")
+    public double width;
+    @SerializedName("height")
+    public double height;
+    public Vec3 position = new Vec3(x,y,z);
+    public HitBox hitbox = new HitBox(position, length, width, height, 0);
     public static Type StringToType(String type){
         for(Type t : Type.values()){
             if(t.toString().equals(type))return t;
         }
         return Type.UNKNOWN;
     }
-    public Model copy(){
+    public Module copy(){
         Vec3 pos = new Vec3(position.x, position.y, position.z);
         Type p = Type.UNKNOWN;
         for(Type t : Type.values()){if(t == this.type)p = t;}
         HitBox hitBox = new HitBox(hitbox.position, hitbox.length, hitbox.width, hitbox.height, hitbox.angle);
-        return new Model(pos, hitBox, p);
+        return new Module(pos, hitBox, p);
     }
     public static class Armor{
         public static enum Direction{

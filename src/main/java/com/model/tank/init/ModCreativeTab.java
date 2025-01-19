@@ -1,7 +1,6 @@
 package com.model.tank.init;
 
 import com.model.tank.ModelTank;
-import com.model.tank.init.TankRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -18,7 +17,7 @@ public class ModCreativeTab {
                     })
                     .build());
     private static ItemStack getIcon(){
-        ItemStack itemStack = TankRegister.TANKITEM.get().getDefaultInstance();
+        ItemStack itemStack = ItemRegister.TANKITEM.get().getDefaultInstance();
         itemStack.setHoverName(Component.translatable("item.modeltank.tank"));
         itemStack.getOrCreateTag().putString("tank","default");
         return itemStack;

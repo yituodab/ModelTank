@@ -1,7 +1,6 @@
 package com.model.tank.entities.plane;
 
-import com.model.tank.utils.Plane;
-import com.model.tank.init.TankRegister;
+import com.model.tank.resource.data.Plane;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -29,13 +28,13 @@ public class PlaneEntity extends Entity implements GeoEntity {
 
     public PlaneEntity(EntityType<?> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);
-        this.plane = null;//TankRegister.TANKS.get("M1A2");
+        this.plane = null;//EntityRegister.TANKS.get("M1A2");
     }
 
     @Override
     public void load(CompoundTag p_20259_) {
         super.load(p_20259_);
-        //this.tank = TankRegister.TANKS.get(p_20259_.getString("tank"));
+        //this.tank = EntityRegister.TANKS.get(p_20259_.getString("tank"));
     }
 
     public Plane getPlane() {

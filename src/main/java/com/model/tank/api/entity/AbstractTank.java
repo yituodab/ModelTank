@@ -1,12 +1,12 @@
-package com.model.tank.entities.tanks;
+package com.model.tank.api.entity;
 
 import java.util.*;
-import com.model.tank.utils.*;
-import com.model.tank.init.TankRegister;
+
+import com.model.tank.resource.data.Tank;
+import com.model.tank.resource.data.Module;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -16,12 +16,12 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public abstract class AbstractTank extends Entity implements GeoEntity {
     //public static List<Tank> tanks = new ArrayList<Tank>();
-    public List<Model> models;
-    public List<Model.Armor> armors;
+    public List<Module> modules;
+    public List<Module.Armor> armors;
     public AbstractTank(EntityType<?> p_19870_, Level p_19871_, Tank tank) {
         super(p_19870_, p_19871_);
-        this.models = tank.models;
-        this.armors = tank.armors;
+        this.modules = List.of(tank.modules);
+        this.armors = List.of(tank.armors);
     }
 
     @Override
@@ -36,7 +36,7 @@ public abstract class AbstractTank extends Entity implements GeoEntity {
     @Override
     public void load(CompoundTag p_20259_) {
         super.load(p_20259_);
-        //this.tank = TankRegister.TANKS.get(p_20259_.getString("tank"));
+        //this.tank = EntityRegister.TANKS.get(p_20259_.getString("tank"));
     }
 
     @Override

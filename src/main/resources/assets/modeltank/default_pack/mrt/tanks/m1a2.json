@@ -1,10 +1,10 @@
 {
-  "M1A2": {
+    "name": "mrt.tanks.m1a2",
     "modelLocation": "geo/model.geo.json",
     "textureLocation": "textures/texture.png",
     "width": 1,
     "height": 1,
-    "models": [
+    "modules": [
       {
         "type": "OIL_TANK",
         "x": 1,
@@ -26,5 +26,5 @@
         "length": 1
       }
     ]
-  }
+
 }

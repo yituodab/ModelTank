@@ -1,4 +1,4 @@
-package com.model.tank.utils;
+package com.model.tank.resource.data;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -12,8 +12,8 @@ public class Plane{
     private float MaxCl;
     public float maxSpeed;
     public static final float AIR_DENSITY = 1.22f;
-    public List<Model> models = new ArrayList<>();
-    //public List<Model.Armor> armors = new ArrayList<>();
+    public List<Module> modules = new ArrayList<>();
+    //public List<Module.Armor> armors = new ArrayList<>();
     public ResourceLocation modelLocation;
     public ResourceLocation textureLocation;
     public Plane(String name) {
