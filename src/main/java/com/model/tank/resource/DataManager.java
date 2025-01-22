@@ -1,8 +1,11 @@
 package com.model.tank.resource;
 
-import com.model.tank.ModelTank;
+import com.model.tank.ModularTank;
 import com.model.tank.resource.data.Plane;
 import com.model.tank.resource.data.Tank;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.IOException;
@@ -14,20 +17,27 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
+@Mod.EventBusSubscriber
 public class DataManager {
     private static boolean firstLoad = true;
     public static final Path ModularTankDataDirPath = FMLPaths.GAMEDIR.get().resolve("mrt");
-    public static final Path TankDataDir = ModularTankDataDirPath.resolve("default_pack/data/mrt/tanks");
-    public static final Path PlaneDataDir = ModularTankDataDirPath.resolve("default_pack/data/mrt/planes");
+    public static final Path TankDataDir = ModularTankDataDirPath.resolve("default_pack/tanks/mrt");
+    public static final Path PlaneDataDir = ModularTankDataDirPath.resolve("default_pack/planes/mrt");
+    public static final Path LanguageDir = ModularTankDataDirPath.resolve("default_pack/assets/mrt/lang");
     public static final HashMap<String, Tank> TANKS = new HashMap<>();
     public static final HashMap<String, Plane> PLANES = new HashMap<>();
     public static void load(){
         if(firstLoad){
-            copyModDirectory(ModelTank.class,"/assets/modeltank/default_pack", ModularTankDataDirPath, "default_pack");
+            copyModDirectory(ModularTank.class, "/assets/mrt/default_pack", ModularTankDataDirPath, "default_pack");
             firstLoad = false;
         }
         TankDataLoader.loadTankDataFromDir(TankDataDir);
         PlaneDataLoader.loadTankDataFromDir(PlaneDataDir);
+        LanguageLoader.load(LanguageDir);
+    }
+    @SubscribeEvent
+    public static void atReLoad(FMLCommonSetupEvent event){
+        load();
     }
     /**
      * 复制本模组的文件夹到指定文件夹。将强行覆盖原文件夹。

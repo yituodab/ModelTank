@@ -1,6 +1,6 @@
 package com.model.tank.init;
 
-import com.model.tank.ModelTank;
+import com.model.tank.ModularTank;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -9,17 +9,14 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ModCreativeTab {
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ModelTank.MODID);
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ModularTank.MODID);
     public static final RegistryObject<CreativeModeTab> TANK_TAB = CREATIVE_MODE_TABS.register("tank_tab",
             () -> CreativeModeTab.builder().icon(ModCreativeTab::getIcon).
-                    title(Component.translatable("itemGroup.modeltank")).
+                    title(Component.translatable("itemGroup.modulartank")).
                     displayItems((parameters, output)->{
                     })
                     .build());
     private static ItemStack getIcon(){
-        ItemStack itemStack = ItemRegister.TANKITEM.get().getDefaultInstance();
-        itemStack.setHoverName(Component.translatable("item.modeltank.tank"));
-        itemStack.getOrCreateTag().putString("tank","default");
-        return itemStack;
+        return ItemRegister.TANKITEM.get().getDefaultInstance();
     }
 }

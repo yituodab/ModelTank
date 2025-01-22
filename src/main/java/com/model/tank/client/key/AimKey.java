@@ -1,7 +1,6 @@
 package com.model.tank.client.key;
 
 import com.model.tank.api.client.interfaces.ILocalPlayer;
-import com.model.tank.entities.tanks.TankEntity;
 import com.model.tank.utils.MathUtils;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -17,7 +16,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
-import static com.model.tank.ModelTank.IsInGame;
+import static com.model.tank.ModularTank.IsInGame;
 import static com.model.tank.client.key.KeyRegister.MODEL_TANK_CATEGORY;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(value = Dist.CLIENT)

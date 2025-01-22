@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "modeltank.refmap.json",
   "client": [
+    "LanguageMixin",
     "LocalPlayerMixin"
   ],
   "injectors": {

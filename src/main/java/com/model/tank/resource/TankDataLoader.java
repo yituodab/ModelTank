@@ -1,7 +1,7 @@
 package com.model.tank.resource;
 
 import com.google.gson.Gson;
-import com.model.tank.ModelTank;
+import com.model.tank.ModularTank;
 import com.model.tank.resource.data.Tank;
 import org.apache.commons.io.IOUtils;
 
@@ -24,9 +24,12 @@ public class TankDataLoader {
         try(InputStream inputStream = Files.newInputStream(file.toPath())){
             String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             Tank tank = gson.fromJson(json, Tank.class);
-            DataManager.TANKS.put(file.getName(), tank);
+            DataManager.TANKS.put(tank.id, tank);
         } catch (Exception e) {
-            ModelTank.LOGGER.error("load tank data fail,because",e);
+            ModularTank.LOGGER.error("load tank data fail,because",e);
         }
+    }
+    public static void loadLanguageFromFIle(File file){
+
     }
 }

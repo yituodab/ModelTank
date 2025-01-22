@@ -1,7 +1,5 @@
 package com.model.tank;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.model.tank.client.key.AimKey;
 import com.model.tank.entities.tanks.TankRender;
 import com.model.tank.init.EntityRegister;
@@ -27,25 +25,20 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.loading.ModSorter;
 import org.slf4j.Logger;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-
-@Mod(ModelTank.MODID)
-public class ModelTank
+@Mod(ModularTank.MODID)
+public class ModularTank
 {
     public static boolean IsInGame = Minecraft.getInstance().isWindowActive();
     public static final boolean TACZ_LOADED = ModList.get().isLoaded("tacz");
-    public static final String MODID = "modeltank";
+    public static final String MODID = "mrt";
     public static final Logger LOGGER = LogUtils.getLogger();
     
 
-    public ModelTank()
+    public ModularTank()
     {
+        DataManager.load();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addToTab);
@@ -55,14 +48,14 @@ public class ModelTank
         ModCreativeTab.CREATIVE_MODE_TABS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-        DataManager.load();
+
     }
     public void addToTab(BuildCreativeModeTabContentsEvent event){
         if(event.getTab() == ModCreativeTab.TANK_TAB.get()){
-            DataManager.TANKS.forEach((name, tank) -> {
+            DataManager.TANKS.forEach((id, tank) -> {
                 ItemStack item = ItemRegister.TANKITEM.get().getDefaultInstance();
-                item.setHoverName(Component.translatable(name));
-                item.getOrCreateTag().putString("tank", name);
+                item.setHoverName(Component.translatable(tank.name));
+                item.getOrCreateTag().putString("TankID", id);
                 event.accept(item);
             });
         }

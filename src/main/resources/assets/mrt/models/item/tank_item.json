@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "modeltank:item/tank_item"
+    "layer0": "mrt:item/tank_item"
   }
 }

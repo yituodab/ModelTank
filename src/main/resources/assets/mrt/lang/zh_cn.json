@@ -1,0 +1,9 @@
+{
+  "itemGroup.modulartank": "模块化坦克",
+  "item.mrt.tank_item": "坦克箱",
+  "key.modulartank.move.w": "前进",
+  "key.modulartank.move.s": "后退",
+  "key.modulartank.move.a": "左转",
+  "key.modulartank.move.d": "右转",
+  "mrt.tanks.m1a2": "M1A2 艾布拉姆斯"
+}

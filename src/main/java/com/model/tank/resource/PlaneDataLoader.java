@@ -1,7 +1,7 @@
 package com.model.tank.resource;
 
 import com.google.gson.Gson;
-import com.model.tank.ModelTank;
+import com.model.tank.ModularTank;
 import com.model.tank.resource.data.Plane;
 import org.apache.commons.io.IOUtils;
 
@@ -26,7 +26,7 @@ public class PlaneDataLoader {
             Plane plane = gson.fromJson(json, Plane.class);
             DataManager.PLANES.put(file.getName(), plane);
         } catch (Exception e) {
-            ModelTank.LOGGER.error("load plane data fail,because",e);
+            ModularTank.LOGGER.error("load plane data fail,because",e);
         }
     }
 }
