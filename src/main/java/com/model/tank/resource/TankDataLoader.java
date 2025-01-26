@@ -6,30 +6,36 @@ import com.model.tank.resource.data.Tank;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class TankDataLoader {
-    public static void loadTankDataFromDir(Path path){
-        if(Files.isDirectory(path)){
-            for (File file : path.toFile().listFiles()) {
-                loadTankDataFromFile(file);
+    public static void loadTankDataFromDir(Path root){
+        if(Files.isDirectory(root)){
+            try{
+                Files.newDirectoryStream(root).forEach(path -> {
+                    try {
+                        Files.newDirectoryStream(path).forEach(tank -> loadTankDataFromFile(path.toFile().getName(), tank));
+                    } catch (IOException e) {
+                        ModularTank.LOGGER.error("error",e);
+                    }
+                });
+            } catch (IOException e) {
+                ModularTank.LOGGER.error("error",e);
             }
         }
     }
-    public static void loadTankDataFromFile(File file){
-        Gson gson = new Gson();
-        try(InputStream inputStream = Files.newInputStream(file.toPath())){
+    public static void loadTankDataFromFile(String modid, Path path){
+        try(InputStream inputStream = Files.newInputStream(path)){
             String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-            Tank tank = gson.fromJson(json, Tank.class);
-            DataManager.TANKS.put(tank.id, tank);
+            Tank tank = DataManager.GSON.fromJson(json, Tank.class);
+            String namespace = modid + ":" + tank.id;
+            DataManager.TANKS.put(namespace, tank);
         } catch (Exception e) {
             ModularTank.LOGGER.error("load tank data fail,because",e);
         }
-    }
-    public static void loadLanguageFromFIle(File file){
-
     }
 }

@@ -5,10 +5,10 @@ import com.model.tank.utils.HitBox;
 import net.minecraft.world.phys.Vec3;
 
 public class Module {
-    public Module(Vec3 position,HitBox hitbox, Type type){
+    public Module(double[] xyz,double[] size, Type type){
+        this.xyz = xyz;
+        this.size = size;
         this.type = type;
-        this.hitbox = hitbox;
-        this.position = position;
     }
     public static enum Type{
         UNKNOWN,
@@ -20,20 +20,10 @@ public class Module {
     }
     @SerializedName("type")
     public Type type;
-    @SerializedName("x")
-    public double x;
-    @SerializedName("y")
-    public double y;
-    @SerializedName("z")
-    public double z;
-    @SerializedName("length")
-    public double length;
-    @SerializedName("width")
-    public double width;
-    @SerializedName("height")
-    public double height;
-    public Vec3 position = new Vec3(x,y,z);
-    public HitBox hitbox = new HitBox(position, length, width, height, 0);
+    @SerializedName("position")
+    public double[] xyz;
+    @SerializedName("size")
+    public double[] size;
     public static Type StringToType(String type){
         for(Type t : Type.values()){
             if(t.toString().equals(type))return t;
@@ -41,54 +31,19 @@ public class Module {
         return Type.UNKNOWN;
     }
     public Module copy(){
-        Vec3 pos = new Vec3(position.x, position.y, position.z);
         Type p = Type.UNKNOWN;
         for(Type t : Type.values()){if(t == this.type)p = t;}
-        HitBox hitBox = new HitBox(hitbox.position, hitbox.length, hitbox.width, hitbox.height, hitbox.angle);
-        return new Module(pos, hitBox, p);
+        return new Module(xyz, size, type);
     }
-    public static class Armor{
-        public static enum Direction{
-            RIGHT,LEFT,FRONT,BACK,TOP,BOTTOM
-        }
-        // e 给你看看
-        public static Direction StringToDirection(String direction){
-            for(Direction d : Direction.values()){
-                if(d.toString().equals(direction))return d;
-            }
-            return Direction.TOP;
-        }
-        public HitBox hitbox;
-        public Vec3 position;
-        public double angle;
-        public Direction direction;
-        public int thickness;
-        public double length;
-        public double width;
-        @Deprecated
-        public Armor(double angle,int thickness,double length,double width){
-
-        }
-        public Armor(Direction direction,int thickness,double length,double width,Vec3 position){
-            this.direction = direction;
-            this.thickness = thickness;
-            this.length = length;
-            this.width = width;
-            this.position = position;
-            HitBox hitbox;
-                switch (direction) {
-                    case RIGHT, LEFT -> {
-                        hitbox = new HitBox(position,length, (double) thickness /1000,width,0);
-                    }
-                    case FRONT, BACK -> {
-                        hitbox = new HitBox(position,(double) thickness /1000,length,width,90);
-                    }
-                    case TOP, BOTTOM ->{
-                        hitbox = new HitBox(position, length,width,(double) thickness /1000,0);
-                    }
-                    default -> hitbox = new HitBox(position,0,0,0,0);
-                }
-            this.hitbox = hitbox;
-        }
-    }
+    //public static class Armor extends Module{
+    //    public HitBox hitbox;
+    //    public Vec3 position;
+    //    public double angle;
+    //    public int thickness;
+    //    public double length;
+    //    public double width;
+    //    public Armor(Vec3 position,double angle,int thickness,double length,double width){
+    //        super(position, )
+    //    }
+    //}
 }

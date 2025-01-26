@@ -1,19 +1,16 @@
 {
     "name": "mrt.tanks.m1a2",
     "id": "m1a2",
-    "modelLocation": "geo/model.geo.json",
-    "textureLocation": "textures/texture.png",
+    "test": "mrt:test",
+    "modelLocation": "mrt:geo/model.geo",
+    "textureLocation": "mrt:textures/texture",
     "width": 1,
     "height": 1,
     "modules": [
       {
         "type": "OIL_TANK",
-        "x": 1,
-        "y": 1,
-        "z": 1,
-        "height": 1,
-        "width": 1,
-        "length": 1
+        "position": [1,1,1],
+        "size": [1,1,1]
       }
     ],
     "armors": [

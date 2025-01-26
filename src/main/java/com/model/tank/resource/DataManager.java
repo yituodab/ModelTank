@@ -1,8 +1,13 @@
 package com.model.tank.resource;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.model.tank.ModularTank;
+import com.model.tank.resource.data.Module;
 import com.model.tank.resource.data.Plane;
 import com.model.tank.resource.data.Tank;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -19,21 +24,35 @@ import java.util.stream.Stream;
 
 @Mod.EventBusSubscriber
 public class DataManager {
+    public static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
+            .create();
     private static boolean firstLoad = true;
     public static final Path ModularTankDataDirPath = FMLPaths.GAMEDIR.get().resolve("mrt");
-    public static final Path TankDataDir = ModularTankDataDirPath.resolve("default_pack/tanks/mrt");
-    public static final Path PlaneDataDir = ModularTankDataDirPath.resolve("default_pack/planes/mrt");
-    public static final Path LanguageDir = ModularTankDataDirPath.resolve("default_pack/assets/mrt/lang");
     public static final HashMap<String, Tank> TANKS = new HashMap<>();
     public static final HashMap<String, Plane> PLANES = new HashMap<>();
+
     public static void load(){
         if(firstLoad){
             copyModDirectory(ModularTank.class, "/assets/mrt/default_pack", ModularTankDataDirPath, "default_pack");
             firstLoad = false;
         }
-        TankDataLoader.loadTankDataFromDir(TankDataDir);
-        PlaneDataLoader.loadTankDataFromDir(PlaneDataDir);
-        LanguageLoader.load(LanguageDir);
+        try {
+            Files.newDirectoryStream(ModularTankDataDirPath).forEach(path -> {
+                if(Files.isDirectory(path)){
+                    TankDataLoader.loadTankDataFromDir(path.resolve("tanks"));
+                }
+            });
+        } catch (IOException e) {
+            ModularTank.LOGGER.error("load json failed",e);
+        }
+        Tank TestTank = new Tank("test");
+        TestTank.modelLocation = new ResourceLocation(ModularTank.MODID, "geo/model.geo.json");
+        TestTank.textureLocation = new ResourceLocation(ModularTank.MODID, "textures/texture.png");
+        TestTank.modules = new Module[]{
+                new Module(new double[]{1, 1, 1}, new double[]{1, 1, 1}, Module.Type.UNKNOWN)
+        };
+        TANKS.put(ModularTank.MODID + ":" + TestTank.id,TestTank);
     }
     @SubscribeEvent
     public static void atReLoad(FMLCommonSetupEvent event){
