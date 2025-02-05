@@ -2,6 +2,7 @@ package com.model.tank.api.entity;
 
 import java.util.*;
 
+import com.model.tank.ModularTank;
 import com.model.tank.resource.data.Tank;
 import com.model.tank.resource.data.Module;
 import net.minecraft.nbt.CompoundTag;
@@ -27,8 +28,8 @@ public abstract class AbstractTank extends Entity implements GeoEntity {
     //public List<Module.Armor> armors;
     public AbstractTank(EntityType<?> p_19870_, Level p_19871_, Tank tank) {
         super(p_19870_, p_19871_);
-        this.modelLocation = tank.modelLocation;
-        this.textureLocation = tank.textureLocation;
+        this.modelLocation = tank.modelLocation != null ? tank.modelLocation : new ResourceLocation(ModularTank.MODID, "geo/model.geo.json");
+        this.textureLocation = tank.textureLocation != null ? tank.textureLocation : new ResourceLocation(ModularTank.MODID, "textures/texture.png");
         this.modules = List.of(tank.modules.clone());
         //this.armors = List.of(tank.armors);
         this.MaxPassenger = tank.maxPassenger;
@@ -58,6 +59,9 @@ public abstract class AbstractTank extends Entity implements GeoEntity {
     @Override
     public void tick() {
         super.tick();
+        if(this.level().isClientSide()){
+            controlTank();
+        }
     }
 
     @Override
@@ -74,6 +78,10 @@ public abstract class AbstractTank extends Entity implements GeoEntity {
         super.load(p_20259_);
         //this.tank = EntityRegister.TANKS.get(p_20259_.getString("tank"));
     }
+
+    public abstract void shoot();
+
+    public abstract void controlTank();
 
     @Override
     protected void defineSynchedData() {

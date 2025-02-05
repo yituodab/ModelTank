@@ -1,4 +1,4 @@
-package com.model.tank.entities.tanks;
+package com.model.tank.entities.tank;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;

@@ -1,9 +1,8 @@
 {
     "name": "mrt.tanks.m1a2",
     "id": "m1a2",
-    "test": "mrt:test",
-    "modelLocation": "mrt:geo/model.geo",
-    "textureLocation": "mrt:textures/texture",
+    "modelLocation": "mrt:geo/model.geo.json",
+    "textureLocation": "mrt:textures/texture.json",
     "width": 1,
     "height": 1,
     "modules": [
@@ -13,6 +12,12 @@
         "size": [1,1,1]
       }
     ],
+  "cannonballs": [
+    {
+      "name": "mrt.cannonball.hdhd",
+      "id": "mrt:apfsds"
+    }
+  ],
     "armors": [
       {
         "direction": "RIGHT",

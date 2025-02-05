@@ -1,6 +1,5 @@
-package com.model.tank.entities.tanks;
+package com.model.tank.entities.tank;
 
-import com.model.tank.ModularTank;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 

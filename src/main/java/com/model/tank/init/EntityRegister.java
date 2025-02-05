@@ -1,7 +1,8 @@
 package com.model.tank.init;
 
 import com.model.tank.ModularTank;
-import com.model.tank.entities.tanks.TankEntity;
+import com.model.tank.entities.cannonball.CannonballEntity;
+import com.model.tank.entities.tank.TankEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -13,8 +14,11 @@ public class EntityRegister {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, ModularTank.MODID);
 
     public static final RegistryObject<EntityType<TankEntity>> TANKENTITY = ENTITY_TYPES.register("tank", () -> EntityType.Builder.
-                    <TankEntity>of(TankEntity::new, MobCategory.MISC).
+                    <TankEntity>of(TankEntity::new, MobCategory.MISC).noSummon().
             build(new ResourceLocation(ModularTank.MODID, "tank").toString()));
+    public static final RegistryObject<EntityType<CannonballEntity>> CANNONBALLENTITY = ENTITY_TYPES.register("cannonball", () -> EntityType.Builder.
+                    <CannonballEntity>of(CannonballEntity::new, MobCategory.MISC).noSummon().noSave().sized(0.1f,0.1f).
+            build(new ResourceLocation(ModularTank.MODID, "cannonball").toString()));
 
 
 }

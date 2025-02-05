@@ -3,11 +3,11 @@ package com.model.tank.resource;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.model.tank.ModularTank;
+import com.model.tank.resource.data.CannonballData;
 import com.model.tank.resource.data.Module;
 import com.model.tank.resource.data.Plane;
 import com.model.tank.resource.data.Tank;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -30,6 +30,7 @@ public class DataManager {
     private static boolean firstLoad = true;
     public static final Path ModularTankDataDirPath = FMLPaths.GAMEDIR.get().resolve("mrt");
     public static final HashMap<String, Tank> TANKS = new HashMap<>();
+    public static final HashMap<String, CannonballData> CANNONBALLS = new HashMap<>();
     public static final HashMap<String, Plane> PLANES = new HashMap<>();
 
     public static void load(){
@@ -40,6 +41,7 @@ public class DataManager {
         try {
             Files.newDirectoryStream(ModularTankDataDirPath).forEach(path -> {
                 if(Files.isDirectory(path)){
+                    CannonballDataLoader.loadTankDataFromDir(path.resolve("cannonballs"));
                     TankDataLoader.loadTankDataFromDir(path.resolve("tanks"));
                 }
             });

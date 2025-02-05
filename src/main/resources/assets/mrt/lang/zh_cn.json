@@ -4,6 +4,5 @@
   "key.modulartank.move.w": "前进",
   "key.modulartank.move.s": "后退",
   "key.modulartank.move.a": "左转",
-  "key.modulartank.move.d": "右转",
-  "mrt.tanks.m1a2": "M1A2 艾布拉姆斯"
+  "key.modulartank.move.d": "右转"
 }

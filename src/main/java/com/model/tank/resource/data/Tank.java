@@ -12,15 +12,21 @@ public class Tank{
     public Module[] modules;
     //@SerializedName("armors")
     //public Module.Armor[] armors;
-    @SerializedName("test")
-    private ResourceLocation test = null;
     @SerializedName("modelLocation")
     public ResourceLocation modelLocation = null;
     @SerializedName("textureLocation")
     public ResourceLocation textureLocation = null;
     @SerializedName("maxPassenger")
     public int maxPassenger = 1;
+    @SerializedName("cannonballs")
+    public Cannonball[] cannonballs;
     public Tank(String id) {
         this.id = id;
+    }
+    public class Cannonball{
+        @SerializedName("name")
+        public String name;
+        @SerializedName("id")
+        public String id;
     }
 }

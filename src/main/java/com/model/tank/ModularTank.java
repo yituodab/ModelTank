@@ -1,7 +1,7 @@
 package com.model.tank;
 
 import com.model.tank.client.key.AimKey;
-import com.model.tank.entities.tanks.TankRender;
+import com.model.tank.entities.tank.TankRender;
 import com.model.tank.init.EntityRegister;
 import com.model.tank.init.ItemRegister;
 import com.model.tank.init.ModCreativeTab;
