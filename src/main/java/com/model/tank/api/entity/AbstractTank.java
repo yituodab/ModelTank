@@ -28,9 +28,9 @@ public abstract class AbstractTank extends Entity implements GeoEntity {
     //public List<Module.Armor> armors;
     public AbstractTank(EntityType<?> p_19870_, Level p_19871_, Tank tank) {
         super(p_19870_, p_19871_);
-        this.modelLocation = tank.modelLocation != null ? tank.modelLocation : new ResourceLocation(ModularTank.MODID, "geo/model.geo.json");
-        this.textureLocation = tank.textureLocation != null ? tank.textureLocation : new ResourceLocation(ModularTank.MODID, "textures/texture.png");
-        this.modules = List.of(tank.modules.clone());
+        this.modelLocation = tank.modelLocation;
+        this.textureLocation = tank.textureLocation;
+    this.modules = List.of(tank.modules.clone());
         //this.armors = List.of(tank.armors);
         this.MaxPassenger = tank.maxPassenger;
     }
