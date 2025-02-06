@@ -49,8 +49,6 @@ public class DataManager {
             ModularTank.LOGGER.error("load json failed",e);
         }
         Tank TestTank = new Tank("test");
-        TestTank.modelLocation = new ResourceLocation(ModularTank.MODID, "geo/model.geo.json");
-        TestTank.textureLocation = new ResourceLocation(ModularTank.MODID, "textures/texture.png");
         TestTank.modules = new Module[]{
                 new Module(new double[]{1, 1, 1}, new double[]{1, 1, 1}, Module.Type.UNKNOWN)
         };
