@@ -2,6 +2,7 @@ package com.model.tank.resource.data;
 
 import com.google.gson.annotations.SerializedName;
 import com.model.tank.utils.CannonballType;
+import net.minecraft.resources.ResourceLocation;
 
 public class CannonballData {
     @SerializedName("id")

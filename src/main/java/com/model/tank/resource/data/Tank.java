@@ -3,6 +3,8 @@ package com.model.tank.resource.data;
 import com.model.tank.ModularTank;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Tank{
     @SerializedName("id")
@@ -13,12 +15,16 @@ public class Tank{
     public Module[] modules;
     //@SerializedName("armors")
     //public Module.Armor[] armors;
+    @OnlyIn(Dist.CLIENT)
     @SerializedName("modelLocation")
-    public ResourceLocation modelLocation = new ResourceLocation(ModularTank.MODID, "test.json");
+    public ResourceLocation modelLocation = new ResourceLocation(ModularTank.MODID, "geo/model.geo.json");
+    @OnlyIn(Dist.CLIENT)
     @SerializedName("textureLocation")
-    public ResourceLocation textureLocation = new ResourceLocation(ModularTank.MODID, "test.png");
+    public ResourceLocation textureLocation = new ResourceLocation(ModularTank.MODID, "textures/texture.png");
     @SerializedName("maxPassenger")
     public int maxPassenger = 1;
+    @SerializedName("maxCannonballNumber")
+    public int maxCannonballNumber = 50;
     @SerializedName("cannonballs")
     public Cannonball[] cannonballs;
     public Tank(String id) {
@@ -31,10 +37,10 @@ public class Tank{
         "modelLocation="+modelLocation.toString()+
         "textureLocation="+textureLocation.toString();
     }
-    public class Cannonball{
+    public static class Cannonball{
         @SerializedName("name")
         public String name;
         @SerializedName("id")
-        public String id;
+        public ResourceLocation id;
     }
 }

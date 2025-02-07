@@ -2,6 +2,7 @@ package com.model.tank;
 
 import com.model.tank.client.key.AimKey;
 import com.model.tank.entities.tank.TankRender;
+import com.model.tank.hud.TankHUD;
 import com.model.tank.init.EntityRegister;
 import com.model.tank.init.ItemRegister;
 import com.model.tank.init.ModCreativeTab;
@@ -12,6 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -55,7 +57,7 @@ public class ModularTank
             DataManager.TANKS.forEach((id, tank) -> {
                 ItemStack item = ItemRegister.TANKITEM.get().getDefaultInstance();
                 item.setHoverName(Component.translatable(tank.name));
-                item.getOrCreateTag().putString("TankID", id);
+                item.getOrCreateTag().putString("TankID", id.toString());
                 event.accept(item);
             });
         }
@@ -79,6 +81,8 @@ public class ModularTank
         public static void keyRegister(RegisterKeyMappingsEvent event){
             event.register(AimKey.AIM_KEY);
         }
+        @SubscribeEvent
+        public static void hudRegister(RegisterGuiOverlaysEvent event){event.registerAboveAll("tank_hud", new TankHUD());}
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {

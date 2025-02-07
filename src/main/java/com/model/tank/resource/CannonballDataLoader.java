@@ -2,6 +2,7 @@ package com.model.tank.resource;
 
 import com.model.tank.ModularTank;
 import com.model.tank.resource.data.CannonballData;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -11,12 +12,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class CannonballDataLoader {
-    public static void loadTankDataFromDir(Path root){
+    public static void loadCannonballDataFromDir(Path root){
         if(Files.isDirectory(root)){
             try{
                 Files.newDirectoryStream(root).forEach(path -> {
                     try {
-                        Files.newDirectoryStream(path).forEach(cannonball -> loadTankDataFromFile(path.toFile().getName(), cannonball));
+                        Files.newDirectoryStream(path).forEach(cannonball -> loadCannonballDataFromFile(path.toFile().getName(), cannonball));
                     } catch (IOException e) {
                         ModularTank.LOGGER.error("error",e);
                     }
@@ -26,12 +27,11 @@ public class CannonballDataLoader {
             }
         }
     }
-    public static void loadTankDataFromFile(String modid, Path path){
+    public static void loadCannonballDataFromFile(String modid, Path path){
         try(InputStream inputStream = Files.newInputStream(path)){
             String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             CannonballData cannonball = DataManager.GSON.fromJson(json, CannonballData.class);
-            String namespace = modid + ":" + cannonball.id;
-            DataManager.CANNONBALLS.put(namespace, cannonball);
+            DataManager.CANNONBALLS.put(new ResourceLocation(modid, cannonball.id), cannonball);
         } catch (Exception e) {
             ModularTank.LOGGER.error("load tank data fail,because",e);
         }

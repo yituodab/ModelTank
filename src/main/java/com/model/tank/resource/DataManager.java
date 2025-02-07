@@ -29,8 +29,8 @@ public class DataManager {
             .create();
     private static boolean firstLoad = true;
     public static final Path ModularTankDataDirPath = FMLPaths.GAMEDIR.get().resolve("mrt");
-    public static final HashMap<String, Tank> TANKS = new HashMap<>();
-    public static final HashMap<String, CannonballData> CANNONBALLS = new HashMap<>();
+    public static final HashMap<ResourceLocation, Tank> TANKS = new HashMap<>();
+    public static final HashMap<ResourceLocation, CannonballData> CANNONBALLS = new HashMap<>();
     public static final HashMap<String, Plane> PLANES = new HashMap<>();
 
     public static void load(){
@@ -41,7 +41,7 @@ public class DataManager {
         try {
             Files.newDirectoryStream(ModularTankDataDirPath).forEach(path -> {
                 if(Files.isDirectory(path)){
-                    CannonballDataLoader.loadTankDataFromDir(path.resolve("cannonballs"));
+                    CannonballDataLoader.loadCannonballDataFromDir(path.resolve("cannonballs"));
                     TankDataLoader.loadTankDataFromDir(path.resolve("tanks"));
                 }
             });
@@ -52,7 +52,7 @@ public class DataManager {
         TestTank.modules = new Module[]{
                 new Module(new double[]{1, 1, 1}, new double[]{1, 1, 1}, Module.Type.UNKNOWN)
         };
-        TANKS.put(ModularTank.MODID + ":" + TestTank.id,TestTank);
+        TANKS.put(new ResourceLocation(ModularTank.MODID, "test"),TestTank);
     }
     @SubscribeEvent
     public static void atReLoad(FMLCommonSetupEvent event){

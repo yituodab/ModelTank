@@ -2,7 +2,7 @@
     "name": "mrt.tanks.m1a2",
     "id": "m1a2",
     "modelLocation": "mrt:geo/model.geo.json",
-    "textureLocation": "mrt:textures/texture.json",
+    "textureLocation": "mrt:textures/texture.png",
     "width": 1,
     "height": 1,
     "modules": [
