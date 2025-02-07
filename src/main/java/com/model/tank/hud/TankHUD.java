@@ -20,6 +20,7 @@ public class TankHUD implements IGuiOverlay {
             int renderStartX = weight / 2 - (cannonballTypeNumber*16);//cannonballTypeNumber/2*16
             int renderStartY = height;
             int number = 0;
+            guiGraphics.setColor(1,1,1,1);
             for (Map.Entry<Tank.Cannonball, Integer> entry : tank.getCannonballs().entrySet()) {
                 Tank.Cannonball c = entry.getKey();
                 Integer i = entry.getValue();
