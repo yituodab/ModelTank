@@ -24,6 +24,9 @@ public class Module {
     public double[] xyz;
     @SerializedName("size")
     public double[] size;
+    @SerializedName("maxHealth")
+    public int maxHealth = 100;
+    private int health = maxHealth;
     public static Type StringToType(String type){
         for(Type t : Type.values()){
             if(t.toString().equals(type))return t;
@@ -34,6 +37,12 @@ public class Module {
         Type p = Type.UNKNOWN;
         for(Type t : Type.values()){if(t == this.type)p = t;}
         return new Module(xyz, size, type);
+    }
+    public int getHealth(){
+        return this.health;
+    }
+    public void setHealth(int health){
+        this.health = health;
     }
     //public static class Armor extends Module{
     //    public HitBox hitbox;
