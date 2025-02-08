@@ -18,7 +18,7 @@ public class TankHUD implements IGuiOverlay {
         if(Minecraft.getInstance().player.getVehicle() != null && Minecraft.getInstance().player.getVehicle() instanceof TankEntity tank) {
             int cannonballTypeNumber = tank.getCannonballs().size();
             int renderStartX = weight / 2 - (cannonballTypeNumber*16);//cannonballTypeNumber/2*16
-            int renderStartY = height;
+            int renderStartY = height - 32;
             int number = 0;
             guiGraphics.setColor(1,1,1,1);
             for (Map.Entry<Tank.Cannonball, Integer> entry : tank.getCannonballs().entrySet()) {
