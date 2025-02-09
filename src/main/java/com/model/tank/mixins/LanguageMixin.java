@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
 @Mixin(ClientLanguage.class)
 public class LanguageMixin {
-    @Inject(method = "getOrDefault(Ljava/lang/String;Ljava/lang/String;)", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "getOrDefault", at = @At(value = "HEAD"), cancellable = true)
     public void getLanguage(String key, String defaultValue, CallbackInfoReturnable<String> call) {
         String code = Minecraft.getInstance().getLanguageManager().getSelected();
         Map<String, String> languages = LanguageLoader.getLanguages(code);
