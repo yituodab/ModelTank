@@ -22,8 +22,8 @@ public class TankHUD implements IGuiOverlay {
             int number = 0;
             guiGraphics.setColor(1,1,1,1);
             for (Map.Entry<CannonballData, Integer> entry : tank.getCannonballs().entrySet()) {
-                CannonballData cannonball = entry.key;
-                Integer i = entry.value;
+                CannonballData cannonball = entry.getKey();
+                Integer i = entry.getValue();
                 guiGraphics.blit(new ResourceLocation(ModularTank.MODID, "textures/hud/cannonball_icons/" +
                                 cannonball.type.toString().toLowerCase() + ".png"),
                         renderStartX + number * 32, renderStartY, 0, 0, 32, 32, 32, 32);
