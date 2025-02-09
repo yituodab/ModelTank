@@ -3,7 +3,7 @@ package com.model.tank.hud;
 import com.model.tank.ModularTank;
 import com.model.tank.entities.tank.TankEntity;
 import com.model.tank.resource.DataManager;
-import com.model.tank.resource.data.Tank;
+import com.model.tank.resource.data.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
