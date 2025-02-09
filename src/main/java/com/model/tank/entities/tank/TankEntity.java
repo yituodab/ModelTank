@@ -34,8 +34,8 @@ import java.util.Map;
 
 
 public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSpawnData {
-    private Map<Tank.Cannonball, Integer> cannonballs = new HashMap<>();
-    private Tank.Cannonball currentCannonball;
+    private Map<CannonballData, Integer> cannonballs;
+    private CannonballData currentCannonball;
     private ResourceLocation modelLocation;
     private ResourceLocation textureLocation;
     public double maxSpeed;// m/s
@@ -58,7 +58,8 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
         this.modelLocation = tank.modelLocation;
         this.textureLocation = tank.textureLocation;
         this.modules = List.of(tank.modules.clone());
-        for (Tank.Cannonball cannonball : tank.cannonballs) {
+        for (ResourceLocation id : tank.cannonballs) {
+            CannonballData cannonball = DataManager.CANNONBALLS.get(id);
             if(currentCannonball == null)currentCannonball = cannonball;
             cannonballs.put(cannonball, 0);
         }
@@ -110,7 +111,7 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
         super.load(p_20259_);
         //this.tank = EntityRegister.TANKS.get(p_20259_.getString("tank"));
     }
-    public void shoot() {
+    /*public void shoot() {
         Level level = this.level();
         CannonballData cannonballData = DataManager.CANNONBALLS.get(currentCannonball.id);
         if(cannonballData != null && cannonballData.id != null){
@@ -119,7 +120,7 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
             cannonball.shoot(this,this.getXRot(),this.getYRot());
             level.addFreshEntity(cannonball);
         }
-    }
+    }*/
 
     public void controlTank() {
     }
@@ -139,7 +140,6 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-
     }
 
     @Override
@@ -162,31 +162,16 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
 
     @Override
     public void writeSpawnData(FriendlyByteBuf friendlyByteBuf) {
-        friendlyByteBuf.writeInt(cannonballs.size());
-        cannonballs.forEach((cannonball,c)->{
-            friendlyByteBuf.writeUtf(cannonball.name);
-            friendlyByteBuf.writeResourceLocation(cannonball.id);
-        });
-        friendlyByteBuf.writeResourceLocation(this.modelLocation);
-        friendlyByteBuf.writeResourceLocation(this.textureLocation);
+        friendlyByteBuf.writeResourceLocation(this.tankID);
     }
 
     @Override
     public void readSpawnData(FriendlyByteBuf friendlyByteBuf) {
-        int size = friendlyByteBuf.readInt();
-        for(int i = 0;i<size;i++){
-            String name = friendlyByteBuf.readUtf();
-            ResourceLocation id = friendlyByteBuf.readResourceLocation();
-            Tank.Cannonball cannonball = new Tank.Cannonball();
-            cannonball.name = name;
-            cannonball.id = id;
-            cannonballs.put(cannonball,0);
-        }
-        this.modelLocation = friendlyByteBuf.readResourceLocation();
-        this.textureLocation = friendlyByteBuf.readResourceLocation();
+        this.tankID = friendlyByteBuf.readResourceLocation();
+        fromTankData(DataManager.TANKS.get(this.tankID));
     }
 
-    public Map<Tank.Cannonball, Integer> getCannonballs() {
+    public Map<CannonballData, Integer> getCannonballs() {
         return cannonballs;
     }
 }

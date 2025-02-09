@@ -26,21 +26,15 @@ public class Tank{
     @SerializedName("maxCannonballNumber")
     public int maxCannonballNumber = 50;
     @SerializedName("cannonballs")
-    public Cannonball[] cannonballs;
+    public ResourceLocation[] cannonballs;
     public Tank(String id) {
         this.id = id;
     }
     @Override
     public String toString(){
         return "id="+id+
-        "name="+name+
-        "modelLocation="+modelLocation.toString()+
-        "textureLocation="+textureLocation.toString();
-    }
-    public static class Cannonball{
-        @SerializedName("name")
-        public String name;
-        @SerializedName("id")
-        public ResourceLocation id;
+        ", name="+name+
+        ", modelLocation="+modelLocation.toString()+
+        ", textureLocation="+textureLocation.toString();
     }
 }

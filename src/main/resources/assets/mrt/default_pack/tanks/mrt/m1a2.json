@@ -13,10 +13,7 @@
       }
     ],
   "cannonballs": [
-    {
-      "name": "mrt.cannonball.hdhd",
-      "id": "mrt:apfsds"
-    }
+    "mrt:apfsds"
   ],
     "armors": [
       {

@@ -5,6 +5,8 @@ import com.model.tank.utils.CannonballType;
 import net.minecraft.resources.ResourceLocation;
 
 public class CannonballData {
+    @SerializedName("name")
+    public String name;
     @SerializedName("id")
     public final String id;
     @SerializedName("speed")

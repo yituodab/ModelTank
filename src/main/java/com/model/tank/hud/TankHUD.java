@@ -21,11 +21,11 @@ public class TankHUD implements IGuiOverlay {
             int renderStartY = height - 32;
             int number = 0;
             guiGraphics.setColor(1,1,1,1);
-            for (Map.Entry<Tank.Cannonball, Integer> entry : tank.getCannonballs().entrySet()) {
-                Tank.Cannonball c = entry.getKey();
-                Integer i = entry.getValue();
-                guiGraphics.blit(new ResourceLocation(ModularTank.MODID, "textures/cannonballs/" +
-                                DataManager.CANNONBALLS.get(c.id).type.toString().toLowerCase() + ".png"),
+            for (Map.Entry<CannonballData, Integer> entry : tank.getCannonballs().entrySet()) {
+                CannonballData cannonball = entry.key;
+                Integer i = entry.value;
+                guiGraphics.blit(new ResourceLocation(ModularTank.MODID, "textures/hud/cannonball_icons/" +
+                                cannonball.type.toString().toLowerCase() + ".png"),
                         renderStartX + number * 32, renderStartY, 0, 0, 32, 32, 32, 32);
                 guiGraphics.drawString(Minecraft.getInstance().font, i.toString(), renderStartX + number * 32 + 28, renderStartY - 10, 0);
                 number += 1;
