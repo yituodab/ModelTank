@@ -11,18 +11,18 @@ import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
 import static com.model.tank.ModularTank.IsInGame;
-import static com.model.tank.client.key.KeyRegister.MODEL_TANK_CATEGORY;
+import static com.model.tank.client.key.KeyRegister.MODULAR_TANK_CATEGORY;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class MoveKey {
-    public static final KeyMapping W_KEY = new KeyMapping(MODEL_TANK_CATEGORY, KeyConflictContext.IN_GAME,
-            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_W,"key.modulartank.move.w");
-    public static final KeyMapping S_KEY = new KeyMapping(MODEL_TANK_CATEGORY, KeyConflictContext.IN_GAME,
-            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_S,"key.modulartank.move.s");
-    public static final KeyMapping A_KEY = new KeyMapping(MODEL_TANK_CATEGORY, KeyConflictContext.IN_GAME,
-            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_A,"key.modulartank.move.a");
-    public static final KeyMapping D_KEY = new KeyMapping(MODEL_TANK_CATEGORY, KeyConflictContext.IN_GAME,
-            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_D,"key.modulartank.move.d");
+    public static final KeyMapping W_KEY = new KeyMapping("key.modulartank.move.w", KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_W,MODULAR_TANK_CATEGORY);
+    public static final KeyMapping S_KEY = new KeyMapping("key.modulartank.move.s", KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_S,MODULAR_TANK_CATEGORY);
+    public static final KeyMapping A_KEY = new KeyMapping("key.modulartank.move.a", KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_A,MODULAR_TANK_CATEGORY);
+    public static final KeyMapping D_KEY = new KeyMapping("key.modulartank.move.d", KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_D,MODULAR_TANK_CATEGORY);
     @SubscribeEvent
     public static void onAimPress(InputEvent.MouseButton.Post event) {
         if (IsInGame) {

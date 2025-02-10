@@ -6,6 +6,7 @@ import com.model.tank.hud.TankHUD;
 import com.model.tank.init.EntityRegister;
 import com.model.tank.init.ItemRegister;
 import com.model.tank.init.ModCreativeTab;
+import com.model.tank.network.NetWorkManager;
 import com.model.tank.resource.DataManager;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
@@ -35,6 +36,7 @@ public class ModularTank
     public static boolean IsInGame = Minecraft.getInstance().isWindowActive();
     public static final boolean TACZ_LOADED = ModList.get().isLoaded("tacz");
     public static final String MODID = "mrt";
+    public static final String VERSION = "1.0.0";
     public static final Logger LOGGER = LogUtils.getLogger();
     
 
@@ -65,6 +67,7 @@ public class ModularTank
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
+        event.enqueueWork(NetWorkManager::init);
     }
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {

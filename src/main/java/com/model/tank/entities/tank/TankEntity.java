@@ -20,7 +20,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -34,8 +33,8 @@ import java.util.Map;
 
 
 public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSpawnData {
-    private Map<CannonballData, Integer> cannonballs;
-    private CannonballData currentCannonball;
+    private Map<Cannonball, Integer> cannonballs = new HashMap<>();
+    private Cannonball currentCannonball;
     private ResourceLocation modelLocation;
     private ResourceLocation textureLocation;
     public double maxSpeed;// m/s
@@ -60,8 +59,7 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
         this.modules = List.of(tank.modules.clone());
         for (ResourceLocation id : tank.cannonballs) {
             CannonballData cannonball = DataManager.CANNONBALLS.get(id);
-            if(currentCannonball == null)currentCannonball = cannonball;
-            cannonballs.put(cannonball, 0);
+            cannonballs.put(new Cannonball(id, cannonball), 0);
         }
         //this.armors = List.of(tank.armors);
         this.MaxPassenger = tank.maxPassenger;
@@ -111,7 +109,7 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
         super.load(p_20259_);
         //this.tank = EntityRegister.TANKS.get(p_20259_.getString("tank"));
     }
-    /*public void shoot() {
+    public void shoot(Cannonball currentCannonball) {
         Level level = this.level();
         CannonballData cannonballData = DataManager.CANNONBALLS.get(currentCannonball.id);
         if(cannonballData != null && cannonballData.id != null){
@@ -120,7 +118,7 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
             cannonball.shoot(this,this.getXRot(),this.getYRot());
             level.addFreshEntity(cannonball);
         }
-    }*/
+    }
 
     public void controlTank() {
     }
@@ -131,11 +129,19 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
         this.tankID = new ResourceLocation(compoundTag.getString("TankID"));
         fromTankData(DataManager.TANKS.get(this.tankID));
+        this.cannonballs.forEach((data, number)->{
+            int i = compoundTag.getCompound("cannonballs").getInt(data.id.toString());
+            cannonballs.put(data,i);
+        });
+
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
         compoundTag.putString("TankID", this.tankID.toString());
+        CompoundTag tag = new CompoundTag();
+        this.cannonballs.forEach((data, number)-> tag.putInt(data.id.toString(), number));
+        compoundTag.put("cannonballs", tag);
     }
 
     @Override
@@ -163,15 +169,28 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
     @Override
     public void writeSpawnData(FriendlyByteBuf friendlyByteBuf) {
         friendlyByteBuf.writeResourceLocation(this.tankID);
+        this.cannonballs.forEach((data, number)->{
+            friendlyByteBuf.writeInt(number);
+        });
     }
 
     @Override
     public void readSpawnData(FriendlyByteBuf friendlyByteBuf) {
         this.tankID = friendlyByteBuf.readResourceLocation();
         fromTankData(DataManager.TANKS.get(this.tankID));
+        this.cannonballs.forEach((data, number)->{
+            int i = friendlyByteBuf.readInt();
+            cannonballs.put(data, i);
+        });
     }
 
-    public Map<CannonballData, Integer> getCannonballs() {
+    public Map<Cannonball, Integer> getCannonballs() {
         return cannonballs;
     }
+
+    public Cannonball getCurrentCannonball() {
+        return this.currentCannonball;
+    }
+
+    public record Cannonball(ResourceLocation id, CannonballData data){}
 }

@@ -1,6 +1,7 @@
 package com.model.tank.client.key;
 
 import com.model.tank.api.client.interfaces.ILocalPlayer;
+import com.model.tank.entities.tank.TankEntity;
 import com.model.tank.utils.MathUtils;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -17,13 +18,13 @@ import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
 import static com.model.tank.ModularTank.IsInGame;
-import static com.model.tank.client.key.KeyRegister.MODEL_TANK_CATEGORY;
+import static com.model.tank.client.key.KeyRegister.MODULAR_TANK_CATEGORY;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class AimKey {
     private static double defaultFOV;
-    public static final KeyMapping AIM_KEY = new KeyMapping(MODEL_TANK_CATEGORY, KeyConflictContext.IN_GAME,
-            InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT,"key.modeltank.aim");
+    public static final KeyMapping AIM_KEY = new KeyMapping("key.modeltank.aim", KeyConflictContext.IN_GAME,
+            InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT,MODULAR_TANK_CATEGORY);
     @SubscribeEvent
     public static void aim(InputEvent.MouseButton.Post event){
         if (IsInGame && AIM_KEY.matchesMouse(event.getButton())){
@@ -31,9 +32,9 @@ public class AimKey {
             if (player == null || player.isSpectator()) {
                 return;
             }
-            //if (!(player.getVehicle() instanceof TankEntity)) {
-            //    return;
-            //}
+            if (!(player.getVehicle() instanceof TankEntity)) {
+                return;
+            }
             if (player instanceof ILocalPlayer iLocalPlayer) {
                 if (event.getAction() == GLFW.GLFW_PRESS) {
                     ((ILocalPlayer)player).aim(true);
@@ -51,7 +52,7 @@ public class AimKey {
         }
         Entity entity = event.getCamera().getEntity();
         if(entity instanceof LocalPlayer player){
-            if(((ILocalPlayer)player).isAim()){
+            if(((ILocalPlayer)player).isAim() && player.getVehicle() instanceof TankEntity tank){
                 defaultFOV = event.getFOV();
                 event.setFOV(MathUtils.magnificationToFov(3,event.getFOV()));
             }

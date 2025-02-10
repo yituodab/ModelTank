@@ -15,17 +15,17 @@ import java.util.Map;
 public class TankHUD implements IGuiOverlay {
     @Override
     public void render(ForgeGui forgeGui, GuiGraphics guiGraphics, float v, int weight, int height) {
-        if(Minecraft.getInstance().player.getVehicle() != null && Minecraft.getInstance().player.getVehicle() instanceof TankEntity tank) {
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getVehicle() instanceof TankEntity tank) {
             int cannonballTypeNumber = tank.getCannonballs().size();
-            int renderStartX = weight / 2 - (cannonballTypeNumber*16);//cannonballTypeNumber/2*16
+            int renderStartX = weight / 2 - (cannonballTypeNumber * 16);//cannonballTypeNumber/2*16
             int renderStartY = height - 32;
             int number = 0;
-            guiGraphics.setColor(1,1,1,1);
-            for (Map.Entry<CannonballData, Integer> entry : tank.getCannonballs().entrySet()) {
-                CannonballData cannonball = entry.getKey();
+            guiGraphics.setColor(1, 1, 1, 1);
+            for (Map.Entry<TankEntity.Cannonball, Integer> entry : tank.getCannonballs().entrySet()) {
+                TankEntity.Cannonball cannonball = entry.getKey();
                 Integer i = entry.getValue();
                 guiGraphics.blit(new ResourceLocation(ModularTank.MODID, "textures/hud/cannonball_icons/" +
-                                cannonball.type.toString().toLowerCase() + ".png"),
+                                cannonball.data().type.toString().toLowerCase() + ".png"),
                         renderStartX + number * 32, renderStartY, 0, 0, 32, 32, 32, 32);
                 guiGraphics.drawString(Minecraft.getInstance().font, i.toString(), renderStartX + number * 32 + 28, renderStartY - 10, 0);
                 number += 1;

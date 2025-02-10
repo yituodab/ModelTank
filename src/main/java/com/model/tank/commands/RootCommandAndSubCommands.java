@@ -3,6 +3,7 @@ package com.model.tank.commands;
 import com.model.tank.entities.tank.TankEntity;
 import com.model.tank.init.EntityRegister;
 import com.model.tank.resource.DataManager;
+import com.model.tank.resource.data.Tank;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -27,10 +28,11 @@ public class RootCommandAndSubCommands {
         dispatcher.register(root);
     }
     public static int summonTank(CommandContext<CommandSourceStack> context) {
-        String tankID = StringArgumentType.getString(context, "id");
+        ResourceLocation tankID = new ResourceLocation(StringArgumentType.getString(context, "id"));
         ServerLevel level = context.getSource().getLevel();
-        ResourceLocation testID = new ResourceLocation("mrt:test");
-        TankEntity tank = new TankEntity(EntityRegister.TANKENTITY.get(), level, DataManager.TANKS.get(testID), testID) ;
+        Tank tankData = DataManager.TANKS.get(tankID);
+        if(tankData == null)return 0;
+        TankEntity tank = new TankEntity(EntityRegister.TANKENTITY.get(), level, tankData, tankID) ;
         tank.setPos(context.getSource().getPosition());
         context.getSource().getLevel().addFreshEntity(tank);
         return 0;

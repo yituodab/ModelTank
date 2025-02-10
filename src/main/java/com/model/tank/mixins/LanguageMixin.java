@@ -23,7 +23,7 @@ public class LanguageMixin {
         }
     }
 
-    @Inject(method = "has(Ljava/lang/String;)Z", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "has", at = @At(value = "HEAD"), cancellable = true)
     public void hasLanguage(String key, CallbackInfoReturnable<Boolean> call) {
         String code = Minecraft.getInstance().getLanguageManager().getSelected();
         Map<String, String> languages = LanguageLoader.getLanguages(code);
