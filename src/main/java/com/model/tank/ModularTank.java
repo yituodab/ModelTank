@@ -1,6 +1,7 @@
 package com.model.tank;
 
 import com.model.tank.client.key.AimKey;
+import com.model.tank.client.key.ShootKey;
 import com.model.tank.entities.tank.TankRender;
 import com.model.tank.hud.TankHUD;
 import com.model.tank.init.EntityRegister;
@@ -83,6 +84,7 @@ public class ModularTank
         @SubscribeEvent
         public static void keyRegister(RegisterKeyMappingsEvent event){
             event.register(AimKey.AIM_KEY);
+            event.register(ShootKey.SHOOT_KEY);
         }
         @SubscribeEvent
         public static void hudRegister(RegisterGuiOverlaysEvent event){event.registerAboveAll("tank_hud", new TankHUD());}
