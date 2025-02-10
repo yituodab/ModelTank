@@ -11,6 +11,8 @@ public class Tank{
     public final String id;
     @SerializedName("name")
     public String name = "mrt.tanks.test";
+    @SerializedName("boundingBox")
+    public float[] boundingBox = {1,1};
     @SerializedName("modules")
     public Module[] modules;
     //@SerializedName("armors")

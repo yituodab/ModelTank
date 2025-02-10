@@ -17,9 +17,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -61,6 +63,7 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
             CannonballData cannonball = DataManager.CANNONBALLS.get(id);
             cannonballs.put(new Cannonball(id, cannonball), 0);
         }
+        this.setBoundingBox(EntityDimensions.scalable(tank.boundingBox[0],tank.boundingBox[1]).makeBoundingBox(position()));
         //this.armors = List.of(tank.armors);
         this.MaxPassenger = tank.maxPassenger;
     }
@@ -107,7 +110,6 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
     @Override
     public void load(CompoundTag p_20259_) {
         super.load(p_20259_);
-        //this.tank = EntityRegister.TANKS.get(p_20259_.getString("tank"));
     }
     public void shoot(Cannonball currentCannonball) {
         Level level = this.level();
@@ -190,6 +192,10 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
 
     public Cannonball getCurrentCannonball() {
         return this.currentCannonball;
+    }
+
+    public void setCurrentCannonball(Cannonball currentCannonball) {
+        this.currentCannonball = currentCannonball;
     }
 
     public record Cannonball(ResourceLocation id, CannonballData data){}

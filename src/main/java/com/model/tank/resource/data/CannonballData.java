@@ -15,6 +15,8 @@ public class CannonballData {
     public CannonballType type;
     @SerializedName("entity_damage")
     public float entityDamage;
+    @SerializedName("life")
+    public int life;
     public CannonballData(String id) {
         this.id = id;
     }

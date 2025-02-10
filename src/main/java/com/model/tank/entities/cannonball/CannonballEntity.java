@@ -14,8 +14,13 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class CannonballEntity extends Projectile {
+public class CannonballEntity extends Projectile implements GeoEntity {
     public CannonballEntity(EntityType<? extends Projectile> entityType, Level level, TankEntity owner, CannonballData data){
         super(entityType, level);
         this.setOwner(owner);
@@ -27,6 +32,7 @@ public class CannonballEntity extends Projectile {
     private static final EntityDataAccessor<Integer> COUNTER = SynchedEntityData.defineId(CannonballEntity.class, EntityDataSerializers.INT);
     public float entityDamage = 20;
     public CannonballType type;
+    private int life = 100;
     public float TNTmass;
     public double speed;
 
@@ -57,6 +63,9 @@ public class CannonballEntity extends Projectile {
             }
             if(lastEntity != null)this.onHitEntity(new EntityHitResult(lastEntity));
             this.onHitBlock(blockHitResult);
+            if (this.tickCount >= this.life - 1) {
+                this.discard();
+            }
         }
         super.tick();
     }
@@ -65,6 +74,7 @@ public class CannonballEntity extends Projectile {
         this.entityDamage = data.entityDamage;
         this.type = data.type;
         this.speed = data.speed;
+        this.life = data.life;
     }
 
     @Override
@@ -76,6 +86,7 @@ public class CannonballEntity extends Projectile {
                 case HE,HEAT,HESH -> ExplodeHelper.createExplode(this.getOwner(), this.TNTmass, this.position());
             }
         }
+        discard();
     }
 
     @Override
@@ -85,9 +96,19 @@ public class CannonballEntity extends Projectile {
         switch (this.type){
             case HE,HEAT,HESH -> ExplodeHelper.createExplode(this.getOwner(), this.TNTmass, this.position());
         }
+        discard();
     }
 
     public void shoot(Entity Shooter, float XRot, float YRot) {
         super.shootFromRotation(Shooter, XRot, YRot, 0, (float)speed/20, 0);
     }
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return GeckoLibUtil.createInstanceCache(this);
+    }
+
 }

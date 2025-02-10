@@ -2,11 +2,10 @@ package com.model.tank.resource.data;
 
 import com.google.gson.annotations.SerializedName;
 import com.model.tank.utils.HitBox;
-import net.minecraft.world.phys.Vec3;
 
 public class Module {
-    public Module(double[] xyz,double[] size, Type type){
-        this.xyz = xyz;
+    public Module(double[] position, double[] size, Type type){
+        this.position = position;
         this.size = size;
         this.type = type;
     }
@@ -21,22 +20,17 @@ public class Module {
     @SerializedName("type")
     public Type type;
     @SerializedName("position")
-    public double[] xyz;
+    public double[] position = {1,1,1};
     @SerializedName("size")
-    public double[] size;
+    public double[] size = {1,1,1};
     @SerializedName("maxHealth")
     public int maxHealth = 100;
+    public HitBox hitBox = new HitBox(position[0]-size[0]/2,position[1]-size[1]/2,position[2]-size[2]/2,position[0]+size[0]/2,position[1]+size[1]/2,position[2]+size[2]/2,0);
     private int health = maxHealth;
-    public static Type StringToType(String type){
-        for(Type t : Type.values()){
-            if(t.toString().equals(type))return t;
-        }
-        return Type.UNKNOWN;
-    }
     public Module copy(){
         Type p = Type.UNKNOWN;
         for(Type t : Type.values()){if(t == this.type)p = t;}
-        return new Module(xyz, size, type);
+        return new Module(position, size, type);
     }
     public int getHealth(){
         return this.health;
