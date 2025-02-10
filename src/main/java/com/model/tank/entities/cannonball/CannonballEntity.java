@@ -47,12 +47,12 @@ public class CannonballEntity extends Projectile implements GeoEntity {
             Vec3 endPos = this.position().add(this.getDeltaMovement());
             BlockHitResult blockHitResult = this.level().clip(new ClipContext(this.position(), endPos, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, this));
             if(blockHitResult.getType() != HitResult.Type.MISS)endPos = blockHitResult.getLocation();
-            this.level().getEntitiesOfClass(
+            for (TankEntity tankEntity : this.level().getEntitiesOfClass(
                     TankEntity.class,
-                    new AABB(this.position().add(20,20,20),
-                            this.position().add(20,20,20))).forEach((entity)->{
-
-            });
+                    new AABB(this.position().add(20, 20, 20),
+                            this.position().add(20, 20, 20)))) {
+                this.onHitTankEntity(this.position(), endPos, tankEntity);
+            }
             AABB aabb = this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0);
             Entity lastEntity = null;
             for(Entity entity : this.level().getEntities(this, aabb)) {
@@ -87,6 +87,8 @@ public class CannonballEntity extends Projectile implements GeoEntity {
             }
         }
         discard();
+    }
+    protected void onHitTankEntity(Vec3 startPos,Vec3 endPos, TankEntity tank){
     }
 
     @Override

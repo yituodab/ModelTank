@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "com.model.tank.mixins",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "modeltank.refmap.json",
+  "refmap": "mrt.refmap.json",
   "client": [
     "LanguageMixin",
     "LocalPlayerMixin"
