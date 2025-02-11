@@ -87,7 +87,9 @@ public class ModularTank
             event.register(ShootKey.SHOOT_KEY);
         }
         @SubscribeEvent
-        public static void hudRegister(RegisterGuiOverlaysEvent event){event.registerAboveAll("tank_hud", new TankHUD());}
+        public static void hudRegister(RegisterGuiOverlaysEvent event){
+            //event.registerAboveAll("tank_hud", new TankHUD());
+        }
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
