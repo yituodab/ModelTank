@@ -3,6 +3,7 @@ package com.model.tank;
 import com.model.tank.client.key.AimKey;
 import com.model.tank.client.key.ShootKey;
 import com.model.tank.entities.tank.TankRender;
+import com.model.tank.entities.cannonball.CannonballRender;
 import com.model.tank.hud.TankHUD;
 import com.model.tank.init.EntityRegister;
 import com.model.tank.init.ItemRegister;
@@ -95,6 +96,7 @@ public class ModularTank
         {
             event.enqueueWork(()->{
                     EntityRenderers.register(EntityRegister.TANKENTITY.get(), TankRender::new);
+                    EntityRenderers.register(EntityRegister.CANNONBALLENTITY.get(), CannonballRender::new);
             });
         }
     }
