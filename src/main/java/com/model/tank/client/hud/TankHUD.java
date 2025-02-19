@@ -1,4 +1,4 @@
-package com.model.tank.hud;
+package com.model.tank.client.hud;
 
 import com.model.tank.ModularTank;
 import com.model.tank.entities.tank.TankEntity;
@@ -27,7 +27,7 @@ public class TankHUD implements IGuiOverlay {
                 guiGraphics.blit(new ResourceLocation(ModularTank.MODID, "textures/hud/cannonball_icons/" +
                                 cannonball.data().type.toString().toLowerCase() + ".png"),
                         renderStartX + number * 32, renderStartY, 0, 0, 32, 32, 32, 32);
-                guiGraphics.drawString(Minecraft.getInstance().font, i.toString(), renderStartX + number * 32 + 28, renderStartY + 10, 0);
+                guiGraphics.drawString(Minecraft.getInstance().font, i.toString(), renderStartX + number * 32 + 28, renderStartY + 28, 0xFFFFFF, false);
                 number += 1;
             }
         }

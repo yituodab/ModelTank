@@ -4,7 +4,7 @@ import com.model.tank.client.key.AimKey;
 import com.model.tank.client.key.ShootKey;
 import com.model.tank.entities.tank.TankRender;
 import com.model.tank.entities.cannonball.CannonballRender;
-import com.model.tank.hud.TankHUD;
+import com.model.tank.client.hud.TankHUD;
 import com.model.tank.init.EntityRegister;
 import com.model.tank.init.ItemRegister;
 import com.model.tank.init.ModCreativeTab;
