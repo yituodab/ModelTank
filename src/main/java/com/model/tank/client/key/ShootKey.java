@@ -23,8 +23,8 @@ import static com.model.tank.client.key.KeyRegister.MODULAR_TANK_CATEGORY;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class ShootKey {
-    public static final KeyMapping SHOOT_KEY = new KeyMapping(MODULAR_TANK_CATEGORY, KeyConflictContext.IN_GAME,
-            InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_LEFT,"key.modeltank.shoot");
+    public static final KeyMapping SHOOT_KEY = new KeyMapping("key.modeltank.shoot", KeyConflictContext.IN_GAME,
+            InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_LEFT,MODULAR_TANK_CATEGORY);
     @SubscribeEvent
     public static void atShoot(InputEvent.MouseButton.Post event){
         if (IsInGame && SHOOT_KEY.matchesMouse(event.getButton())){
@@ -41,7 +41,7 @@ public class ShootKey {
         }
     }
     public static void shoot(TankEntity tank, TankEntity.Cannonball cannonball){
-        if(tank.getCurrentCannonball() != null){
+        if(cannonball != null){
             NetWorkManager.CHANNEL.sendToServer(new ClientTankShoot(tank.getId(), cannonball));
         }
     }

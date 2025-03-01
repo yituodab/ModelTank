@@ -9,6 +9,7 @@ import com.model.tank.resource.data.Module;
 import com.model.tank.resource.data.Tank;
 
 
+import com.model.tank.utils.HitBox;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -60,12 +61,14 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
         this.textureLocation = tank.textureLocation;
         this.modules = List.of(tank.modules.clone());
         for (ResourceLocation id : tank.cannonballs) {
-            CannonballData cannonball = DataManager.CANNONBALLS.get(id);
-            cannonballs.put(new Cannonball(id, cannonball), 0);
+            Cannonball cannonball = new Cannonball(id, DataManager.CANNONBALLS.get(id));
+            cannonballs.put(cannonball, 1);
+            this.currentCannonball = cannonball;
         }
         this.setBoundingBox(EntityDimensions.scalable(tank.boundingBox[0],tank.boundingBox[1]).makeBoundingBox(position()));
         //this.armors = List.of(tank.armors);
         this.MaxPassenger = tank.maxPassenger;
+        this.setBoundingBox(new HitBox());
     }
 
     @Override
@@ -113,8 +116,8 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
     }
     public void shoot(Cannonball currentCannonball) {
         Level level = this.level();
-        CannonballData cannonballData = DataManager.CANNONBALLS.get(currentCannonball.id);
-        if(cannonballData != null && cannonballData.id != null){
+        CannonballData cannonballData = currentCannonball.data;
+        if(cannonballData != null){
             CannonballEntity cannonball = new CannonballEntity(EntityRegister.CANNONBALLENTITY.get(), level, this, cannonballData);
             cannonball.setPos(this.position());
             cannonball.shoot(this,this.getXRot(),this.getYRot());

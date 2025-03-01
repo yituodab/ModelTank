@@ -25,7 +25,7 @@ public class Module {
     public double[] size = {1,1,1};
     @SerializedName("maxHealth")
     public int maxHealth = 100;
-    public HitBox hitBox = new HitBox(position[0]-size[0]/2,position[1]-size[1]/2,position[2]-size[2]/2,position[0]+size[0]/2,position[1]+size[1]/2,position[2]+size[2]/2,0);
+    public HitBox hitBox = new HitBox(position[0]-size[0]/2,position[1]-size[1]/2,position[2]-size[2]/2,position[0]+size[0]/2,position[1]+size[1]/2,position[2]+size[2]/2,0,0);
     private int health = maxHealth;
     public Module copy(){
         Type p = Type.UNKNOWN;

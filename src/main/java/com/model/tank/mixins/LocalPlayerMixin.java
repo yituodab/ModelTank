@@ -13,8 +13,9 @@ public class LocalPlayerMixin implements ILocalPlayer {
     private @Unique boolean modularTank$aim = false;
     @Override
     public void shoot() {
-        if(((LocalPlayer)(Object)this).getVehicle() instanceof TankEntity tank)
-            ShootKey.shoot(tank, tank.getCurrentCannonball());
+        TankEntity tank = (TankEntity) ((LocalPlayer)(Object)this).getVehicle();
+        if(tank == null)return;
+        ShootKey.shoot(tank, tank.getCurrentCannonball());
     }
 
     @Override
