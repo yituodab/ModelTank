@@ -24,6 +24,7 @@ public class TankDataLoader {
                         ModularTank.LOGGER.error("error",e);
                     }
                 });
+                ModularTank.LOGGER.info("Loaded Tank Data successful");
             } catch (IOException e) {
                 ModularTank.LOGGER.error("error",e);
             }

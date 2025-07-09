@@ -9,10 +9,15 @@ import com.model.tank.resource.data.CannonballData;
 import com.model.tank.resource.data.Module;
 import com.model.tank.resource.data.Plane;
 import com.model.tank.resource.data.Tank;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.loading.json.raw.Model;
@@ -38,7 +43,7 @@ public class DataManager {
     public static final HashMap<ResourceLocation, Model> MODELS = new HashMap<>();
     public static final HashMap<String, Plane> PLANES = new HashMap<>();
 
-    public static void load(){
+    public static void loadData(){
         if(firstLoad){
             copyModDirectory(ModularTank.class, "/assets/mrt/default_pack", ModularTankDataDirPath, "default_pack");
             firstLoad = false;
@@ -48,7 +53,6 @@ public class DataManager {
                 if(Files.isDirectory(path)){
                     CannonballDataLoader.loadCannonballDataFromDir(path.resolve("cannonballs"));
                     TankDataLoader.loadTankDataFromDir(path.resolve("tanks"));
-                    AssetsLoader.loadAssetsFromDir(path.resolve("assets"));
                 }
             });
         } catch (IOException e) {
@@ -60,9 +64,23 @@ public class DataManager {
         };
         TANKS.put(new ResourceLocation(ModularTank.MODID, "test"),TestTank);
     }
+    public static void loadAssets(){
+        if(!FMLLoader.getDist().isClient())return;
+        try {
+            Files.newDirectoryStream(ModularTankDataDirPath).forEach(path -> {
+                if(Files.isDirectory(path)){
+                    AssetsLoader.loadAssetsFromDir(path.resolve("assets"));
+                }
+            });
+        } catch (IOException e) {
+            ModularTank.LOGGER.error("load json failed",e);
+        }
+
+    }
     @SubscribeEvent
-    public static void atReLoad(FMLCommonSetupEvent event){
-        load();
+    public static void atReLoad(AddReloadListenerEvent event){
+        loadData();
+        loadAssets();
     }
     /**
      * 复制本模组的文件夹到指定文件夹。将强行覆盖原文件夹。

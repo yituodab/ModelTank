@@ -1,6 +1,7 @@
 package com.model.tank.entities.tank;
 
 
+import com.model.tank.api.client.entity.ModEntity;
 import com.model.tank.entities.cannonball.CannonballEntity;
 import com.model.tank.init.EntityRegister;
 import com.model.tank.resource.DataManager;
@@ -22,10 +23,8 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
-import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
@@ -35,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSpawnData {
+public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData {
     private Map<Cannonball, Integer> cannonballs = new HashMap<>();
     private Cannonball currentCannonball;
     private ResourceLocation modelLocation;
@@ -68,7 +67,6 @@ public class TankEntity extends Entity implements GeoEntity, IEntityAdditionalSp
         this.setBoundingBox(EntityDimensions.scalable(tank.boundingBox[0],tank.boundingBox[1]).makeBoundingBox(position()));
         //this.armors = List.of(tank.armors);
         this.MaxPassenger = tank.maxPassenger;
-        this.setBoundingBox(new HitBox());
     }
 
     @Override

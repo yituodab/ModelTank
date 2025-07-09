@@ -38,7 +38,8 @@ public class RootCommandAndSubCommands {
         return 0;
     }
     public static int reloadPack(CommandContext<CommandSourceStack> context) {
-        DataManager.load();
+        DataManager.loadData();
+        DataManager.loadAssets();
         return 0;
     }
 }

@@ -44,11 +44,9 @@ public class ModularTank
 
     public ModularTank()
     {
-        DataManager.load();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addToTab);
-        modEventBus.addListener(this::addCreative);
         ItemRegister.ITEMS.register(modEventBus);
         EntityRegister.ENTITY_TYPES.register(modEventBus);
         ModCreativeTab.CREATIVE_MODE_TABS.register(modEventBus);
@@ -60,7 +58,6 @@ public class ModularTank
         if(event.getTab() == ModCreativeTab.TANK_TAB.get()){
             DataManager.TANKS.forEach((id, tank) -> {
                 ItemStack item = ItemRegister.TANKITEM.get().getDefaultInstance();
-                item.setHoverName(Component.translatable(tank.name));
                 item.getOrCreateTag().putString("TankID", id.toString());
                 event.accept(item);
             });
@@ -70,9 +67,6 @@ public class ModularTank
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         event.enqueueWork(NetWorkManager::init);
-    }
-    private void addCreative(BuildCreativeModeTabContentsEvent event)
-    {
     }
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)

@@ -5,6 +5,9 @@ import com.model.tank.resource.DataManager;
 import com.model.tank.utils.FileTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.IOUtils;
 import software.bernie.geckolib.loading.json.raw.Model;
 import software.bernie.geckolib.util.JsonUtil;
@@ -15,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@OnlyIn(value = Dist.CLIENT)
 public class AssetsLoader {
     public static void loadAssetsFromDir(Path root){
         if(Files.isDirectory(root)){
@@ -34,6 +38,7 @@ public class AssetsLoader {
                         ModularTank.LOGGER.error("error",e);
                     }
                 });
+                ModularTank.LOGGER.info("Loaded assets file successful");
             } catch (IOException e) {
                 ModularTank.LOGGER.error("error",e);
             }
@@ -45,15 +50,18 @@ public class AssetsLoader {
             Model model = JsonUtil.GEO_GSON.fromJson(json, Model.class);
             DataManager.MODELS.put(new ResourceLocation(modid, path.getFileName().toString()), model);
         } catch (Exception e) {
-            ModularTank.LOGGER.error("load tank data fail,because",e);
+            ModularTank.LOGGER.error("load model fail,because",e);
         }
     }
     public static void loadTextureFromFile(String modid, Path path){
         try{
-            FileTexture texture = new FileTexture(new ResourceLocation(modid, path.getFileName().toString()),path);
-            Minecraft.getInstance().getTextureManager().register(texture.getID(),texture);
+            Minecraft mc = Minecraft.getInstance();
+            if(mc != null){
+                FileTexture texture = new FileTexture(new ResourceLocation(modid, path.getFileName().toString()),path);
+                mc.textureManager.register(texture.getID(),texture);
+            }
         } catch (Exception e) {
-            ModularTank.LOGGER.error("load tank data fail,because",e);
+            ModularTank.LOGGER.error("load texture fail,because",e);
         }
     }
 }

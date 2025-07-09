@@ -25,13 +25,37 @@ public class Module {
     public double[] size = {1,1,1};
     @SerializedName("maxHealth")
     public int maxHealth = 100;
-    public HitBox hitBox = new HitBox(position[0]-size[0]/2,position[1]-size[1]/2,position[2]-size[2]/2,position[0]+size[0]/2,position[1]+size[1]/2,position[2]+size[2]/2,0,0);
+    public HitBox hitBox = new HitBox(getX()-getWidth()/2,getY()-getHeight()/2,getZ()-getLength()/2,
+            getX()+getWidth()/2,getY()+getHeight()/2,getZ()+getLength()/2,0,0);
     private int health = maxHealth;
     public Module copy(){
         Type p = Type.UNKNOWN;
         for(Type t : Type.values()){if(t == this.type)p = t;}
         return new Module(position, size, type);
     }
+    public double getX(){
+        return position[0];
+    }
+    public double getY(){
+        return position[1];
+    }
+    public double getZ(){
+        return position[2];
+    }
+    public double getLength(){
+        return size[0];
+    }
+    public double getWidth(){
+        return size[1];
+    }
+    public double getHeight(){
+        return size[2];
+    }
+
+    public HitBox getHitBox() {
+        return hitBox;
+    }
+
     public int getHealth(){
         return this.health;
     }
