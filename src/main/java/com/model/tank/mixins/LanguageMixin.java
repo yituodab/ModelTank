@@ -1,6 +1,6 @@
 package com.model.tank.mixins;
 
-import com.model.tank.resource.LanguageLoader;
+import com.model.tank.resource.client.LanguageLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.ClientLanguage;
 import org.spongepowered.asm.mixin.Mixin;

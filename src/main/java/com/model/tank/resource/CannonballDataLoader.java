@@ -17,7 +17,7 @@ public class CannonballDataLoader {
             try{
                 Files.newDirectoryStream(root).forEach(path -> {
                     try {
-                        Files.newDirectoryStream(path).forEach(cannonball -> loadCannonballDataFromFile(path.toFile().getName(), cannonball));
+                        Files.newDirectoryStream(path).forEach(cannonball -> loadCannonballDataFromFile(path.getFileName().toString(), cannonball));
                     } catch (IOException e) {
                         ModularTank.LOGGER.error("error",e);
                     }

@@ -1,4 +1,4 @@
-package com.model.tank.resource;
+package com.model.tank.resource.client;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonIOException;
@@ -14,10 +14,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public final class LanguageLoader {
     public static final Map<String, Map<String, String>> LANGUAGES = Maps.newHashMap();

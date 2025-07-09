@@ -1,6 +1,7 @@
 package com.model.tank.entities.tank;
 
 import com.model.tank.ModularTank;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
@@ -17,5 +18,10 @@ public class TankModel extends GeoModel<TankEntity> {
 
     @Override
     public ResourceLocation getAnimationResource(TankEntity tankEntity) {return null;// tankEntity.getTank().modelLocation;
+    }
+
+    @Override
+    public RenderType getRenderType(TankEntity animatable, ResourceLocation texture) {
+        return super.getRenderType(animatable, texture);
     }
 }

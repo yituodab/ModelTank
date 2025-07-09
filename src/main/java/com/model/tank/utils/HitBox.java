@@ -17,6 +17,9 @@ public class HitBox extends AABB {
         this.XRot = XRot;
         this.YRot = YRot;
     }
+    public Vec3 getPos(){
+        return new Vec3((maxX-minX)/2+minX,(maxY-minY)/2+minY,(maxY-minY)/2+minY);
+    }
     public HitBox(){
         super(0,0,0,0,0,0);
         this.empty = true;
@@ -36,21 +39,22 @@ public class HitBox extends AABB {
 
     @Override
     public Optional<Vec3> clip(Vec3 pFrom, Vec3 pTo) {
-        Optional<Vec3> last = null;
+        Optional<Vec3> last = Optional.empty();
         if(this.childHitboxs != null && !this.childHitboxs.isEmpty()) {
             for (HitBox hitbox : childHitboxs) {
                 Optional<Vec3> vec3 = hitbox.clip(pFrom, pTo);
-                if (vec3.isPresent() && (last != null || vec3.get().distanceTo(pFrom) < last.get().distanceTo(pFrom))) {
+                if (vec3.isPresent() && (last.isEmpty() || vec3.get().distanceTo(pFrom) < last.get().distanceTo(pFrom))) {
                     last = vec3;
                 }
             }
         }
-        if(isEmpty())return null;
-        if(last == null) {
-            Vec3 from = pFrom.xRot(XRot).yRot(YRot);
-            Vec3 to = pTo.xRot(XRot).yRot(YRot);
-            return super.clip(from, to);
-        }
-        return last;
+        if(last.isPresent())return last;
+        if(isEmpty())return Optional.empty();
+        Vec3 Pos = getPos();
+        Vec3 From = pFrom.subtract(Pos);
+        Vec3 To = pTo.subtract(pTo);
+        Vec3 from = From.xRot(XRot).yRot(YRot).add(pFrom);
+        Vec3 to = To.xRot(XRot).yRot(YRot).add(pTo);
+        return super.clip(from, to);
     }
 }

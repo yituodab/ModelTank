@@ -1,0 +1,29 @@
+{
+    "name": "mrt.tanks.ztz-99",
+    "id": "ztz-99",
+    "modelLocation": "mrt:ztz-99.json",
+    "textureLocation": "mrt:ztz-99.png",
+  "boundingBox": [3,3],
+    "modules": [
+      {
+        "type": "OIL_TANK",
+        "position": [1,1,1],
+        "size": [1,1,1]
+      }
+    ],
+  "cannonballs": [
+    "mrt:apfsds"
+  ],
+    "armors": [
+      {
+        "direction": "RIGHT",
+        "x": 1,
+        "y": 1,
+        "z": 1,
+        "thickness": 1,
+        "width": 1,
+        "length": 1
+      }
+    ]
+
+}

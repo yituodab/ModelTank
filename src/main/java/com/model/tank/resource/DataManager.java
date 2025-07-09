@@ -3,6 +3,8 @@ package com.model.tank.resource;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.model.tank.ModularTank;
+import com.model.tank.resource.client.AssetsLoader;
+import com.model.tank.resource.client.LanguageLoader;
 import com.model.tank.resource.data.CannonballData;
 import com.model.tank.resource.data.Module;
 import com.model.tank.resource.data.Plane;
@@ -12,6 +14,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.loading.json.raw.Model;
 
 import java.io.IOException;
 import java.net.URI;
@@ -31,6 +35,7 @@ public class DataManager {
     public static final Path ModularTankDataDirPath = FMLPaths.GAMEDIR.get().resolve("mrt");
     public static final HashMap<ResourceLocation, Tank> TANKS = new HashMap<>();
     public static final HashMap<ResourceLocation, CannonballData> CANNONBALLS = new HashMap<>();
+    public static final HashMap<ResourceLocation, Model> MODELS = new HashMap<>();
     public static final HashMap<String, Plane> PLANES = new HashMap<>();
 
     public static void load(){
@@ -43,6 +48,7 @@ public class DataManager {
                 if(Files.isDirectory(path)){
                     CannonballDataLoader.loadCannonballDataFromDir(path.resolve("cannonballs"));
                     TankDataLoader.loadTankDataFromDir(path.resolve("tanks"));
+                    AssetsLoader.loadAssetsFromDir(path.resolve("assets"));
                 }
             });
         } catch (IOException e) {

@@ -19,7 +19,7 @@ public class TankDataLoader {
             try{
                 Files.newDirectoryStream(root).forEach(path -> {
                     try {
-                        Files.newDirectoryStream(path).forEach(tank -> loadTankDataFromFile(path.toFile().getName(), tank));
+                        Files.newDirectoryStream(path).forEach(tank -> loadTankDataFromFile(path.getFileName().toString(), tank));
                     } catch (IOException e) {
                         ModularTank.LOGGER.error("error",e);
                     }
