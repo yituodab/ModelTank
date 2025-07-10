@@ -24,7 +24,7 @@ public class PlaneDataLoader {
         try(InputStream inputStream = Files.newInputStream(file.toPath())){
             String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             Plane plane = gson.fromJson(json, Plane.class);
-            DataManager.PLANES.put(file.getName(), plane);
+            //DataManager.PLANES.put(file.getName(), plane);
         } catch (Exception e) {
             ModularTank.LOGGER.error("load plane data fail,because",e);
         }

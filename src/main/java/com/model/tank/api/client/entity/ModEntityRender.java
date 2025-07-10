@@ -7,11 +7,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.object.Color;
+import software.bernie.geckolib.loading.json.raw.Model;
 import software.bernie.geckolib.loading.object.BakedModelFactory;
 import software.bernie.geckolib.loading.object.GeometryTree;
 import software.bernie.geckolib.model.GeoModel;
@@ -32,7 +31,10 @@ public class ModEntityRender extends GeoEntityRenderer<ModEntity> {
         float alpha = renderColor.getAlphaFloat();
         int packedOverlay = this.getPackedOverlay(animatable, 0.0F, partialTick);
         ResourceLocation resource = this.getGeoModel().getModelResource(animatable);
-        BakedGeoModel model = BakedModelFactory.getForNamespace(resource.getNamespace()).constructGeoModel(GeometryTree.fromModel(DataManager.MODELS.get(resource)));
+        Model gotModel = DataManager.MODELS.get(resource);
+        BakedGeoModel model;
+        if(gotModel == null)model = this.getGeoModel().getBakedModel(resource);
+        else model = BakedModelFactory.getForNamespace(resource.getNamespace()).constructGeoModel(GeometryTree.fromModel(gotModel));
         if (renderType == null) {
             renderType = this.getRenderType(animatable, this.getTextureLocation(animatable), bufferSource, partialTick);
         }

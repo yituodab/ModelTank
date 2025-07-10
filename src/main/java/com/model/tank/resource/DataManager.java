@@ -4,22 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.model.tank.ModularTank;
 import com.model.tank.resource.client.AssetsLoader;
-import com.model.tank.resource.client.LanguageLoader;
 import com.model.tank.resource.data.CannonballData;
-import com.model.tank.resource.data.Module;
-import com.model.tank.resource.data.Plane;
 import com.model.tank.resource.data.Tank;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.loading.json.raw.Model;
 
 import java.io.IOException;
@@ -37,19 +31,19 @@ public class DataManager {
             .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
             .create();
     private static boolean firstLoad = true;
-    public static final Path ModularTankDataDirPath = FMLPaths.GAMEDIR.get().resolve("mrt");
+    public static final Path MRTDataDirPath = FMLPaths.GAMEDIR.get().resolve("mrt");
     public static final HashMap<ResourceLocation, Tank> TANKS = new HashMap<>();
     public static final HashMap<ResourceLocation, CannonballData> CANNONBALLS = new HashMap<>();
     public static final HashMap<ResourceLocation, Model> MODELS = new HashMap<>();
-    public static final HashMap<String, Plane> PLANES = new HashMap<>();
+    //public static final HashMap<String, Plane> PLANES = new HashMap<>();
 
     public static void loadData(){
         if(firstLoad){
-            copyModDirectory(ModularTank.class, "/assets/mrt/default_pack", ModularTankDataDirPath, "default_pack");
+            copyModDirectory(ModularTank.class, "/assets/mrt/default_pack", MRTDataDirPath, "default_pack");
             firstLoad = false;
         }
         try {
-            Files.newDirectoryStream(ModularTankDataDirPath).forEach(path -> {
+            Files.newDirectoryStream(MRTDataDirPath).forEach(path -> {
                 if(Files.isDirectory(path)){
                     CannonballDataLoader.loadCannonballDataFromDir(path.resolve("cannonballs"));
                     TankDataLoader.loadTankDataFromDir(path.resolve("tanks"));
@@ -58,16 +52,11 @@ public class DataManager {
         } catch (IOException e) {
             ModularTank.LOGGER.error("load json failed",e);
         }
-        Tank TestTank = new Tank("test");
-        TestTank.modules = new Module[]{
-                new Module(new double[]{1, 1, 1}, new double[]{1, 1, 1}, Module.Type.UNKNOWN)
-        };
-        TANKS.put(new ResourceLocation(ModularTank.MODID, "test"),TestTank);
     }
+    @OnlyIn(value = Dist.CLIENT)
     public static void loadAssets(){
-        if(!FMLLoader.getDist().isClient())return;
         try {
-            Files.newDirectoryStream(ModularTankDataDirPath).forEach(path -> {
+            Files.newDirectoryStream(MRTDataDirPath).forEach(path -> {
                 if(Files.isDirectory(path)){
                     AssetsLoader.loadAssetsFromDir(path.resolve("assets"));
                 }
@@ -78,7 +67,7 @@ public class DataManager {
 
     }
     @SubscribeEvent
-    public static void atReLoad(AddReloadListenerEvent event){
+    public static void atReload(AddReloadListenerEvent event){
         loadData();
         loadAssets();
     }

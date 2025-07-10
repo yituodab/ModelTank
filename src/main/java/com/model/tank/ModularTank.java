@@ -14,6 +14,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
@@ -52,7 +53,6 @@ public class ModularTank
         ModCreativeTab.CREATIVE_MODE_TABS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-
     }
     public void addToTab(BuildCreativeModeTabContentsEvent event){
         if(event.getTab() == ModCreativeTab.TANK_TAB.get()){
@@ -67,10 +67,6 @@ public class ModularTank
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         event.enqueueWork(NetWorkManager::init);
-    }
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event)
-    {
     }
 
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

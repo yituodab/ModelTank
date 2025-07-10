@@ -23,6 +23,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -64,7 +65,8 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
             cannonballs.put(cannonball, 1);
             this.currentCannonball = cannonball;
         }
-        this.setBoundingBox(EntityDimensions.scalable(tank.boundingBox[0],tank.boundingBox[1]).makeBoundingBox(position()));
+        this.setBoundingBox(new HitBox(-tank.boundingBox[2]/2,-tank.boundingBox[0]/2,-tank.boundingBox[1]/2,
+                tank.boundingBox[2]/2,tank.boundingBox[0]/2,tank.boundingBox[1]/2,0,0));
         //this.armors = List.of(tank.armors);
         this.MaxPassenger = tank.maxPassenger;
     }
@@ -90,10 +92,17 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
         return this.getPassengers().isEmpty() && pPassenger instanceof Player;
     }
 
+    @Override
+    protected AABB makeBoundingBox() {
+        return super.makeBoundingBox();//new HitBox(-tank.boundingBox[2]/2,-tank.boundingBox[0]/2,-tank.boundingBox[1]/2,
+                //tank.boundingBox[2]/2,tank.boundingBox[0]/2,tank.boundingBox[1]/2,0,0));
+    }
 
     @Override
     public void tick() {
         super.tick();
+
+        this.setBoundingBox(this.makeBoundingBox());
         if(this.level().isClientSide()){
             controlTank();
         }
@@ -112,7 +121,7 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     public void load(CompoundTag p_20259_) {
         super.load(p_20259_);
     }
-    public void shoot(Cannonball currentCannonball) {
+    public void shoot() {
         Level level = this.level();
         CannonballData cannonballData = currentCannonball.data;
         if(cannonballData != null){

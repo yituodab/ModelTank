@@ -10,20 +10,18 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public record ClientTankShoot(int tankID, TankEntity.Cannonball cannonball) {
+public record ClientTankShoot(int tankID) {
     public void encode(FriendlyByteBuf friendlyByteBuf){
         friendlyByteBuf.writeInt(tankID);
-        friendlyByteBuf.writeResourceLocation(cannonball.id());
     }
     public static ClientTankShoot decode(FriendlyByteBuf friendlyByteBuf){
         int id = friendlyByteBuf.readInt();
-        ResourceLocation resourceLocation = friendlyByteBuf.readResourceLocation();
-        return new ClientTankShoot(id, new TankEntity.Cannonball(resourceLocation, DataManager.CANNONBALLS.get(resourceLocation)));
+        return new ClientTankShoot(id);
     }
     public void run(Supplier<NetworkEvent.Context> supplier){
         supplier.get().enqueueWork(()->{
             if(Objects.requireNonNull(supplier.get().getSender()).getVehicle() instanceof TankEntity tank){
-                tank.shoot(cannonball);
+                tank.shoot();
             };
         });
         supplier.get().setPacketHandled(true);

@@ -15,7 +15,7 @@ public class LocalPlayerMixin implements ILocalPlayer {
     public void shoot() {
         TankEntity tank = (TankEntity) ((LocalPlayer)(Object)this).getVehicle();
         if(tank == null)return;
-        ShootKey.shoot(tank, tank.getCurrentCannonball());
+        ShootKey.shoot(tank);
     }
 
     @Override

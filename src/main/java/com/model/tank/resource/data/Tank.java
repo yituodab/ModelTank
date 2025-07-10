@@ -12,7 +12,7 @@ public class Tank{
     @SerializedName("name")
     public String name = "mrt.tanks.test";
     @SerializedName("boundingBox")
-    public float[] boundingBox = {1,1};
+    public float[] boundingBox = {1,1,1};
     @SerializedName("modules")
     public Module[] modules;
     //@SerializedName("armors")

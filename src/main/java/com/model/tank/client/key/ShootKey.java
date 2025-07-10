@@ -40,9 +40,9 @@ public class ShootKey {
             }
         }
     }
-    public static void shoot(TankEntity tank, TankEntity.Cannonball cannonball){
-        if(cannonball != null){
-            NetWorkManager.CHANNEL.sendToServer(new ClientTankShoot(tank.getId(), cannonball));
+    public static void shoot(TankEntity tank){
+        if(tank != null){
+            NetWorkManager.CHANNEL.sendToServer(new ClientTankShoot(tank.getId()));
         }
     }
 }
