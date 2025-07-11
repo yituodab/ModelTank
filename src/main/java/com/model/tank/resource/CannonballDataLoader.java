@@ -31,7 +31,7 @@ public class CannonballDataLoader {
         try(InputStream inputStream = Files.newInputStream(path)){
             String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             CannonballData cannonball = DataManager.GSON.fromJson(json, CannonballData.class);
-            DataManager.CANNONBALLS.put(new ResourceLocation(modid, cannonball.id), cannonball);
+            DataManager.CANNONBALLS.put(cannonball.id, cannonball);
         } catch (Exception e) {
             ModularTank.LOGGER.error("load tank data fail,because",e);
         }

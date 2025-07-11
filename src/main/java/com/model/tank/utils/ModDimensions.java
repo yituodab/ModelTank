@@ -25,7 +25,10 @@ public class ModDimensions extends EntityDimensions {
     public AABB makeBoundingBox(double pX, double pY, double pZ) {
         return makeBoundingBox(pX,pY,pZ,0,0);
     }
+    public HitBox makeBoundingBox(Vec3 pos, float XRot, float YRot) {
+        return makeBoundingBox(pos.x,pos.y,pos.z,XRot,YRot);
+    }
     public HitBox makeBoundingBox(double pX,double pY, double pZ, float XRot, float YRot) {
-        return new HitBox(pX - width / 2, pY - height / 2, pZ - length / 2, pX + width / 2, pY + height / 2, pZ + length / 2, XRot, YRot);
+        return new HitBox(pX - width / 2, pY, pZ - length / 2, pX + width / 2, pY + height, pZ + length / 2, XRot, YRot);
     }
 }

@@ -23,8 +23,6 @@ public class Tank{
     @OnlyIn(Dist.CLIENT)
     @SerializedName("textureLocation")
     public ResourceLocation textureLocation = new ResourceLocation(ModularTank.MODID, "textures/texture.png");
-    @SerializedName("maxPassenger")
-    public int maxPassenger = 1;
     @SerializedName("maxCannonballNumber")
     public int maxCannonballNumber = 50;
     @SerializedName("cannonballs")

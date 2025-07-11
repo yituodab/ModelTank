@@ -2,6 +2,7 @@ package com.model.tank.entities.tank;
 
 
 import com.model.tank.api.client.entity.ModEntity;
+import com.model.tank.api.client.interfaces.IEntity;
 import com.model.tank.entities.cannonball.CannonballEntity;
 import com.model.tank.init.EntityRegister;
 import com.model.tank.resource.DataManager;
@@ -10,7 +11,7 @@ import com.model.tank.resource.data.Module;
 import com.model.tank.resource.data.Tank;
 
 
-import com.model.tank.utils.HitBox;
+import com.model.tank.utils.ModDimensions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -21,10 +22,16 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -38,6 +45,7 @@ import java.util.Map;
 public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData {
     private Map<Cannonball, Integer> cannonballs = new HashMap<>();
     private Cannonball currentCannonball;
+    private EntityDimensions dimensions;
     private ResourceLocation modelLocation;
     private ResourceLocation textureLocation;
     public double maxSpeed;// m/s
@@ -54,7 +62,6 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
         super(p_19870_, p_19871_);
         this.tankID = id;
         fromTankData(tank);
-
     }
     public void fromTankData(Tank tank){
         this.modelLocation = tank.modelLocation;
@@ -65,26 +72,18 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
             cannonballs.put(cannonball, 1);
             this.currentCannonball = cannonball;
         }
-        this.setBoundingBox(new HitBox(-tank.boundingBox[2]/2,-tank.boundingBox[0]/2,-tank.boundingBox[1]/2,
-                tank.boundingBox[2]/2,tank.boundingBox[0]/2,tank.boundingBox[1]/2,0,0));
-        //this.armors = List.of(tank.armors);
-        this.MaxPassenger = tank.maxPassenger;
+        ((IEntity)this).setDimensions(new ModDimensions(tank.boundingBox[0],tank.boundingBox[1],tank.boundingBox[2],true));
+    }
+
+    @Override
+    public void setPos(double p_20210_, double p_20211_, double p_20212_) {
+        super.setPos(p_20210_, p_20211_, p_20212_);
     }
 
     @Override
     public InteractionResult interact(Player pPlayer, InteractionHand pHand) {
-        if(pPlayer.isLocalPlayer())return InteractionResult.PASS;
+        if(this.level().isClientSide)return InteractionResult.SUCCESS;
         return pPlayer.startRiding(this) ? InteractionResult.SUCCESS : InteractionResult.PASS;
-    }
-
-    @Override
-    protected void addPassenger(Entity pPassenger) {
-        super.addPassenger(pPassenger);
-    }
-
-    @Override
-    protected void positionRider(Entity pPassenger, MoveFunction pCallback) {
-        super.positionRider(pPassenger, pCallback);
     }
 
     @Override
@@ -93,15 +92,24 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     }
 
     @Override
+    public EntityDimensions getDimensions(Pose pose) {
+        return ((IEntity)this).getDimensions();
+    }
+
+    @Override
+    public void refreshDimensions() {
+    }
+
+    @Override
     protected AABB makeBoundingBox() {
-        return super.makeBoundingBox();//new HitBox(-tank.boundingBox[2]/2,-tank.boundingBox[0]/2,-tank.boundingBox[1]/2,
-                //tank.boundingBox[2]/2,tank.boundingBox[0]/2,tank.boundingBox[1]/2,0,0));
+        if(((IEntity)this).getDimensions() instanceof ModDimensions modDimensions)
+            return modDimensions.makeBoundingBox(this.position(),this.getXRot(),this.getYRot());
+        return super.makeBoundingBox();
     }
 
     @Override
     public void tick() {
         super.tick();
-
         this.setBoundingBox(this.makeBoundingBox());
         if(this.level().isClientSide()){
             controlTank();
@@ -113,6 +121,7 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
         return true;
     }
 
+    @Deprecated
     public TankEntity(EntityType<?> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);
     }
