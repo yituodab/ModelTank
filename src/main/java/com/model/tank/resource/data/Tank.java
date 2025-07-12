@@ -7,16 +7,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Tank{
-    @SerializedName("id")
-    public final String id;
     @SerializedName("name")
-    public String name = "mrt.tanks.test";
+    public String name = "mrt.tanks.default";
     @SerializedName("boundingBox")
     public float[] boundingBox = {1,1,1};
     @SerializedName("modules")
-    public Module[] modules;
-    //@SerializedName("armors")
-    //public Module.Armor[] armors;
+    public Module[] modules = {};
     @OnlyIn(Dist.CLIENT)
     @SerializedName("modelLocation")
     public ResourceLocation modelLocation = new ResourceLocation(ModularTank.MODID, "geo/model.geo.json");
@@ -25,16 +21,12 @@ public class Tank{
     public ResourceLocation textureLocation = new ResourceLocation(ModularTank.MODID, "textures/texture.png");
     @SerializedName("maxCannonballNumber")
     public int maxCannonballNumber = 50;
+    @SerializedName("maxSpeed")
+    public double maxSpeed = 11;
+    @SerializedName("steeringSpeed")
+    public float steeringSpeed = 20;
+    @SerializedName("acceleration")
+    public float acceleration = 1;
     @SerializedName("cannonballs")
-    public ResourceLocation[] cannonballs;
-    public Tank(String id) {
-        this.id = id;
-    }
-    @Override
-    public String toString(){
-        return "id="+id+
-        ", name="+name+
-        ", modelLocation="+modelLocation.toString()+
-        ", textureLocation="+textureLocation.toString();
-    }
+    public ResourceLocation[] cannonballs = {};
 }

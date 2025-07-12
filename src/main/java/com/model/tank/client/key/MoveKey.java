@@ -1,7 +1,11 @@
 package com.model.tank.client.key;
 
+import com.model.tank.entities.tank.TankEntity;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -15,20 +19,29 @@ import static com.model.tank.client.key.KeyRegister.MODULAR_TANK_CATEGORY;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class MoveKey {
-    public static final KeyMapping W_KEY = new KeyMapping("key.modulartank.move.w", KeyConflictContext.IN_GAME,
+    public static final KeyMapping UP_KEY = new KeyMapping("key.modulartank.move.up", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_W,MODULAR_TANK_CATEGORY);
-    public static final KeyMapping S_KEY = new KeyMapping("key.modulartank.move.s", KeyConflictContext.IN_GAME,
+    public static final KeyMapping DOWN_KEY = new KeyMapping("key.modulartank.move.down", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_S,MODULAR_TANK_CATEGORY);
-    public static final KeyMapping A_KEY = new KeyMapping("key.modulartank.move.a", KeyConflictContext.IN_GAME,
+    public static final KeyMapping LEFT_KEY = new KeyMapping("key.modulartank.move.left", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_A,MODULAR_TANK_CATEGORY);
-    public static final KeyMapping D_KEY = new KeyMapping("key.modulartank.move.d", KeyConflictContext.IN_GAME,
+    public static final KeyMapping RIGHT_KEY = new KeyMapping("key.modulartank.move.right", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_D,MODULAR_TANK_CATEGORY);
     @SubscribeEvent
-    public static void onAimPress(InputEvent.MouseButton.Post event) {
+    public static void onMovePress(InputEvent.Key event) {
         if (IsInGame) {
-            if(W_KEY.matchesMouse(event.getButton())) {
-
+            LocalPlayer player = Minecraft.getInstance().player;
+            if (player == null || player.isSpectator()) {
+                return;
             }
+            if (!(player.getVehicle() instanceof TankEntity)) {
+                return;
+            }
+            boolean up = UP_KEY.isDown();
+            boolean down = DOWN_KEY.isDown();
+            boolean left = LEFT_KEY.isDown();
+            boolean right = RIGHT_KEY.isDown();
+            ((TankEntity) player.getVehicle()).setInput(up,down,left,right);
         }
     }
 }

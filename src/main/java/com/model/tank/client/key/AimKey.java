@@ -26,7 +26,7 @@ public class AimKey {
     public static final KeyMapping AIM_KEY = new KeyMapping("key.modeltank.aim", KeyConflictContext.IN_GAME,
             InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT,MODULAR_TANK_CATEGORY);
     @SubscribeEvent
-    public static void aim(InputEvent.MouseButton.Post event){
+    public static void onAimPress(InputEvent.MouseButton.Post event){
         if (IsInGame && AIM_KEY.matchesMouse(event.getButton())){
             LocalPlayer player = Minecraft.getInstance().player;
             if (player == null || player.isSpectator()) {

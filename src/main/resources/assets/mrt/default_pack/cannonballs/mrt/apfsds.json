@@ -1,6 +1,5 @@
 {
   "name": "mrt.cannonballs.hdhd",
-  "id": "mrt:apfsds",
   "speed": "300",
   "type": "APFSDS",
   "entity_damage": 100

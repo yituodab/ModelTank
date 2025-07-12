@@ -1,0 +1,8 @@
+{
+  "itemGroup.modulartank": "Modular Tank",
+  "item.mrt.tank_item": "Box of tank",
+  "key.modulartank.move.up": "Forward",
+  "key.modulartank.move.down": "Receding",
+  "key.modulartank.move.left": "Left",
+  "key.modulartank.move.right": "Right"
+}

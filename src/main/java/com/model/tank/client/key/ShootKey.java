@@ -9,6 +9,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -26,7 +27,7 @@ public class ShootKey {
     public static final KeyMapping SHOOT_KEY = new KeyMapping("key.modeltank.shoot", KeyConflictContext.IN_GAME,
             InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_LEFT,MODULAR_TANK_CATEGORY);
     @SubscribeEvent
-    public static void atShoot(InputEvent.MouseButton.Post event){
+    public static void onShootPress(InputEvent.MouseButton.Post event){
         if (IsInGame && SHOOT_KEY.matchesMouse(event.getButton())){
             LocalPlayer player = Minecraft.getInstance().player;
             if (player == null || player.isSpectator()) {

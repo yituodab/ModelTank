@@ -1,6 +1,7 @@
 package com.model.tank;
 
 import com.model.tank.client.key.AimKey;
+import com.model.tank.client.key.MoveKey;
 import com.model.tank.client.key.ShootKey;
 import com.model.tank.entities.tank.TankRender;
 import com.model.tank.entities.cannonball.CannonballRender;
@@ -13,15 +14,12 @@ import com.model.tank.resource.DataManager;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -76,6 +74,10 @@ public class ModularTank
         public static void keyRegister(RegisterKeyMappingsEvent event){
             event.register(AimKey.AIM_KEY);
             event.register(ShootKey.SHOOT_KEY);
+            event.register(MoveKey.UP_KEY);
+            event.register(MoveKey.DOWN_KEY);
+            event.register(MoveKey.LEFT_KEY);
+            event.register(MoveKey.RIGHT_KEY);
         }
         @SubscribeEvent
         public static void hudRegister(RegisterGuiOverlaysEvent event){

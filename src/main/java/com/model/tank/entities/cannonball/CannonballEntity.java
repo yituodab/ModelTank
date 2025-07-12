@@ -6,9 +6,8 @@ import com.model.tank.resource.data.CannonballData;
 import com.model.tank.utils.CannonballType;
 import com.model.tank.utils.ExplodeHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,6 +17,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -28,16 +28,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class CannonballEntity extends Projectile implements GeoEntity, IEntityAdditionalSpawnData {
-    public CannonballEntity(EntityType<? extends Projectile> entityType, Level level, TankEntity owner, CannonballData data){
+    public CannonballEntity(EntityType<? extends Projectile> entityType, Level level, TankEntity owner, CannonballData data, ResourceLocation id){
         super(entityType, level);
         this.setOwner(owner);
-        id = data.id;
+        this.id = id;
         fromCannonballData(data);
     }
     public CannonballEntity(EntityType<? extends Projectile> p_37248_, Level p_37249_) {
         super(p_37248_, p_37249_);
     }
-    private static final EntityDataAccessor<Integer> COUNTER = SynchedEntityData.defineId(CannonballEntity.class, EntityDataSerializers.INT);
     public float entityDamage = 20;
     public CannonballType type;
     private ResourceLocation id;
@@ -47,7 +46,6 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
 
     @Override
     protected void defineSynchedData() {
-        this.entityData.define(COUNTER, 0);
     }
 
     @Override
@@ -128,8 +126,11 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
     }
 
     @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return GeckoLibUtil.createInstanceCache(this);
+    public AnimatableInstanceCache getAnimatableInstanceCache() {return GeckoLibUtil.createInstanceCache(this);}
+
+    @Override
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
