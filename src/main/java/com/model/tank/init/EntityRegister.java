@@ -1,8 +1,8 @@
 package com.model.tank.init;
 
 import com.model.tank.ModularTank;
-import com.model.tank.entities.cannonball.CannonballEntity;
-import com.model.tank.entities.tank.TankEntity;
+import com.model.tank.entities.CannonballEntity;
+import com.model.tank.entities.TankEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;

@@ -1,7 +1,7 @@
 package com.model.tank.network.C2S;
 
 
-import com.model.tank.entities.tank.TankEntity;
+import com.model.tank.entities.TankEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 

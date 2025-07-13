@@ -1,4 +1,4 @@
-package com.model.tank.entities.tank;
+package com.model.tank.client.render.tank;
 
 import com.model.tank.api.client.entity.ModEntityRender;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

@@ -1,7 +1,7 @@
 package com.model.tank.client.key;
 
 import com.model.tank.api.client.interfaces.ILocalPlayer;
-import com.model.tank.entities.tank.TankEntity;
+import com.model.tank.entities.TankEntity;
 import com.model.tank.utils.MathUtils;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;

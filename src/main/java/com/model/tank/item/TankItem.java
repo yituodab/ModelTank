@@ -1,6 +1,6 @@
 package com.model.tank.item;
 
-import com.model.tank.entities.tank.TankEntity;
+import com.model.tank.entities.TankEntity;
 import com.model.tank.init.EntityRegister;
 import com.model.tank.resource.DataManager;
 import com.model.tank.resource.data.Tank;

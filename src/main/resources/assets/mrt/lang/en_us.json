@@ -4,5 +4,6 @@
   "key.modulartank.move.up": "Forward",
   "key.modulartank.move.down": "Receding",
   "key.modulartank.move.left": "Left",
-  "key.modulartank.move.right": "Right"
+  "key.modulartank.move.right": "Right",
+  "mrt.hud.currentSpeed": "Current Speed: "
 }

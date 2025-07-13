@@ -4,5 +4,6 @@
   "key.modulartank.move.up": "前进",
   "key.modulartank.move.down": "后退",
   "key.modulartank.move.left": "左转",
-  "key.modulartank.move.right": "右转"
+  "key.modulartank.move.right": "右转",
+  "mrt.hud.currentSpeed": "当前速度："
 }

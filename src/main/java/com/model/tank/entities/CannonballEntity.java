@@ -1,6 +1,5 @@
-package com.model.tank.entities.cannonball;
+package com.model.tank.entities;
 
-import com.model.tank.entities.tank.TankEntity;
 import com.model.tank.resource.DataManager;
 import com.model.tank.resource.data.CannonballData;
 import com.model.tank.utils.CannonballType;

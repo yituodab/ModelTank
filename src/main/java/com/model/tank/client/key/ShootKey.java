@@ -1,15 +1,13 @@
 package com.model.tank.client.key;
 
 import com.model.tank.api.client.interfaces.ILocalPlayer;
-import com.model.tank.entities.tank.TankEntity;
+import com.model.tank.entities.TankEntity;
 import com.model.tank.network.C2S.ClientTankShoot;
 import com.model.tank.network.NetWorkManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;

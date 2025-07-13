@@ -2,7 +2,7 @@ package com.model.tank.mixins;
 
 import com.model.tank.api.client.interfaces.ILocalPlayer;
 import com.model.tank.client.key.ShootKey;
-import com.model.tank.entities.tank.TankEntity;
+import com.model.tank.entities.TankEntity;
 import net.minecraft.client.player.LocalPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

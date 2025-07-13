@@ -1,7 +1,7 @@
-package com.model.tank.entities.cannonball;
+package com.model.tank.client.render.cannonball;
 
 import com.model.tank.ModularTank;
-import com.model.tank.entities.tank.TankEntity;
+import com.model.tank.entities.CannonballEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 

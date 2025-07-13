@@ -1,6 +1,6 @@
 package com.model.tank.commands;
 
-import com.model.tank.entities.tank.TankEntity;
+import com.model.tank.entities.TankEntity;
 import com.model.tank.init.EntityRegister;
 import com.model.tank.resource.DataManager;
 import com.model.tank.resource.data.Tank;
@@ -8,12 +8,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.sun.jdi.connect.Connector;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.ResourceArgument;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 

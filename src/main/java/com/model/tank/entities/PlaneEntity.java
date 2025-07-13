@@ -1,4 +1,4 @@
-package com.model.tank.entities.plane;
+package com.model.tank.entities;
 
 import com.model.tank.resource.data.Plane;
 import net.minecraft.nbt.CompoundTag;

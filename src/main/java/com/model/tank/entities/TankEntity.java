@@ -1,9 +1,8 @@
-package com.model.tank.entities.tank;
+package com.model.tank.entities;
 
 
 import com.model.tank.api.client.entity.ModEntity;
 import com.model.tank.api.client.interfaces.IEntity;
-import com.model.tank.entities.cannonball.CannonballEntity;
 import com.model.tank.init.EntityRegister;
 import com.model.tank.resource.DataManager;
 import com.model.tank.resource.data.CannonballData;
@@ -22,11 +21,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
@@ -41,15 +42,11 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     private Cannonball currentCannonball;
     private ResourceLocation modelLocation;
     private ResourceLocation textureLocation;
-    private float steeringSpeed;
-    private float acceleration;
-    public double maxSpeed;// m/s
     private ResourceLocation tankID;
     public List<Module> modules;
-    private float tickSteeringSpeed = steeringSpeed / 20;
-    private double tickSpeed = maxSpeed / 20;
-    private double speed;
-    private float tickAcceleration = acceleration/20;
+    private float tickSteeringSpeed;
+    private double tickSpeed;
+    private float tickAcceleration;
     private boolean inputLeft;
     private boolean inputRight;
     private boolean inputUp;
@@ -63,8 +60,9 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
         this.modelLocation = tank.modelLocation;
         this.textureLocation = tank.textureLocation;
         this.modules = List.of(tank.modules.clone());
-        this.maxSpeed = tank.maxSpeed;
-        this.steeringSpeed = tank.steeringSpeed;
+        this.tickSteeringSpeed = tank.steeringSpeed / 20;
+        this.tickAcceleration = tank.acceleration /20;
+        this.tickSpeed = tank.maxSpeed / 20;
         for (ResourceLocation id : tank.cannonballs) {
             CannonballData cannonballData = DataManager.CANNONBALLS.get(id);
             if(cannonballData == null)continue;
@@ -77,8 +75,16 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
 
     @Override
     public InteractionResult interact(Player pPlayer, InteractionHand pHand) {
-        if(this.level().isClientSide)return InteractionResult.SUCCESS;
-        return pPlayer.startRiding(this) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        if(pPlayer.isSecondaryUseActive())return InteractionResult.PASS;
+        if(!this.level().isClientSide && !this.isVehicle())
+            return pPlayer.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
+        else return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public @Nullable LivingEntity getControllingPassenger() {
+        Entity controllingPassenger = this.getPassengers().get(0);
+        return controllingPassenger instanceof Player player ? player : super.getControllingPassenger();
     }
 
     @Override
@@ -89,6 +95,10 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
         return ((IEntity)this).getDimensions();
+    }
+
+    public double getCurrentSpeed() {
+        return Vec3.ZERO.distanceTo(this.getDeltaMovement());
     }
 
     @Override
@@ -147,11 +157,18 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
                 deltaMovement = deltaMovement.add(Mth.sin(-this.getYRot() * 0.017453292F)*tickAcceleration,0, Mth.cos(this.getYRot() * 0.017453292F)*tickAcceleration);
             }
             if(inputDown){
-                deltaMovement = deltaMovement.add(Mth.sin(this.getYRot() * 0.017453292F)*tickAcceleration,0, Mth.cos(-this.getYRot() * 0.017453292F)*tickAcceleration);
+                deltaMovement = deltaMovement.add(-(Mth.sin(-this.getYRot() * 0.017453292F)*tickAcceleration),0, -(Mth.cos(this.getYRot() * 0.017453292F)*tickAcceleration));
             }
-            this.speed = deltaMovement.distanceTo(Vec3.ZERO);
-            if(speed > tickSpeed)deltaMovement = deltaMovement.add(Mth.sin(this.getYRot() * 0.017453292F)*tickSpeed,0, Mth.cos(-this.getYRot() * 0.017453292F)*tickSpeed);;
-            setDeltaMovement(deltaMovement);
+            this.setDeltaMovement(deltaMovement);
+            if(getCurrentSpeed() > tickSpeed){
+                if(inputUp){
+                    deltaMovement = new Vec3(Mth.sin(-this.getYRot() * 0.017453292F)*tickSpeed,deltaMovement.y, Mth.cos(this.getYRot() * 0.017453292F)*tickSpeed);
+                }
+                if(inputDown){
+                    deltaMovement = new Vec3(-(Mth.sin(this.getYRot() * 0.017453292F)*tickSpeed),deltaMovement.y, -(Mth.cos(-this.getYRot() * 0.017453292F)*tickSpeed));
+                }
+            }
+            this.setDeltaMovement(deltaMovement);
         }
     }
     @Override
