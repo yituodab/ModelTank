@@ -38,8 +38,8 @@ public class HitBox extends AABB {
         Vec3 Pos = getPos();
         Vec3 From = pFrom.subtract(Pos);
         Vec3 To = pTo.subtract(pTo);
-        Vec3 from = From.xRot(XRot).yRot(YRot).add(pFrom);
-        Vec3 to = To.xRot(XRot).yRot(YRot).add(pTo);
+        Vec3 from = From.xRot(XRot*0.017453292F).yRot(YRot*0.017453292F).add(pFrom);
+        Vec3 to = To.xRot(XRot*0.017453292F).yRot(YRot*0.017453292F).add(pTo);
         return super.clip(from, to);
     }
 }

@@ -13,6 +13,8 @@ public class Tank{
     public float[] boundingBox = {1,1,1};
     @SerializedName("modules")
     public Module[] modules = {};
+    @SerializedName("armors")
+    public Module.Armor[] armors = {};
     @OnlyIn(Dist.CLIENT)
     @SerializedName("modelLocation")
     public ResourceLocation modelLocation = new ResourceLocation(ModularTank.MODID, "geo/model.geo.json");
@@ -23,6 +25,8 @@ public class Tank{
     public int maxCannonballNumber = 50;
     @SerializedName("maxSpeed")
     public double maxSpeed = 11;
+    @SerializedName("backSpeed")
+    public double backSpeed = 5;
     @SerializedName("steeringSpeed")
     public float steeringSpeed = 20;
     @SerializedName("acceleration")

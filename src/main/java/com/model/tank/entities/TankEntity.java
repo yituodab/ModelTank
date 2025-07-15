@@ -11,6 +11,7 @@ import com.model.tank.resource.data.Tank;
 
 
 import com.model.tank.utils.ModDimensions;
+import com.model.tank.utils.VehicleMoveType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -46,11 +47,13 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     public List<Module> modules;
     private float tickSteeringSpeed;
     private double tickSpeed;
+    private double tickBackSpeed;
     private float tickAcceleration;
     private boolean inputLeft;
     private boolean inputRight;
     private boolean inputUp;
     private boolean inputDown;
+    private VehicleMoveType moveType = VehicleMoveType.STOP;
     public TankEntity(EntityType<?> p_19870_, Level p_19871_, Tank tank, ResourceLocation id) {
         super(p_19870_, p_19871_);
         this.tankID = id;
@@ -62,6 +65,7 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
         this.modules = List.of(tank.modules.clone());
         this.tickSteeringSpeed = tank.steeringSpeed / 20;
         this.tickAcceleration = tank.acceleration /20;
+        this.tickBackSpeed = tank.backSpeed / 20;
         this.tickSpeed = tank.maxSpeed / 20;
         for (ResourceLocation id : tank.cannonballs) {
             CannonballData cannonballData = DataManager.CANNONBALLS.get(id);
@@ -83,7 +87,8 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
 
     @Override
     public @Nullable LivingEntity getControllingPassenger() {
-        Entity controllingPassenger = this.getPassengers().get(0);
+        Entity controllingPassenger = null;
+        if(!this.getPassengers().isEmpty())controllingPassenger = this.getPassengers().get(0);
         return controllingPassenger instanceof Player player ? player : super.getControllingPassenger();
     }
 
@@ -127,6 +132,7 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     }
     public void shoot() {
         Level level = this.level();
+        Cannonball currentCannonball = getCurrentCannonball();
         CannonballData cannonballData = currentCannonball.data;
         if(cannonballData != null){
             CannonballEntity cannonball = new CannonballEntity(EntityRegister.CANNONBALLENTITY.get(), level, this, cannonballData, currentCannonball.id);
@@ -145,29 +151,30 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     public void controlTank() {
         if(this.isVehicle()){
             Vec3 deltaMovement = getDeltaMovement();
+            double currentSpeed = getCurrentSpeed();
+            float a = 0F;
             float yRot = getYRot();
             if(inputLeft){
-                yRot-=tickSteeringSpeed;
+                yRot -= tickSteeringSpeed;
             }
-            if(inputRight){
-                yRot+=tickSteeringSpeed;
+            if(inputRight) {
+                yRot += tickSteeringSpeed;
             }
             this.setRot(yRot,getXRot());
-            if(inputUp){
-                deltaMovement = deltaMovement.add(Mth.sin(-this.getYRot() * 0.017453292F)*tickAcceleration,0, Mth.cos(this.getYRot() * 0.017453292F)*tickAcceleration);
+            if(!inputUp && !inputDown){
+                a = 0.005F;
             }
-            if(inputDown){
-                deltaMovement = deltaMovement.add(-(Mth.sin(-this.getYRot() * 0.017453292F)*tickAcceleration),0, -(Mth.cos(this.getYRot() * 0.017453292F)*tickAcceleration));
+            if((inputUp || inputDown) && currentSpeed > tickSpeed){
+                a = (float) (currentSpeed/(tickAcceleration+currentSpeed));
             }
-            this.setDeltaMovement(deltaMovement);
-            if(getCurrentSpeed() > tickSpeed){
-                if(inputUp){
-                    deltaMovement = new Vec3(Mth.sin(-this.getYRot() * 0.017453292F)*tickSpeed,deltaMovement.y, Mth.cos(this.getYRot() * 0.017453292F)*tickSpeed);
-                }
-                if(inputDown){
-                    deltaMovement = new Vec3(-(Mth.sin(this.getYRot() * 0.017453292F)*tickSpeed),deltaMovement.y, -(Mth.cos(-this.getYRot() * 0.017453292F)*tickSpeed));
-                }
+            if(inputUp && currentSpeed <= tickSpeed){
+                a += 1F;
             }
+            if(inputDown && currentSpeed <= tickSpeed){
+                a -= 0.5F;
+            }
+            deltaMovement = new Vec3(Mth.sin(-this.getYRot() * 0.017453292F)*(currentSpeed+tickAcceleration)*a,deltaMovement.y,
+                    Mth.cos(this.getYRot() * 0.017453292F)*(currentSpeed+tickAcceleration)*a);
             this.setDeltaMovement(deltaMovement);
         }
     }
@@ -218,9 +225,7 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     @Override
     public void writeSpawnData(FriendlyByteBuf friendlyByteBuf) {
         friendlyByteBuf.writeResourceLocation(this.tankID);
-        this.cannonballs.forEach((data, number)->{
-            friendlyByteBuf.writeInt(number);
-        });
+        this.cannonballs.forEach((data, number)-> friendlyByteBuf.writeInt(number));
     }
 
     @Override

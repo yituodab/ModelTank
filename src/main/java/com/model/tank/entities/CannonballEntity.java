@@ -4,6 +4,7 @@ import com.model.tank.resource.DataManager;
 import com.model.tank.resource.data.CannonballData;
 import com.model.tank.utils.CannonballType;
 import com.model.tank.utils.ExplodeHelper;
+import net.minecraft.client.renderer.entity.BoatRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
