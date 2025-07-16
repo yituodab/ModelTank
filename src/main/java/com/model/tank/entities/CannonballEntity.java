@@ -2,6 +2,7 @@ package com.model.tank.entities;
 
 import com.model.tank.resource.DataManager;
 import com.model.tank.resource.data.CannonballData;
+import com.model.tank.resource.data.Module;
 import com.model.tank.utils.CannonballType;
 import com.model.tank.utils.ExplodeHelper;
 import net.minecraft.client.renderer.entity.BoatRenderer;
@@ -23,9 +24,11 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import javax.accessibility.AccessibleRole;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class CannonballEntity extends Projectile implements GeoEntity, IEntityAdditionalSpawnData {
     public CannonballEntity(EntityType<? extends Projectile> entityType, Level level, TankEntity owner, CannonballData data, ResourceLocation id){
@@ -105,6 +108,19 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
         }
     }
     protected void onHitTankEntity(Vec3 startPos,Vec3 endPos, TankEntity tank){
+        Module.Armor onHitArmor = null;
+        Vec3 onHitPos = null;
+        for(Module.Armor armor : tank.getArmors()){
+            Optional<Vec3> vec3 = armor.getHitBox().clip(startPos,endPos);
+            if(vec3.isPresent()){
+                if((onHitArmor == null && onHitPos == null) || onHitPos.distanceTo(startPos) > vec3.get().distanceTo(startPos)){
+                    onHitArmor = armor;
+                    onHitPos = vec3.get();
+                }
+            }
+        }
+        if(onHitArmor == null)return;
+        tank.discard();
     }
 
     @Override

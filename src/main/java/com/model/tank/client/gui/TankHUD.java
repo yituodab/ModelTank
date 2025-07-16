@@ -26,7 +26,7 @@ public class TankHUD implements IGuiOverlay {
             guiGraphics.setColor(1, 1, 1, 1);
             // 载具当前信息
             guiGraphics.drawString(minecraft.font,
-                    Component.translatable("mrt.hud.currentSpeed").append(String.valueOf(tank.getCurrentSpeed()*72)+" km/h"),
+                    Component.translatable("mrt.hud.currentSpeed").append((int)(tank.getCurrentSpeed()*72)+" km/h"),
                     4, height - 12, 0xFFFFFF, false);
             // 瞄具HUD
             if(((ILocalPlayer)player).isAim())

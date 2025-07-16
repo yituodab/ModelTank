@@ -8,7 +8,10 @@ public class MathUtils {
         double newTan = currentTan / magnification;
         return Math.toDegrees(Math.atan(newTan)) * 2;
     }
+    public static double getEquivalentArmor(int thickness, float cos){
+        return thickness / cos;
+    }
     public static double getEquivalentArmor(int thickness, double angle){
-        return thickness / Mth.cos((float) angle * 0.017453292F);
+        return getEquivalentArmor(thickness,Mth.cos((float) angle * 0.017453292F));
     }
 }

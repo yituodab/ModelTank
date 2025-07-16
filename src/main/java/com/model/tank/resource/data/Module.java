@@ -4,11 +4,6 @@ import com.google.gson.annotations.SerializedName;
 import com.model.tank.utils.HitBox;
 
 public class Module {
-    public Module(double[] position, double[] size, Type type){
-        this.position = position;
-        this.size = size;
-        this.type = type;
-    }
     public static enum Type{
         UNKNOWN,
         ENGINE,
@@ -25,13 +20,21 @@ public class Module {
     public double[] size = {1,1,1};
     @SerializedName("maxHealth")
     public int maxHealth = 100;
+    private int health = maxHealth;
     private HitBox hitBox = new HitBox(getX()-getWidth()/2,getY()-getHeight()/2,getZ()-getLength()/2,
             getX()+getWidth()/2,getY()+getHeight()/2,getZ()+getLength()/2,0,0);
-    private int health = maxHealth;
-    public Module copy(){
+    @Override
+    public Module clone(){
         Type p = Type.UNKNOWN;
         for(Type t : Type.values()){if(t == this.type)p = t;}
-        return new Module(position, size, type);
+        Module m = new Module();
+        m.type = p;
+        m.position = position;
+        m.size = size;
+        m.hitBox = hitBox;
+        m.maxHealth = maxHealth;
+        m.health = maxHealth;
+        return m;
     }
     public double getX(){
         return position[0];

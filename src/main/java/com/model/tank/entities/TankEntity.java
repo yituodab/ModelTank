@@ -22,7 +22,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -44,16 +43,17 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     private ResourceLocation modelLocation;
     private ResourceLocation textureLocation;
     private ResourceLocation tankID;
-    public List<Module> modules;
+    private List<Module> modules;
+    private List<Module.Armor> armors;
     private float tickSteeringSpeed;
     private double tickSpeed;
     private double tickBackSpeed;
     private float tickAcceleration;
+    private float addSpeed;
     private boolean inputLeft;
     private boolean inputRight;
     private boolean inputUp;
     private boolean inputDown;
-    private VehicleMoveType moveType = VehicleMoveType.STOP;
     public TankEntity(EntityType<?> p_19870_, Level p_19871_, Tank tank, ResourceLocation id) {
         super(p_19870_, p_19871_);
         this.tankID = id;
@@ -63,6 +63,7 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
         this.modelLocation = tank.modelLocation;
         this.textureLocation = tank.textureLocation;
         this.modules = List.of(tank.modules.clone());
+        this.armors = List.of(tank.armors);
         this.tickSteeringSpeed = tank.steeringSpeed / 20;
         this.tickAcceleration = tank.acceleration /20;
         this.tickBackSpeed = tank.backSpeed / 20;
@@ -75,6 +76,14 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
             this.currentCannonball = cannonball;
         }
         ((IEntity)this).setDimensions(new ModDimensions(tank.boundingBox[0],tank.boundingBox[1],tank.boundingBox[2],true));
+    }
+
+    public List<Module> getModules() {
+        return modules;
+    }
+
+    public List<Module.Armor> getArmors() {
+        return armors;
     }
 
     @Override
@@ -152,7 +161,6 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
         if(this.isVehicle()){
             Vec3 deltaMovement = getDeltaMovement();
             double currentSpeed = getCurrentSpeed();
-            float a = 0F;
             float yRot = getYRot();
             if(inputLeft){
                 yRot -= tickSteeringSpeed;
@@ -162,19 +170,19 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
             }
             this.setRot(yRot,getXRot());
             if(!inputUp && !inputDown){
-                a = 0.005F;
+                addSpeed = addSpeed < 0 ? -0.005F : 0.005F;
             }
-            if((inputUp || inputDown) && currentSpeed > tickSpeed){
-                a = (float) (currentSpeed/(tickAcceleration+currentSpeed));
+            if(inputUp && currentSpeed < tickSpeed){
+                if(tickSpeed-currentSpeed<tickAcceleration)
+                    addSpeed += (tickSpeed-currentSpeed)/tickSpeed;
+                else
+                    addSpeed += 1F;
             }
-            if(inputUp && currentSpeed <= tickSpeed){
-                a += 1F;
+            if(inputDown && !(addSpeed <= 0 && currentSpeed > tickBackSpeed)){
+                addSpeed -= 0.5F;
             }
-            if(inputDown && currentSpeed <= tickSpeed){
-                a -= 0.5F;
-            }
-            deltaMovement = new Vec3(Mth.sin(-this.getYRot() * 0.017453292F)*(currentSpeed+tickAcceleration)*a,deltaMovement.y,
-                    Mth.cos(this.getYRot() * 0.017453292F)*(currentSpeed+tickAcceleration)*a);
+            deltaMovement = new Vec3(Mth.sin(-this.getYRot() * 0.017453292F)*tickAcceleration*addSpeed,deltaMovement.y,
+                    Mth.cos(this.getYRot() * 0.017453292F)*tickAcceleration*addSpeed);
             this.setDeltaMovement(deltaMovement);
         }
     }
