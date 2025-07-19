@@ -4,6 +4,7 @@ package com.model.tank.entities;
 import com.model.tank.api.client.entity.ModEntity;
 import com.model.tank.api.client.interfaces.IEntity;
 import com.model.tank.init.EntityRegister;
+import com.model.tank.network.NetWorkManager;
 import com.model.tank.resource.DataManager;
 import com.model.tank.resource.data.CannonballData;
 import com.model.tank.resource.data.Module;
@@ -17,6 +18,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,6 +29,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -72,7 +75,7 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
             CannonballData cannonballData = DataManager.CANNONBALLS.get(id);
             if(cannonballData == null)continue;
             Cannonball cannonball = new Cannonball(id, DataManager.CANNONBALLS.get(id));
-            cannonballs.put(cannonball, 1);
+            cannonballs.put(cannonball, 0);
             this.currentCannonball = cannonball;
         }
         ((IEntity)this).setDimensions(new ModDimensions(tank.boundingBox[0],tank.boundingBox[1],tank.boundingBox[2],true));
@@ -144,10 +147,12 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
         Cannonball currentCannonball = getCurrentCannonball();
         CannonballData cannonballData = currentCannonball.data;
         if(cannonballData != null){
-            CannonballEntity cannonball = new CannonballEntity(EntityRegister.CANNONBALLENTITY.get(), level, this, cannonballData, currentCannonball.id);
-            cannonball.setPos(this.position());
-            cannonball.shoot(this,this.getXRot(),this.getYRot());
-            level.addFreshEntity(cannonball);
+            if(cannonballs.get(currentCannonball) > 0){
+                CannonballEntity cannonball = new CannonballEntity(EntityRegister.CANNONBALLENTITY.get(), level, this, cannonballData, currentCannonball.id);
+                cannonball.setPos(this.position());
+                cannonball.shoot(this,this.getXRot(),this.getYRot());
+                level.addFreshEntity(cannonball);
+            }
         }
     }
     public void setInput(boolean up,boolean down,boolean left,boolean right){
