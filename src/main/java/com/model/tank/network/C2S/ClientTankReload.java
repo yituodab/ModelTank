@@ -1,6 +1,5 @@
 package com.model.tank.network.C2S;
 
-
 import com.model.tank.entities.TankEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -9,18 +8,16 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public record ClientTankShoot(ResourceLocation id) {
+// 该类用于客户端换弹时切换炮弹向服务端发包刷新换弹时间
+public record ClientTankReload(){
     public void encode(FriendlyByteBuf friendlyByteBuf){
-        friendlyByteBuf.writeResourceLocation(id);
     }
-    public static ClientTankShoot decode(FriendlyByteBuf friendlyByteBuf){
-        ResourceLocation id = friendlyByteBuf.readResourceLocation();
-        return new ClientTankShoot(id);
+    public static ClientTankReload decode(FriendlyByteBuf friendlyByteBuf){
+        return new ClientTankReload();
     }
     public void run(Supplier<NetworkEvent.Context> supplier){
         supplier.get().enqueueWork(()->{
             if(Objects.requireNonNull(supplier.get().getSender()).getVehicle() instanceof TankEntity tank){
-                tank.shoot(id);
             }
         });
         supplier.get().setPacketHandled(true);

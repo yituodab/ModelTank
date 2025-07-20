@@ -18,13 +18,13 @@ import static com.model.tank.client.key.KeyRegister.MODULAR_TANK_CATEGORY;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class MoveKey {
-    public static final KeyMapping UP_KEY = new KeyMapping("key.modulartank.move.up", KeyConflictContext.IN_GAME,
+    public static final KeyMapping UP_KEY = new KeyMapping("key.mrt.move.up", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_W,MODULAR_TANK_CATEGORY);
-    public static final KeyMapping DOWN_KEY = new KeyMapping("key.modulartank.move.down", KeyConflictContext.IN_GAME,
+    public static final KeyMapping DOWN_KEY = new KeyMapping("key.mrt.move.down", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_S,MODULAR_TANK_CATEGORY);
-    public static final KeyMapping LEFT_KEY = new KeyMapping("key.modulartank.move.left", KeyConflictContext.IN_GAME,
+    public static final KeyMapping LEFT_KEY = new KeyMapping("key.mrt.move.left", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_A,MODULAR_TANK_CATEGORY);
-    public static final KeyMapping RIGHT_KEY = new KeyMapping("key.modulartank.move.right", KeyConflictContext.IN_GAME,
+    public static final KeyMapping RIGHT_KEY = new KeyMapping("key.mrt.move.right", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_D,MODULAR_TANK_CATEGORY);
     @SubscribeEvent
     public static void onMovePress(InputEvent.Key event) {

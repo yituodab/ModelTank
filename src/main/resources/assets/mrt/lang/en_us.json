@@ -1,9 +1,13 @@
 {
   "itemGroup.modulartank": "Modular Tank",
   "item.mrt.tank_item": "Box of tank",
-  "key.modulartank.move.up": "Forward",
-  "key.modulartank.move.down": "Receding",
-  "key.modulartank.move.left": "Left",
-  "key.modulartank.move.right": "Right",
+  "key.category.mrt": "Modular Tank",
+  "key.mrt.move.up": "Forward",
+  "key.mrt.move.down": "Receding",
+  "key.mrt.move.left": "Left",
+  "key.mrt.move.right": "Right",
+  "key.mrt.aim": "Aim",
+  "key.mrt.shoot": "Shoot",
   "mrt.hud.currentSpeed": "Current Speed: "
+
 }

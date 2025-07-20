@@ -8,6 +8,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -22,7 +23,7 @@ import static com.model.tank.client.key.KeyRegister.MODULAR_TANK_CATEGORY;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class ShootKey {
-    public static final KeyMapping SHOOT_KEY = new KeyMapping("key.modeltank.shoot", KeyConflictContext.IN_GAME,
+    public static final KeyMapping SHOOT_KEY = new KeyMapping("key.mrt.shoot", KeyConflictContext.IN_GAME,
             InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_LEFT,MODULAR_TANK_CATEGORY);
     @SubscribeEvent
     public static void onShootPress(InputEvent.MouseButton.Post event){
@@ -41,7 +42,10 @@ public class ShootKey {
     }
     public static void shoot(TankEntity tank){
         if(tank != null){
-            NetWorkManager.CHANNEL.sendToServer(new ClientTankShoot(tank.getId()));
+            ResourceLocation id = tank.getCurrentCannonball();
+            TankEntity.Cannonball cannonball = tank.getCannonballs().get(id);
+            cannonball.setNumber(cannonball.getNumber() - 1);
+            NetWorkManager.sendToServer(new ClientTankShoot(id));
         }
     }
 }

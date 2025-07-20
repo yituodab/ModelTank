@@ -33,13 +33,14 @@ public class TankHUD implements IGuiOverlay {
                 guiGraphics.blit(new ResourceLocation(ModularTank.MODID, "textures/hud/aim.png"),
                     0,0,0,0,width,height,width,height);
             // 载具当前携带炮弹
-            for (Map.Entry<TankEntity.Cannonball, Integer> entry : tank.getCannonballs().entrySet()) {
-                TankEntity.Cannonball cannonball = entry.getKey();
-                Integer i = entry.getValue();
+            for (Map.Entry<ResourceLocation, TankEntity.Cannonball> entry : tank.getCannonballs().entrySet()) {
+                TankEntity.Cannonball cannonball = entry.getValue();
+                int n = cannonball.getNumber();
+                if(player.isCreative())n = 999;
                 guiGraphics.blit(new ResourceLocation(ModularTank.MODID, "textures/hud/cannonball_icons/" +
-                                cannonball.data().type.toString().toLowerCase() + ".png"),
+                                cannonball.getData().type.toString().toLowerCase() + ".png"),
                         renderStartX + number * 32, renderStartY, 0, 0, 32, 32, 32, 32);
-                guiGraphics.drawString(minecraft.font, i.toString(), renderStartX + number * 32 + 28, height - 9, 0xFFFFFF, false);
+                guiGraphics.drawString(minecraft.font, String.valueOf(n), renderStartX + number * 32 + 28, renderStartY, 0xFFFFFF, false);
                 number += 1;
             }
         }

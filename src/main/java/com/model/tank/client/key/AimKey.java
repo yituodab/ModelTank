@@ -22,8 +22,7 @@ import static com.model.tank.client.key.KeyRegister.MODULAR_TANK_CATEGORY;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class AimKey {
-    private static double defaultFOV;
-    public static final KeyMapping AIM_KEY = new KeyMapping("key.modeltank.aim", KeyConflictContext.IN_GAME,
+    public static final KeyMapping AIM_KEY = new KeyMapping("key.mrt.aim", KeyConflictContext.IN_GAME,
             InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT,MODULAR_TANK_CATEGORY);
     @SubscribeEvent
     public static void onAimPress(InputEvent.MouseButton.Post event){
@@ -35,7 +34,7 @@ public class AimKey {
             if (!(player.getVehicle() instanceof TankEntity)) {
                 return;
             }
-            if (player instanceof ILocalPlayer iLocalPlayer) {
+            if (player instanceof ILocalPlayer) {
                 if (event.getAction() == GLFW.GLFW_PRESS) {
                     ((ILocalPlayer)player).aim(true);
                 }
@@ -52,11 +51,10 @@ public class AimKey {
         }
         Entity entity = event.getCamera().getEntity();
         if(entity instanceof LocalPlayer player){
-            if(((ILocalPlayer)player).isAim() && player.getVehicle() instanceof TankEntity tank){
-                defaultFOV = event.getFOV();
+            if(((ILocalPlayer)player).isAim() && player.getVehicle() instanceof TankEntity){
                 event.setFOV(MathUtils.magnificationToFov(3,event.getFOV()));
             }
-            else event.setFOV(defaultFOV);
+            else event.setFOV(event.getFOV());
         }
     }
 }

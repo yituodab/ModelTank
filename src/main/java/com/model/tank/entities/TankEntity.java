@@ -5,6 +5,7 @@ import com.model.tank.api.client.entity.ModEntity;
 import com.model.tank.api.client.interfaces.IEntity;
 import com.model.tank.init.EntityRegister;
 import com.model.tank.network.NetWorkManager;
+import com.model.tank.network.S2C.ServerTankShoot;
 import com.model.tank.resource.DataManager;
 import com.model.tank.resource.data.CannonballData;
 import com.model.tank.resource.data.Module;
@@ -12,7 +13,6 @@ import com.model.tank.resource.data.Tank;
 
 
 import com.model.tank.utils.ModDimensions;
-import com.model.tank.utils.VehicleMoveType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -29,7 +29,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -41,8 +40,8 @@ import java.util.Map;
 
 
 public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData {
-    private Map<Cannonball, Integer> cannonballs = new HashMap<>();
-    private Cannonball currentCannonball;
+    private final Map<ResourceLocation, Cannonball> cannonballs = new HashMap<>();
+    private ResourceLocation currentCannonball;
     private ResourceLocation modelLocation;
     private ResourceLocation textureLocation;
     private ResourceLocation tankID;
@@ -57,6 +56,7 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     private boolean inputRight;
     private boolean inputUp;
     private boolean inputDown;
+    private int reloadTime = 0;
     public TankEntity(EntityType<?> p_19870_, Level p_19871_, Tank tank, ResourceLocation id) {
         super(p_19870_, p_19871_);
         this.tankID = id;
@@ -74,20 +74,14 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
         for (ResourceLocation id : tank.cannonballs) {
             CannonballData cannonballData = DataManager.CANNONBALLS.get(id);
             if(cannonballData == null)continue;
-            Cannonball cannonball = new Cannonball(id, DataManager.CANNONBALLS.get(id));
-            cannonballs.put(cannonball, 0);
-            this.currentCannonball = cannonball;
+            Cannonball cannonball = new Cannonball(DataManager.CANNONBALLS.get(id), 0);
+            cannonballs.put(id, cannonball);
         }
+        this.currentCannonball = null;
         ((IEntity)this).setDimensions(new ModDimensions(tank.boundingBox[0],tank.boundingBox[1],tank.boundingBox[2],true));
     }
 
-    public List<Module> getModules() {
-        return modules;
-    }
 
-    public List<Module.Armor> getArmors() {
-        return armors;
-    }
 
     @Override
     public InteractionResult interact(Player pPlayer, InteractionHand pHand) {
@@ -137,22 +131,29 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
         }
         this.move(MoverType.SELF,getDeltaMovement());
     }
-
-    @Deprecated
-    public TankEntity(EntityType<?> p_19870_, Level p_19871_) {
-        super(p_19870_, p_19871_);
-    }
-    public void shoot() {
+    public void shoot(ResourceLocation id) {
         Level level = this.level();
-        Cannonball currentCannonball = getCurrentCannonball();
+        ServerPlayer player = (ServerPlayer) this.getControllingPassenger();
+        Cannonball currentCannonball = cannonballs.get(id);
         CannonballData cannonballData = currentCannonball.data;
-        if(cannonballData != null){
-            if(cannonballs.get(currentCannonball) > 0){
-                CannonballEntity cannonball = new CannonballEntity(EntityRegister.CANNONBALLENTITY.get(), level, this, cannonballData, currentCannonball.id);
+        if(cannonballData != null && player != null){
+            boolean shootSuccess = false;
+            // 确认玩家是否为创造模式
+            boolean isCreative = player.isCreative();
+            // 获取当前炮弹数
+            int number = currentCannonball.getNumber();
+            if(number > 0 || isCreative){
+                CannonballEntity cannonball = new CannonballEntity(EntityRegister.CANNONBALLENTITY.get(), level, this, cannonballData, id);
                 cannonball.setPos(this.position());
                 cannonball.shoot(this,this.getXRot(),this.getYRot());
                 level.addFreshEntity(cannonball);
+                // 减少炮弹数
+                if(!isCreative)currentCannonball.setNumber(number - 1);
+                cannonballs.put(id,currentCannonball);
+                shootSuccess = true;
             }
+            // 向客户端发包同步炮弹数及发射情况
+            NetWorkManager.sendToPlayer(new ServerTankShoot(number,shootSuccess),player);
         }
     }
     public void setInput(boolean up,boolean down,boolean left,boolean right){
@@ -198,18 +199,18 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
         this.tankID = new ResourceLocation(compoundTag.getString("TankID"));
         fromTankData(DataManager.TANKS.get(this.tankID));
-        this.cannonballs.forEach((data, number)->{
-            int i = compoundTag.getCompound("cannonballs").getInt(data.id.toString());
-            cannonballs.put(data,i);
+        CompoundTag tag = compoundTag.getCompound("cannonballs");
+        this.cannonballs.forEach((id, cannonball)->{
+            int i = tag.getInt(id.toString());
+            cannonball.setNumber(i);
         });
-
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
         compoundTag.putString("TankID", this.tankID.toString());
         CompoundTag tag = new CompoundTag();
-        this.cannonballs.forEach((data, number)-> tag.putInt(data.id.toString(), number));
+        this.cannonballs.forEach((id, cannonball)-> tag.putInt(id.toString(), cannonball.getNumber()));
         compoundTag.put("cannonballs", tag);
     }
 
@@ -218,50 +219,53 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return GeckoLibUtil.createInstanceCache(this);
-    }
-
-    public ResourceLocation getModelLocation() {
-        return modelLocation;
-    }
-
-    public ResourceLocation getTextureLocation() {
-        return textureLocation;
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
     public void writeSpawnData(FriendlyByteBuf friendlyByteBuf) {
         friendlyByteBuf.writeResourceLocation(this.tankID);
-        this.cannonballs.forEach((data, number)-> friendlyByteBuf.writeInt(number));
+        this.cannonballs.forEach((id,cannonball)-> {
+            friendlyByteBuf.writeResourceLocation(id);
+            friendlyByteBuf.writeInt(cannonball.getNumber());
+        });
     }
 
     @Override
     public void readSpawnData(FriendlyByteBuf friendlyByteBuf) {
         this.tankID = friendlyByteBuf.readResourceLocation();
         fromTankData(DataManager.TANKS.get(this.tankID));
-        this.cannonballs.forEach((data, number)->{
-            int i = friendlyByteBuf.readInt();
-            cannonballs.put(data, i);
-        });
+        for(int i = 0;i<cannonballs.size();i++){
+            ResourceLocation id = friendlyByteBuf.readResourceLocation();
+            int number = friendlyByteBuf.readInt();
+            cannonballs.get(id).setNumber(number);
+        }
     }
 
-    public Map<Cannonball, Integer> getCannonballs() {
-        return cannonballs;
+    public Map<ResourceLocation, Cannonball> getCannonballs() {return cannonballs;}
+    public ResourceLocation getCurrentCannonball() {return this.currentCannonball;}
+    public void setCurrentCannonball(ResourceLocation currentCannonball) {this.currentCannonball = currentCannonball;}
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {return GeckoLibUtil.createInstanceCache(this);}
+    public ResourceLocation getModelLocation() {return modelLocation;}
+    public ResourceLocation getTextureLocation() {return textureLocation;}
+    public List<Module> getModules() {return modules;}
+    public List<Module.Armor> getArmors() {return armors;}
+    @Override
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {return NetworkHooks.getEntitySpawningPacket(this);}
+    @Deprecated
+    public TankEntity(EntityType<?> p_19870_, Level p_19871_) {super(p_19870_, p_19871_);}
+    public static class Cannonball{
+        private final CannonballData data;
+        private int number;
+        public Cannonball(CannonballData data, int number){
+            this.data = data;
+            this.number = number;
+        }
+        public CannonballData getData() {
+            return data;
+        }
+        public int getNumber() {
+            return number;
+        }
+        public void setNumber(int number) {
+            this.number = number;
+        }
     }
-
-    public Cannonball getCurrentCannonball() {
-        return this.currentCannonball;
-    }
-
-    public void setCurrentCannonball(Cannonball currentCannonball) {
-        this.currentCannonball = currentCannonball;
-    }
-
-    public record Cannonball(ResourceLocation id, CannonballData data){}
 }

@@ -1,9 +1,12 @@
 {
   "itemGroup.modulartank": "模块化坦克",
   "item.mrt.tank_item": "坦克箱",
-  "key.modulartank.move.up": "前进",
-  "key.modulartank.move.down": "后退",
-  "key.modulartank.move.left": "左转",
-  "key.modulartank.move.right": "右转",
+  "key.category.mrt": "模块化坦克",
+  "key.mrt.move.up": "前进",
+  "key.mrt.move.down": "后退",
+  "key.mrt.move.left": "左转",
+  "key.mrt.move.right": "右转",
+  "key.mrt.aim": "瞄准",
+  "key.mrt.shoot": "射击",
   "mrt.hud.currentSpeed": "当前速度："
 }
