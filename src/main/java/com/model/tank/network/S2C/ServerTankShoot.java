@@ -23,6 +23,7 @@ public record ServerTankShoot(int currentCannonballNumber,boolean shootSuccess){
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null && player.getVehicle() instanceof TankEntity tank) {
                 tank.getCannonballs().get(tank.getCurrentCannonball()).setNumber(currentCannonballNumber);
+                if(shootSuccess)tank.resetReloadTime();
             }
         });
         supplier.get().setPacketHandled(true);

@@ -6,9 +6,16 @@
   "boundingBox": [3,3,3],
     "modules": [
       {
+        "id": 1,
         "type": "OIL_TANK",
         "position": [1,1,1],
         "size": [1,1,1]
+      },
+      {
+        "id": 2,
+        "type": "CANNON",
+        "position": [2,2,2],
+        "size": [1,1,6]
       }
     ],
   "cannonballs": [

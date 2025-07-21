@@ -4,6 +4,7 @@ import com.model.tank.ModularTank;
 import com.model.tank.api.client.interfaces.ILocalPlayer;
 import com.model.tank.entities.TankEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
@@ -17,6 +18,7 @@ public class TankHUD implements IGuiOverlay {
     @Override
     public void render(ForgeGui forgeGui, GuiGraphics guiGraphics, float v, int width, int height) {
         Minecraft minecraft = Minecraft.getInstance();
+        Font font = minecraft.font;
         LocalPlayer player = minecraft.player;
         if (player != null && player.getVehicle() instanceof TankEntity tank) {
             int cannonballTypeNumber = tank.getCannonballs().size();
@@ -25,7 +27,7 @@ public class TankHUD implements IGuiOverlay {
             int number = 0;
             guiGraphics.setColor(1, 1, 1, 1);
             // 载具当前信息
-            guiGraphics.drawString(minecraft.font,
+            guiGraphics.drawString(font,
                     Component.translatable("mrt.hud.currentSpeed").append((int)(tank.getCurrentSpeed()*72)+" km/h"),
                     4, height - 12, 0xFFFFFF, false);
             // 瞄具HUD
@@ -40,7 +42,8 @@ public class TankHUD implements IGuiOverlay {
                 guiGraphics.blit(new ResourceLocation(ModularTank.MODID, "textures/hud/cannonball_icons/" +
                                 cannonball.getData().type.toString().toLowerCase() + ".png"),
                         renderStartX + number * 32, renderStartY, 0, 0, 32, 32, 32, 32);
-                guiGraphics.drawString(minecraft.font, String.valueOf(n), renderStartX + number * 32 + 28, renderStartY, 0xFFFFFF, false);
+                guiGraphics.drawString(font, String.valueOf(n), renderStartX + number * 32 + 32 - font.width(String.valueOf(n)), renderStartY, 0xFFFFFF, false);
+                guiGraphics.drawString(font, String.valueOf(number), renderStartX + number * 32 + 14, renderStartY + 23, 0xFFFFFF, false);
                 number += 1;
             }
         }

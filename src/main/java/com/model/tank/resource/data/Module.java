@@ -3,6 +3,8 @@ package com.model.tank.resource.data;
 import com.google.gson.annotations.SerializedName;
 import com.model.tank.utils.HitBox;
 
+import java.util.UUID;
+
 public class Module {
     public static enum Type{
         UNKNOWN,
@@ -12,30 +14,18 @@ public class Module {
         CANNON,
         LATCH
     }
+    @SerializedName("id")
+    private int id = 0;
     @SerializedName("type")
-    public Type type;
+    private Type type = Type.UNKNOWN;
     @SerializedName("position")
-    public double[] position = {1,1,1};
+    private double[] position = {1,1,1};
     @SerializedName("size")
-    public double[] size = {1,1,1};
+    private double[] size = {1,1,1};
     @SerializedName("maxHealth")
-    public int maxHealth = 100;
-    private int health = maxHealth;
+    private int maxHealth = 100;
     private HitBox hitBox = new HitBox(getX()-getWidth()/2,getY()-getHeight()/2,getZ()-getLength()/2,
             getX()+getWidth()/2,getY()+getHeight()/2,getZ()+getLength()/2,0,0);
-    @Override
-    public Module clone(){
-        Type p = Type.UNKNOWN;
-        for(Type t : Type.values()){if(t == this.type)p = t;}
-        Module m = new Module();
-        m.type = p;
-        m.position = position;
-        m.size = size;
-        m.hitBox = hitBox;
-        m.maxHealth = maxHealth;
-        m.health = maxHealth;
-        return m;
-    }
     public double getX(){
         return position[0];
     }
@@ -51,18 +41,18 @@ public class Module {
     public double getWidth(){
         return size[0];
     }
-    public double getHeight(){
-        return size[1];
-    }
+    public double getHeight(){return size[1];}
     public HitBox getHitBox() {
         return hitBox;
     }
-    public int getHealth(){
-        return this.health;
-    }
-    public void setHealth(int health){
-        this.health = health;
-    }
+    public Type getType() {return type;}
+    public int getID() {return id;}
+    public int getMaxHealth() {return maxHealth;}
+    // 炮
+    @SerializedName("reloadTime")
+    private float reloadTime = 0;
+    public float getReloadTime() {return reloadTime;}
+
     public static class Armor{
         @SerializedName("XRot")
         public float XRot = 0;

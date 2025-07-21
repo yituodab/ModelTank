@@ -6,6 +6,7 @@ import com.model.tank.ModularTank;
 import com.model.tank.resource.client.AssetsLoader;
 import com.model.tank.resource.data.CannonballData;
 import com.model.tank.resource.data.Tank;
+import com.model.tank.utils.UUIDSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,12 +23,14 @@ import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Mod.EventBusSubscriber
 public class DataManager {
     public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
+            .registerTypeAdapter(UUID.class, new UUIDSerializer())
             .create();
     private static boolean firstLoad = true;
     public static final Path MRTDataDirPath = FMLPaths.GAMEDIR.get().resolve("mrt");

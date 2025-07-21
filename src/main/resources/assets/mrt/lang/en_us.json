@@ -8,6 +8,14 @@
   "key.mrt.move.right": "Right",
   "key.mrt.aim": "Aim",
   "key.mrt.shoot": "Shoot",
-  "mrt.hud.currentSpeed": "Current Speed: "
-
+  "mrt.hud.currentSpeed": "Current Speed: ",
+  "key.mrt.1": "Cannonball One",
+  "key.mrt.2": "Cannonball Two",
+  "key.mrt.3": "Cannonball Three",
+  "key.mrt.4": "Cannonball Four",
+  "key.mrt.5": "Cannonball Five",
+  "key.mrt.6": "Cannonball Six",
+  "key.mrt.7": "Cannonball Seven",
+  "key.mrt.8": "Cannonball Eight",
+  "key.mrt.9": "Cannonball Nine"
 }

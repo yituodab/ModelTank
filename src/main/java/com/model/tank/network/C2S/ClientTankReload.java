@@ -2,7 +2,6 @@ package com.model.tank.network.C2S;
 
 import com.model.tank.entities.TankEntity;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Objects;
@@ -18,6 +17,7 @@ public record ClientTankReload(){
     public void run(Supplier<NetworkEvent.Context> supplier){
         supplier.get().enqueueWork(()->{
             if(Objects.requireNonNull(supplier.get().getSender()).getVehicle() instanceof TankEntity tank){
+                tank.resetReloadTime();
             }
         });
         supplier.get().setPacketHandled(true);
