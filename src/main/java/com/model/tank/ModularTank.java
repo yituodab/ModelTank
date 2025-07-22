@@ -6,8 +6,8 @@ import com.model.tank.client.key.ShootKey;
 import com.model.tank.client.render.tank.TankRender;
 import com.model.tank.client.render.cannonball.CannonballRender;
 import com.model.tank.client.gui.TankHUD;
-import com.model.tank.init.EntityRegister;
-import com.model.tank.init.ItemRegister;
+import com.model.tank.init.ModEntities;
+import com.model.tank.init.ModItems;
 import com.model.tank.init.ModCreativeTab;
 import com.model.tank.network.NetWorkManager;
 import com.model.tank.resource.DataManager;
@@ -46,8 +46,8 @@ public class ModularTank
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addToTab);
-        ItemRegister.ITEMS.register(modEventBus);
-        EntityRegister.ENTITY_TYPES.register(modEventBus);
+        ModItems.ITEMS.register(modEventBus);
+        ModEntities.ENTITY_TYPES.register(modEventBus);
         ModCreativeTab.CREATIVE_MODE_TABS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -55,7 +55,7 @@ public class ModularTank
     public void addToTab(BuildCreativeModeTabContentsEvent event){
         if(event.getTab() == ModCreativeTab.TANK_TAB.get()){
             DataManager.TANKS.forEach((id, tank) -> {
-                ItemStack item = ItemRegister.TANKITEM.get().getDefaultInstance();
+                ItemStack item = ModItems.TANKITEM.get().getDefaultInstance();
                 item.getOrCreateTag().putString("TankID", id.toString());
                 event.accept(item);
             });
@@ -87,8 +87,8 @@ public class ModularTank
         public static void onClientSetup(FMLClientSetupEvent event)
         {
             event.enqueueWork(()->{
-                    EntityRenderers.register(EntityRegister.TANKENTITY.get(), TankRender::new);
-                    EntityRenderers.register(EntityRegister.CANNONBALLENTITY.get(), CannonballRender::new);
+                    EntityRenderers.register(ModEntities.TANKENTITY.get(), TankRender::new);
+                    EntityRenderers.register(ModEntities.CANNONBALLENTITY.get(), CannonballRender::new);
             });
         }
     }

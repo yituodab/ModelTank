@@ -10,7 +10,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
-public class EntityRegister {
+public class ModEntities {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, ModularTank.MODID);
 
     public static final RegistryObject<EntityType<TankEntity>> TANKENTITY = ENTITY_TYPES.register("tank", () -> EntityType.Builder.

@@ -1,7 +1,7 @@
 package com.model.tank.commands;
 
 import com.model.tank.entities.TankEntity;
-import com.model.tank.init.EntityRegister;
+import com.model.tank.init.ModEntities;
 import com.model.tank.resource.DataManager;
 import com.model.tank.resource.data.Tank;
 import com.mojang.brigadier.CommandDispatcher;
@@ -28,7 +28,7 @@ public class RootCommandAndSubCommands {
         ServerLevel level = context.getSource().getLevel();
         Tank tankData = DataManager.TANKS.get(tankID);
         if(tankData == null)return 0;
-        TankEntity tank = new TankEntity(EntityRegister.TANKENTITY.get(), level, tankData, tankID) ;
+        TankEntity tank = new TankEntity(ModEntities.TANKENTITY.get(), level, tankData, tankID) ;
         tank.setPos(context.getSource().getPosition());
         context.getSource().getLevel().addFreshEntity(tank);
         return 0;

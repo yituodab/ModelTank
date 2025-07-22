@@ -1,7 +1,7 @@
 package com.model.tank.item;
 
 import com.model.tank.entities.TankEntity;
-import com.model.tank.init.EntityRegister;
+import com.model.tank.init.ModEntities;
 import com.model.tank.resource.DataManager;
 import com.model.tank.resource.data.Tank;
 import net.minecraft.network.chat.Component;
@@ -35,7 +35,7 @@ public class TankItem extends Item {
             ResourceLocation tankID = new ResourceLocation(item.getOrCreateTag().getString("TankID"));
             Tank tank = DataManager.TANKS.get(tankID);
             if(tank != null){
-                TankEntity tankEntity = new TankEntity(EntityRegister.TANKENTITY.get(), pLevel, tank, tankID);
+                TankEntity tankEntity = new TankEntity(ModEntities.TANKENTITY.get(), pLevel, tank, tankID);
                 tankEntity.setPos(pPlayer.pick(5,0,false).getLocation());
                 pLevel.addFreshEntity(tankEntity);
                 if(!pPlayer.isCreative())item.setCount(item.getCount() - 1);

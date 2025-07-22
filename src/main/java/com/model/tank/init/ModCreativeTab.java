@@ -16,13 +16,13 @@ public class ModCreativeTab {
                     title(Component.translatable("itemGroup.modulartank")).
                     displayItems((parameters, output)->{
                         DataManager.TANKS.forEach((id, tank) -> {
-                            ItemStack item = ItemRegister.TANKITEM.get().getDefaultInstance();
+                            ItemStack item = ModItems.TANKITEM.get().getDefaultInstance();
                             item.getOrCreateTag().putString("TankID", id.toString());
                             output.accept(item);
                         });
                     })
                     .build());
     private static ItemStack getIcon(){
-        return ItemRegister.TANKITEM.get().getDefaultInstance();
+        return ModItems.TANKITEM.get().getDefaultInstance();
     }
 }

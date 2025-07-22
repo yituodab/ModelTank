@@ -3,7 +3,7 @@ package com.model.tank.entities;
 
 import com.model.tank.api.client.entity.ModEntity;
 import com.model.tank.api.client.interfaces.IEntity;
-import com.model.tank.init.EntityRegister;
+import com.model.tank.init.ModEntities;
 import com.model.tank.network.NetWorkManager;
 import com.model.tank.network.S2C.ServerTankShoot;
 import com.model.tank.resource.DataManager;
@@ -162,7 +162,7 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
             // 获取当前炮弹数
             int number = currentCannonball.getNumber();
             if((number > 0 || isCreative) && !isReload()){
-                CannonballEntity cannonball = new CannonballEntity(EntityRegister.CANNONBALLENTITY.get(), level, this, cannonballData, id);
+                CannonballEntity cannonball = new CannonballEntity(ModEntities.CANNONBALLENTITY.get(), level, this, cannonballData, id);
                 cannonball.setPos(player.getEyePosition());
                 cannonball.shoot(player,player.getXRot(),player.getYRot());
                 level.addFreshEntity(cannonball);
