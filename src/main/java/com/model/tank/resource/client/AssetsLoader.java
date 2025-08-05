@@ -48,7 +48,7 @@ public class AssetsLoader {
         try(InputStream inputStream = Files.newInputStream(path)){
             String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             Model model = JsonUtil.GEO_GSON.fromJson(json, Model.class);
-            DataManager.MODELS.put(new ResourceLocation(modid, path.getFileName().toString()), model);
+            DataManager.putModel(new ResourceLocation(modid, path.getFileName().toString()), model);
         } catch (Exception e) {
             ModularTank.LOGGER.error("load model fail,because",e);
         }

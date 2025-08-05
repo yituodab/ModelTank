@@ -20,9 +20,4 @@ public class TankModel extends GeoModel<TankEntity> {
     @Override
     public ResourceLocation getAnimationResource(TankEntity tankEntity) {return null;// tankEntity.getTank().modelLocation;
     }
-
-    @Override
-    public RenderType getRenderType(TankEntity animatable, ResourceLocation texture) {
-        return super.getRenderType(animatable, texture);
-    }
 }

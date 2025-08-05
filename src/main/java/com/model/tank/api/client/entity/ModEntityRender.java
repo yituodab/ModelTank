@@ -31,7 +31,7 @@ public class ModEntityRender extends GeoEntityRenderer<ModEntity> {
         float alpha = renderColor.getAlphaFloat();
         int packedOverlay = this.getPackedOverlay(animatable, 0.0F, partialTick);
         ResourceLocation resource = this.getGeoModel().getModelResource(animatable);
-        Model gotModel = DataManager.MODELS.get(resource);
+        Model gotModel = DataManager.getModel(resource);
         BakedGeoModel model;
         if(gotModel == null)model = this.getGeoModel().getBakedModel(resource);
         else model = BakedModelFactory.getForNamespace(resource.getNamespace()).constructGeoModel(GeometryTree.fromModel(gotModel));

@@ -1,4 +1,4 @@
-package com.model.tank.resource.data;
+package com.model.tank.resource.data.tank;
 
 import com.google.gson.annotations.SerializedName;
 import com.model.tank.utils.CannonballType;

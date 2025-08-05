@@ -15,9 +15,9 @@ public class ModCreativeTab {
             () -> CreativeModeTab.builder().icon(ModCreativeTab::getIcon).
                     title(Component.translatable("itemGroup.modulartank")).
                     displayItems((parameters, output)->{
-                        DataManager.TANKS.forEach((id, tank) -> {
+                        DataManager.getAllTanks().forEach(tankDataEntry -> {
                             ItemStack item = ModItems.TANKITEM.get().getDefaultInstance();
-                            item.getOrCreateTag().putString("TankID", id.toString());
+                            item.getOrCreateTag().putString("TankID", tankDataEntry.getKey().toString());
                             output.accept(item);
                         });
                     })

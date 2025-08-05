@@ -43,8 +43,6 @@ public class ShootKey {
     public static void shoot(TankEntity tank){
         if(tank != null){
             ResourceLocation id = tank.getCurrentCannonball();
-            TankEntity.Cannonball cannonball = tank.getCannonballs().get(id);
-            cannonball.setNumber(cannonball.getNumber() - 1);
             NetWorkManager.sendToServer(new ClientTankShoot(id));
         }
     }

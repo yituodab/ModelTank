@@ -1,7 +1,8 @@
-package com.model.tank.resource;
+package com.model.tank.resource.loader;
 
 import com.model.tank.ModularTank;
-import com.model.tank.resource.data.Tank;
+import com.model.tank.resource.DataManager;
+import com.model.tank.resource.data.tank.CannonballData;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
@@ -11,28 +12,27 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class TankDataLoader {
-    public static void loadTankDataFromDir(Path root){
+public class CannonballDataLoader {
+    public static void loadCannonballDataFromDir(Path root){
         if(Files.isDirectory(root)){
             try{
                 Files.newDirectoryStream(root).forEach(path -> {
                     try {
-                        Files.newDirectoryStream(path).forEach(tank -> loadTankDataFromFile(path.getFileName().toString(), tank));
+                        Files.newDirectoryStream(path).forEach(cannonball -> loadCannonballDataFromFile(path.getFileName().toString(), cannonball));
                     } catch (IOException e) {
                         ModularTank.LOGGER.error("error",e);
                     }
                 });
-                ModularTank.LOGGER.info("Loaded Tank Data successful");
             } catch (IOException e) {
                 ModularTank.LOGGER.error("error",e);
             }
         }
     }
-    public static void loadTankDataFromFile(String modid, Path path){
+    public static void loadCannonballDataFromFile(String modid, Path path){
         try(InputStream inputStream = Files.newInputStream(path)){
             String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-            Tank tank = DataManager.GSON.fromJson(json, Tank.class);
-            DataManager.TANKS.put(new ResourceLocation(modid, path.getFileName().toString().replace(".json","")), tank);
+            CannonballData cannonball = DataManager.GSON.fromJson(json, CannonballData.class);
+            DataManager.CANNONBALLS.put(new ResourceLocation(modid, path.getFileName().toString().replace(".json","")), cannonball);
         } catch (Exception e) {
             ModularTank.LOGGER.error("load tank data fail,because",e);
         }

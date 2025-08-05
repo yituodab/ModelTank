@@ -45,21 +45,11 @@ public class ModularTank
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::addToTab);
         ModItems.ITEMS.register(modEventBus);
         ModEntities.ENTITY_TYPES.register(modEventBus);
         ModCreativeTab.CREATIVE_MODE_TABS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-    }
-    public void addToTab(BuildCreativeModeTabContentsEvent event){
-        if(event.getTab() == ModCreativeTab.TANK_TAB.get()){
-            DataManager.TANKS.forEach((id, tank) -> {
-                ItemStack item = ModItems.TANKITEM.get().getDefaultInstance();
-                item.getOrCreateTag().putString("TankID", id.toString());
-                event.accept(item);
-            });
-        }
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)

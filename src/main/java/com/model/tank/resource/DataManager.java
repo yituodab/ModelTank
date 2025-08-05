@@ -4,8 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.model.tank.ModularTank;
 import com.model.tank.resource.client.AssetsLoader;
-import com.model.tank.resource.data.CannonballData;
-import com.model.tank.resource.data.Tank;
+import com.model.tank.resource.client.data.tank.TankDisplay;
+import com.model.tank.resource.data.index.TankIndex;
+import com.model.tank.resource.data.tank.CannonballData;
+import com.model.tank.resource.data.tank.TankData;
+import com.model.tank.resource.data.tank.TankIndexData;
+import com.model.tank.resource.loader.CannonballDataLoader;
+import com.model.tank.resource.loader.TankDataLoader;
+import com.model.tank.resource.loader.TankIndexLoader;
 import com.model.tank.utils.UUIDSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,6 +29,8 @@ import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -34,10 +42,11 @@ public class DataManager {
             .create();
     private static boolean firstLoad = true;
     public static final Path MRTDataDirPath = FMLPaths.GAMEDIR.get().resolve("mrt");
-    public static final HashMap<ResourceLocation, Tank> TANKS = new HashMap<>();
+    private static final HashMap<ResourceLocation, TankData> TANKS = new HashMap<>();
+    private static final HashMap<ResourceLocation, TankIndex> TANK_INDEX = new HashMap<>();
     public static final HashMap<ResourceLocation, CannonballData> CANNONBALLS = new HashMap<>();
-    public static final HashMap<ResourceLocation, Model> MODELS = new HashMap<>();
-    //public static final HashMap<String, Plane> PLANES = new HashMap<>();
+    private static final HashMap<ResourceLocation, Model> MODELS = new HashMap<>();
+    private static final HashMap<ResourceLocation, TankDisplay> TANK_DISPLAY = new HashMap<>();
 
     public static void loadData(){
         if(firstLoad){
@@ -47,8 +56,10 @@ public class DataManager {
         try {
             Files.newDirectoryStream(MRTDataDirPath).forEach(path -> {
                 if(Files.isDirectory(path)){
-                    CannonballDataLoader.loadCannonballDataFromDir(path.resolve("cannonballs"));
-                    TankDataLoader.loadTankDataFromDir(path.resolve("tanks"));
+                    loadDirData(path);
+                }
+                if(path.getFileName().endsWith(".zip")){
+
                 }
             });
         } catch (IOException e) {
@@ -66,13 +77,61 @@ public class DataManager {
         } catch (IOException e) {
             ModularTank.LOGGER.error("load json failed",e);
         }
+    }
+    public static void loadDirData(Path dir){
+        Path dataPath = dir.resolve("data");
+        if(!dataPath.toFile().isDirectory()){
+            return;
+        }
+        try {
+            Files.newDirectoryStream(dataPath).forEach(namespace -> {
+                CannonballDataLoader.loadCannonballDataFromDir(namespace);
+                TankDataLoader.loadTankDataFromDir(namespace);
 
+                TankIndexLoader.loadTankIndexFromDir(namespace);
+            });
+        } catch (IOException e) {
+            ModularTank.LOGGER.error("Load {} failed",dataPath,e);
+        }
     }
     @SubscribeEvent
     public static void atReload(AddReloadListenerEvent event){
         loadData();
         loadAssets();
     }
+
+    public static TankDisplay getTankDisplay(ResourceLocation id) {
+        return TANK_DISPLAY.get(id);
+    }
+    public static TankData getTankData(ResourceLocation id){
+        return TANKS.get(id);
+    }
+
+    public static Set<Map.Entry<ResourceLocation, TankData>> getAllTanks() {
+        return TANKS.entrySet();
+    }
+
+    public static TankIndex getTankIndex(ResourceLocation id) {
+        return TANK_INDEX.get(id);
+    }
+
+    public static Model getModel(ResourceLocation id) {
+        return MODELS.get(id);
+    }
+
+    public static CannonballData getCannonballData(ResourceLocation id){
+        return CANNONBALLS.get(id);
+    }
+    public static void putTankData(ResourceLocation id, TankData tank){
+        TANKS.put(id,tank);
+    }
+    public static void putModel(ResourceLocation id, Model model){
+        MODELS.put(id,model);
+    }
+    public static void putTankIndex(ResourceLocation id,TankIndexData index){
+        TANK_INDEX.put(id,new TankIndex(index));
+    }
+
     /**
      * 复制本模组的文件夹到指定文件夹。将强行覆盖原文件夹。
      *

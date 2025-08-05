@@ -1,4 +1,4 @@
-package com.model.tank.resource;
+package com.model.tank.resource.loader;
 
 import com.google.gson.Gson;
 import com.model.tank.ModularTank;

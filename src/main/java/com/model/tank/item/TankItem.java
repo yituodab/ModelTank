@@ -3,7 +3,8 @@ package com.model.tank.item;
 import com.model.tank.entities.TankEntity;
 import com.model.tank.init.ModEntities;
 import com.model.tank.resource.DataManager;
-import com.model.tank.resource.data.Tank;
+import com.model.tank.resource.data.index.TankIndex;
+import com.model.tank.resource.data.tank.TankData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -23,8 +24,8 @@ public class TankItem extends Item {
     @OnlyIn(Dist.CLIENT)
     @Override
     public Component getName(ItemStack pStack) {
-        Tank tank = DataManager.TANKS.get(new ResourceLocation(pStack.getOrCreateTag().getString("TankID")));
-        if(tank != null && tank.name != null)return Component.translatable(tank.name);
+        TankIndex tank = DataManager.getTankIndex(new ResourceLocation(pStack.getOrCreateTag().getString("TankID")));
+        if(tank != null && tank.getName() != null)return Component.translatable(tank.getName());
         return super.getName(pStack);
     }
 
@@ -33,7 +34,7 @@ public class TankItem extends Item {
         if(!pLevel.isClientSide()){
             ItemStack item = pPlayer.getItemInHand(pUsedHand);
             ResourceLocation tankID = new ResourceLocation(item.getOrCreateTag().getString("TankID"));
-            Tank tank = DataManager.TANKS.get(tankID);
+            TankIndex tank = DataManager.getTankIndex(tankID);
             if(tank != null){
                 TankEntity tankEntity = new TankEntity(ModEntities.TANKENTITY.get(), pLevel, tank, tankID);
                 tankEntity.setPos(pPlayer.pick(5,0,false).getLocation());

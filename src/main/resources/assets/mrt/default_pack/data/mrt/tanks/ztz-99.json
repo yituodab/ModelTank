@@ -1,8 +1,6 @@
 {
     "name": "mrt.tanks.ztz-99",
     "id": "ztz-99",
-    "modelLocation": "mrt:ztz-99.json",
-    "textureLocation": "mrt:ztz-99.png",
   "boundingBox": [3,3,3],
     "modules": [
       {

@@ -1,12 +1,13 @@
-package com.model.tank.resource.data;
+package com.model.tank.resource.data.tank;
 
 import com.model.tank.ModularTank;
 import com.google.gson.annotations.SerializedName;
+import com.model.tank.resource.data.Module;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class Tank{
+public class TankData {
     @SerializedName("name")
     public String name = "mrt.tanks.default";
     @SerializedName("boundingBox")
@@ -15,12 +16,6 @@ public class Tank{
     public Module[] modules = {};
     @SerializedName("armors")
     public Module.Armor[] armors = {};
-    @OnlyIn(Dist.CLIENT)
-    @SerializedName("modelLocation")
-    public ResourceLocation modelLocation = new ResourceLocation(ModularTank.MODID, "geo/model.geo.json");
-    @OnlyIn(Dist.CLIENT)
-    @SerializedName("textureLocation")
-    public ResourceLocation textureLocation = new ResourceLocation(ModularTank.MODID, "textures/texture.png");
     @SerializedName("maxCannonballNumber")
     public int maxCannonballNumber = 50;
     @SerializedName("maxSpeed")
