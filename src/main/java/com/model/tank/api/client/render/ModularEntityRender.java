@@ -1,12 +1,14 @@
-package com.model.tank.api.client.entity;
+package com.model.tank.api.client.render;
 
-import com.model.tank.resource.DataManager;
+import com.model.tank.api.entity.ModularEntity;
+import com.model.tank.resource.DataLoader;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.core.object.Color;
@@ -16,13 +18,18 @@ import software.bernie.geckolib.loading.object.GeometryTree;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
-public class ModEntityRender extends GeoEntityRenderer<ModEntity> {
-    public ModEntityRender(EntityRendererProvider.Context renderManager, GeoModel model) {
+public class ModularEntityRender extends GeoEntityRenderer<ModularEntity> {
+    public ModularEntityRender(EntityRendererProvider.Context renderManager, GeoModel model) {
         super(renderManager, model);
     }
 
     @Override
-    public void defaultRender(PoseStack poseStack, ModEntity animatable, MultiBufferSource bufferSource, @Nullable RenderType renderType, @Nullable VertexConsumer buffer, float yaw, float partialTick, int packedLight) {
+    public void render(@NotNull ModularEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+    }
+
+    @Override
+    public void defaultRender(PoseStack poseStack, ModularEntity animatable, MultiBufferSource bufferSource, @Nullable RenderType renderType, @Nullable VertexConsumer buffer, float yaw, float partialTick, int packedLight) {
         poseStack.pushPose();
         Color renderColor = this.getRenderColor(animatable, partialTick, packedLight);
         float red = renderColor.getRedFloat();
@@ -31,14 +38,11 @@ public class ModEntityRender extends GeoEntityRenderer<ModEntity> {
         float alpha = renderColor.getAlphaFloat();
         int packedOverlay = this.getPackedOverlay(animatable, 0.0F, partialTick);
         ResourceLocation resource = this.getGeoModel().getModelResource(animatable);
-        Model gotModel = DataManager.getModel(resource);
-        BakedGeoModel model;
-        if(gotModel == null)model = this.getGeoModel().getBakedModel(resource);
-        else model = BakedModelFactory.getForNamespace(resource.getNamespace()).constructGeoModel(GeometryTree.fromModel(gotModel));
+        Model gotModel = DataLoader.getModel(resource);
+        BakedGeoModel model = gotModel == null ? this.getGeoModel().getBakedModel(resource) : BakedModelFactory.getForNamespace(resource.getNamespace()).constructGeoModel(GeometryTree.fromModel(gotModel));
         if (renderType == null) {
             renderType = this.getRenderType(animatable, this.getTextureLocation(animatable), bufferSource, partialTick);
         }
-
         if (buffer == null) {
             buffer = bufferSource.getBuffer(renderType);
         }

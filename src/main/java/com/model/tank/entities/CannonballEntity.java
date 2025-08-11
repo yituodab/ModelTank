@@ -1,6 +1,6 @@
 package com.model.tank.entities;
 
-import com.model.tank.resource.DataManager;
+import com.model.tank.resource.DataLoader;
 import com.model.tank.resource.data.tank.CannonballData;
 import com.model.tank.resource.data.Module;
 import com.model.tank.utils.CannonballType;
@@ -155,6 +155,6 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
     @Override
     public void readSpawnData(FriendlyByteBuf friendlyByteBuf) {
         this.id = friendlyByteBuf.readResourceLocation();
-        fromCannonballData(DataManager.CANNONBALLS.get(id));
+        fromCannonballData(DataLoader.getCannonballData(id));
     }
 }

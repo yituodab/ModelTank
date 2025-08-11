@@ -1,12 +1,12 @@
 package com.model.tank.entities;
 
 
-import com.model.tank.api.client.entity.ModEntity;
+import com.model.tank.api.entity.ModularEntity;
 import com.model.tank.api.client.interfaces.IEntity;
 import com.model.tank.init.ModEntities;
 import com.model.tank.network.NetWorkManager;
 import com.model.tank.network.S2C.ServerTankShoot;
-import com.model.tank.resource.DataManager;
+import com.model.tank.resource.DataLoader;
 import com.model.tank.resource.client.data.tank.TankDisplay;
 import com.model.tank.resource.data.index.TankIndex;
 import com.model.tank.resource.data.tank.CannonballData;
@@ -14,7 +14,6 @@ import com.model.tank.resource.data.Module;
 import com.model.tank.resource.data.tank.TankData;
 
 
-import com.model.tank.resource.data.tank.TankIndexData;
 import com.model.tank.utils.ModDimensions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -40,16 +39,14 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.*;
 
 
-public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData {
+public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnData {
     private final Map<ResourceLocation, Cannonball> cannonballs = new HashMap<>();
-    private final List<Module> modules = new ArrayList<>();
-    private final Map<Integer, Integer> moduleHealth = new HashMap<>();
     private ResourceLocation currentCannonball;
     private TankDisplay display;
     private ResourceLocation tankID;
     private List<Module.Armor> armors;
     private float tickSteeringSpeed;
-    private double tickSpeed;
+    private double tickMaxSpeed;
     private double tickBackSpeed;
     private float tickAcceleration;
     private float addSpeed;
@@ -72,11 +69,11 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
         this.tickSteeringSpeed = tank.steeringSpeed / 20;
         this.tickAcceleration = tank.acceleration /20;
         this.tickBackSpeed = tank.backSpeed / 20;
-        this.tickSpeed = tank.maxSpeed / 20;
+        this.tickMaxSpeed = tank.maxSpeed / 20;
         for (ResourceLocation id : tank.cannonballs) {
-            CannonballData cannonballData = DataManager.CANNONBALLS.get(id);
+            CannonballData cannonballData = DataLoader.getCannonballData(id);
             if(cannonballData == null)continue;
-            Cannonball cannonball = new Cannonball(DataManager.CANNONBALLS.get(id), 0);
+            Cannonball cannonball = new Cannonball(cannonballData, 0);
             cannonballs.put(id, cannonball);
             if(this.getCurrentCannonball() == null)this.setCurrentCannonball(id);
         }
@@ -197,9 +194,9 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
             if(!inputUp && !inputDown){
                 addSpeed = addSpeed < 0 ? -0.005F : 0.005F;
             }
-            if(inputUp && currentSpeed < tickSpeed){
-                if(tickSpeed-currentSpeed<tickAcceleration)
-                    addSpeed += (tickSpeed-currentSpeed)/tickSpeed;
+            if(inputUp && currentSpeed < tickMaxSpeed){
+                if(tickMaxSpeed -currentSpeed<tickAcceleration)
+                    addSpeed += (tickMaxSpeed -currentSpeed)/ tickMaxSpeed;
                 else
                     addSpeed += 1F;
             }
@@ -217,7 +214,7 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
         this.tankID = new ResourceLocation(compoundTag.getString("TankID"));
-        TankIndex tankIndex = DataManager.getTankIndex(tankID);
+        TankIndex tankIndex = DataLoader.getTankIndex(tankID);
         this.display = tankIndex.getDisplay();
         fromTankData(tankIndex.getTankData());
         CompoundTag cannonballs = compoundTag.getCompound("cannonballs");
@@ -263,7 +260,7 @@ public class TankEntity extends ModEntity implements IEntityAdditionalSpawnData 
     @Override
     public void readSpawnData(FriendlyByteBuf friendlyByteBuf) {
         this.tankID = friendlyByteBuf.readResourceLocation();
-        TankIndex tankIndex = DataManager.getTankIndex(tankID);
+        TankIndex tankIndex = DataLoader.getTankIndex(tankID);
         this.display = tankIndex.getDisplay();
         fromTankData(tankIndex.getTankData());
         for(int i = 0;i<cannonballs.size();i++){

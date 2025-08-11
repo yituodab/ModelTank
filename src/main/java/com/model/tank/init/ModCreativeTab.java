@@ -1,7 +1,7 @@
 package com.model.tank.init;
 
 import com.model.tank.ModularTank;
-import com.model.tank.resource.DataManager;
+import com.model.tank.resource.DataLoader;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -15,14 +15,14 @@ public class ModCreativeTab {
             () -> CreativeModeTab.builder().icon(ModCreativeTab::getIcon).
                     title(Component.translatable("itemGroup.modulartank")).
                     displayItems((parameters, output)->{
-                        DataManager.getAllTanks().forEach(tankDataEntry -> {
-                            ItemStack item = ModItems.TANKITEM.get().getDefaultInstance();
+                        DataLoader.getAllTanks().forEach(tankDataEntry -> {
+                            ItemStack item = ModItems.TANK_BOX.get().getDefaultInstance();
                             item.getOrCreateTag().putString("TankID", tankDataEntry.getKey().toString());
                             output.accept(item);
                         });
                     })
                     .build());
     private static ItemStack getIcon(){
-        return ModItems.TANKITEM.get().getDefaultInstance();
+        return ModItems.TANK_BOX.get().getDefaultInstance();
     }
 }

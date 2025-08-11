@@ -1,7 +1,9 @@
 package com.model.tank.resource.data;
 
+import com.eliotlash.mclib.utils.MathHelper;
 import com.google.gson.annotations.SerializedName;
 import com.model.tank.utils.HitBox;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
 
@@ -19,29 +21,12 @@ public class Module {
     @SerializedName("type")
     private Type type = Type.UNKNOWN;
     @SerializedName("position")
-    private double[] position = {1,1,1};
+    private Vec3 position = new Vec3(0,0,0);
     @SerializedName("size")
-    private double[] size = {1,1,1};
+    private Vec3 size = new Vec3(0,0,0);
     @SerializedName("maxHealth")
     private int maxHealth = 100;
-    private HitBox hitBox = new HitBox(getX()-getWidth()/2,getY()-getHeight()/2,getZ()-getLength()/2,
-            getX()+getWidth()/2,getY()+getHeight()/2,getZ()+getLength()/2,0,0);
-    public double getX(){
-        return position[0];
-    }
-    public double getY(){
-        return position[1];
-    }
-    public double getZ(){
-        return position[2];
-    }
-    public double getLength(){
-        return size[2];
-    }
-    public double getWidth(){
-        return size[0];
-    }
-    public double getHeight(){return size[1];}
+    private final HitBox hitBox = new HitBox(position.subtract(size),position.add(size),0,0);
     public HitBox getHitBox() {
         return hitBox;
     }

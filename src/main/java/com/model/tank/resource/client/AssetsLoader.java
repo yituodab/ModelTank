@@ -1,11 +1,11 @@
 package com.model.tank.resource.client;
 
 import com.model.tank.ModularTank;
-import com.model.tank.resource.DataManager;
+import com.model.tank.resource.DataLoader;
+import com.model.tank.resource.client.data.tank.TankDisplay;
 import com.model.tank.utils.FileTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.IOUtils;
@@ -48,7 +48,7 @@ public class AssetsLoader {
         try(InputStream inputStream = Files.newInputStream(path)){
             String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             Model model = JsonUtil.GEO_GSON.fromJson(json, Model.class);
-            DataManager.putModel(new ResourceLocation(modid, path.getFileName().toString()), model);
+            DataLoader.putModel(new ResourceLocation(modid, path.getFileName().toString()), model);
         } catch (Exception e) {
             ModularTank.LOGGER.error("load model fail,because",e);
         }
@@ -62,6 +62,15 @@ public class AssetsLoader {
             }
         } catch (Exception e) {
             ModularTank.LOGGER.error("load texture fail,because",e);
+        }
+    }
+    public static void loadDisplayFromFile(String modid, Path path){
+        try(InputStream inputStream = Files.newInputStream(path)){
+            String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            TankDisplay display = JsonUtil.GEO_GSON.fromJson(json, TankDisplay.class);
+            DataLoader.putTankDisplay(new ResourceLocation(modid, path.getFileName().toString()), display);
+        } catch (Exception e) {
+            ModularTank.LOGGER.error("load model fail,because",e);
         }
     }
 }

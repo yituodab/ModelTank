@@ -9,7 +9,7 @@ public class ModDimensions extends EntityDimensions {
     @Deprecated
     public ModDimensions(float pWidth, float pHeight, boolean pFixed) {
         super(pWidth, pHeight, pFixed);
-        this.length = 0;
+        this.length = pWidth;
     }
     public ModDimensions(float width,float height,float length,boolean fixed){
         super(width,height,fixed);

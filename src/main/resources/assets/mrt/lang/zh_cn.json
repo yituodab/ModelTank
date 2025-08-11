@@ -8,5 +8,14 @@
   "key.mrt.move.right": "右转",
   "key.mrt.aim": "瞄准",
   "key.mrt.shoot": "射击",
-  "mrt.hud.currentSpeed": "当前速度："
+  "mrt.hud.currentSpeed": "当前速度：",
+  "key.mrt.1": "炮弹一",
+  "key.mrt.2": "炮弹二",
+  "key.mrt.3": "炮弹三",
+  "key.mrt.4": "炮弹四",
+  "key.mrt.5": "炮弹五",
+  "key.mrt.6": "炮弹六",
+  "key.mrt.7": "炮弹七",
+  "key.mrt.8": "炮弹八",
+  "key.mrt.9": "炮弹九"
 }

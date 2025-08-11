@@ -1,4 +1,4 @@
-package com.model.tank.utils;
+package com.model.tank.api.resource.serializer;
 
 import com.google.gson.*;
 import net.minecraft.util.GsonHelper;

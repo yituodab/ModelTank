@@ -1,7 +1,7 @@
 package com.model.tank.resource.loader;
 
 import com.model.tank.ModularTank;
-import com.model.tank.resource.DataManager;
+import com.model.tank.resource.DataLoader;
 import com.model.tank.resource.data.tank.TankData;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.IOUtils;
@@ -20,8 +20,8 @@ public class TankDataLoader {
                 try(InputStream inputStream = Files.newInputStream(path)) {
                     String namespace = namespaceDir.getFileName().toString();
                     String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-                    TankData tank = DataManager.GSON.fromJson(json, TankData.class);
-                    DataManager.putTankData(new ResourceLocation(namespace, path.getFileName().toString().replace(".json", "")), tank);
+                    TankData tank = DataLoader.GSON.fromJson(json, TankData.class);
+                    DataLoader.putTankData(new ResourceLocation(namespace, path.getFileName().toString().replace(".json", "")), tank);
                 } catch (Exception e) {
                     ModularTank.LOGGER.error("Load {} failed,because", path, e);
                 }
