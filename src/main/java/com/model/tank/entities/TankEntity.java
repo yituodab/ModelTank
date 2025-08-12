@@ -3,6 +3,7 @@ package com.model.tank.entities;
 
 import com.model.tank.api.entity.ModularEntity;
 import com.model.tank.api.client.interfaces.IEntity;
+import com.model.tank.api.nbt.TankEntityDataManager;
 import com.model.tank.init.ModEntities;
 import com.model.tank.network.NetWorkManager;
 import com.model.tank.network.S2C.ServerTankShoot;
@@ -39,7 +40,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.*;
 
 
-public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnData {
+public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnData, TankEntityDataManager {
     private final Map<ResourceLocation, Cannonball> cannonballs = new HashMap<>();
     private ResourceLocation currentCannonball;
     private TankDisplay display;
@@ -59,12 +60,13 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
     public TankEntity(EntityType<?> p_19870_, Level p_19871_, TankIndex tank, ResourceLocation id) {
         super(p_19870_, p_19871_);
         this.tankID = id;
-        this.display = tank.getDisplay();
-        fromTankData(tank.getTankData());
+        fromTankIndex(tank);
     }
-    public void fromTankData(TankData tank){
+    public void fromTankIndex(TankIndex tankIndex){
+        this.display = tankIndex.getDisplay();
+        TankData tank = tankIndex.getTankData();
         this.modules.clear();
-        this.modules.addAll(List.of(tank.modules));
+        this.modules.addAll(List.of(tank.getModules()));
         this.armors = List.of(tank.armors);
         this.tickSteeringSpeed = tank.steeringSpeed / 20;
         this.tickAcceleration = tank.acceleration /20;
@@ -208,6 +210,19 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
             this.setDeltaMovement(deltaMovement);
         }
     }
+
+    @Override
+    public void load(CompoundTag pCompound) {
+        super.load(pCompound);
+        if(pCompound.contains(TANK_ID)){
+            this.tankID = new ResourceLocation(pCompound.getString(TANK_ID));
+            TankIndex index = DataLoader.getTankIndex(this.tankID);
+            if(index != null){
+                fromTankIndex(index);
+            }
+        }
+    }
+
     @Override
     protected void defineSynchedData() {}
 
@@ -215,8 +230,7 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
         this.tankID = new ResourceLocation(compoundTag.getString("TankID"));
         TankIndex tankIndex = DataLoader.getTankIndex(tankID);
-        this.display = tankIndex.getDisplay();
-        fromTankData(tankIndex.getTankData());
+        fromTankIndex(tankIndex);
         CompoundTag cannonballs = compoundTag.getCompound("cannonballs");
         CompoundTag modules = compoundTag.getCompound("modules");
         this.cannonballs.forEach((id, cannonball)->{
@@ -261,8 +275,7 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
     public void readSpawnData(FriendlyByteBuf friendlyByteBuf) {
         this.tankID = friendlyByteBuf.readResourceLocation();
         TankIndex tankIndex = DataLoader.getTankIndex(tankID);
-        this.display = tankIndex.getDisplay();
-        fromTankData(tankIndex.getTankData());
+        fromTankIndex(tankIndex);
         for(int i = 0;i<cannonballs.size();i++){
             ResourceLocation id = friendlyByteBuf.readResourceLocation();
             int number = friendlyByteBuf.readInt();

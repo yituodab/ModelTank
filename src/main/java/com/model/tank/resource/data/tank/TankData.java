@@ -2,18 +2,17 @@ package com.model.tank.resource.data.tank;
 
 import com.model.tank.ModularTank;
 import com.google.gson.annotations.SerializedName;
+import com.model.tank.api.resource.data.ModularEntityData;
 import com.model.tank.resource.data.Module;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class TankData {
+public class TankData extends ModularEntityData {
     @SerializedName("name")
     public String name = "mrt.tanks.default";
     @SerializedName("boundingBox")
     public float[] boundingBox = {1,1,1};
-    @SerializedName("modules")
-    public Module[] modules = {};
     @SerializedName("armors")
     public Module.Armor[] armors = {};
     @SerializedName("maxCannonballNumber")
