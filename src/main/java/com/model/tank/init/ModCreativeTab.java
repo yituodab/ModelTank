@@ -1,6 +1,7 @@
 package com.model.tank.init;
 
 import com.model.tank.ModularTank;
+import com.model.tank.api.nbt.TankBoxDataManager;
 import com.model.tank.resource.DataLoader;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -17,7 +18,7 @@ public class ModCreativeTab {
                     displayItems((parameters, output)->{
                         DataLoader.getAllTanks().forEach(tankDataEntry -> {
                             ItemStack item = ModItems.TANK_BOX.get().getDefaultInstance();
-                            item.getOrCreateTag().putString("TankID", tankDataEntry.getKey().toString());
+                            item.getOrCreateTag().putString(TankBoxDataManager.TANK_ID, tankDataEntry.getKey().toString());
                             output.accept(item);
                         });
                     })

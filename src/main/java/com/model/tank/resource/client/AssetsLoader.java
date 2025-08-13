@@ -25,14 +25,18 @@ public class AssetsLoader {
             try{
                 Files.newDirectoryStream(root).forEach(path -> {
                     try {
+                        String modid = path.getFileName().toString();
                         Files.newDirectoryStream(path.resolve("lang")).forEach(
                                 LanguageLoader::load
                         );
                         Files.newDirectoryStream(path.resolve("models")).forEach(model ->
-                                loadModelFromFile(path.getFileName().toString(), model)
+                                loadModelFromFile(modid, model)
                         );
                         Files.newDirectoryStream(path.resolve("textures")).forEach(texture ->
-                                loadTextureFromFile(path.getFileName().toString(), texture)
+                                loadTextureFromFile(modid, texture)
+                        );
+                        Files.newDirectoryStream(path.resolve("display")).forEach(display ->
+                                loadDisplayFromFile(modid, display)
                         );
                     } catch (IOException e) {
                         ModularTank.LOGGER.error("error",e);
@@ -56,10 +60,8 @@ public class AssetsLoader {
     public static void loadTextureFromFile(String modid, Path path){
         try{
             Minecraft mc = Minecraft.getInstance();
-            if(mc != null){
-                FileTexture texture = new FileTexture(new ResourceLocation(modid, path.getFileName().toString()),path);
-                mc.textureManager.register(texture.getID(),texture);
-            }
+            FileTexture texture = new FileTexture(new ResourceLocation(modid, path.getFileName().toString()), path);
+            mc.textureManager.register(texture.getID(),texture);
         } catch (Exception e) {
             ModularTank.LOGGER.error("load texture fail,because",e);
         }
@@ -67,10 +69,10 @@ public class AssetsLoader {
     public static void loadDisplayFromFile(String modid, Path path){
         try(InputStream inputStream = Files.newInputStream(path)){
             String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-            TankDisplay display = JsonUtil.GEO_GSON.fromJson(json, TankDisplay.class);
+            TankDisplay display = DataLoader.GSON.fromJson(json, TankDisplay.class);
             DataLoader.putTankDisplay(new ResourceLocation(modid, path.getFileName().toString()), display);
         } catch (Exception e) {
-            ModularTank.LOGGER.error("load model fail,because",e);
+            ModularTank.LOGGER.error("Load display fail,because",e);
         }
     }
 }

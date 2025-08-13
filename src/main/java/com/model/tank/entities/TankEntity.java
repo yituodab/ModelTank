@@ -288,6 +288,10 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
         }
     }
 
+    public ResourceLocation getTankID() {
+        return tankID;
+    }
+
     public Map<ResourceLocation, Cannonball> getCannonballs() {return cannonballs;}
     public ResourceLocation getCurrentCannonball() {return this.currentCannonball;}
     public void setCurrentCannonball(ResourceLocation currentCannonball) {this.currentCannonball = currentCannonball;}

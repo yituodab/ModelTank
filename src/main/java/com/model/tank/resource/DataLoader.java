@@ -3,6 +3,7 @@ package com.model.tank.resource;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.model.tank.ModularTank;
+import com.model.tank.api.resource.serializer.Vec3Serializer;
 import com.model.tank.resource.client.AssetsLoader;
 import com.model.tank.resource.client.data.tank.TankDisplay;
 import com.model.tank.resource.data.index.TankIndex;
@@ -14,6 +15,7 @@ import com.model.tank.resource.loader.TankDataLoader;
 import com.model.tank.resource.loader.TankIndexLoader;
 import com.model.tank.api.resource.serializer.UUIDSerializer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -41,6 +43,7 @@ public class DataLoader {
     public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
             .registerTypeAdapter(UUID.class, new UUIDSerializer())
+            .registerTypeAdapter(Vec3.class, new Vec3Serializer())
             .create();
     private static boolean firstLoad = true;
     public static final Path MRTDataDirPath = FMLPaths.GAMEDIR.get().resolve("mrt");
