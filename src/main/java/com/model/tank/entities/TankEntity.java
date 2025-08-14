@@ -1,6 +1,7 @@
 package com.model.tank.entities;
 
 
+import com.model.tank.api.client.interfaces.ITargetEntity;
 import com.model.tank.api.entity.ModularEntity;
 import com.model.tank.api.client.interfaces.IEntity;
 import com.model.tank.api.nbt.TankEntityDataManager;
@@ -25,10 +26,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
@@ -40,7 +43,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.*;
 
 
-public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnData, TankEntityDataManager {
+public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnData, TankEntityDataManager, ITargetEntity {
     private final Map<ResourceLocation, Cannonball> cannonballs = new HashMap<>();
     private ResourceLocation currentCannonball;
     private TankDisplay display;
@@ -67,12 +70,8 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
         TankData tank = tankIndex.getTankData();
         this.modules.clear();
         this.modules.addAll(List.of(tank.getModules()));
-        this.armors = List.of(tank.armors);
-        this.tickSteeringSpeed = tank.steeringSpeed / 20;
-        this.tickAcceleration = tank.acceleration /20;
-        this.tickBackSpeed = tank.backSpeed / 20;
-        this.tickMaxSpeed = tank.maxSpeed / 20;
-        for (ResourceLocation id : tank.cannonballs) {
+        this.armors = List.of(tank.getArmors());
+        for (ResourceLocation id : tank.getCannonballs()) {
             CannonballData cannonballData = DataLoader.getCannonballData(id);
             if(cannonballData == null)continue;
             Cannonball cannonball = new Cannonball(cannonballData, 0);
@@ -85,9 +84,16 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
                 case CANNON -> {
                     this.maxReloadTime = (int)(module.getReloadTime() * 1000);
                 }
+                case ENGINE -> {
+                    this.tickSteeringSpeed = module.getSteeringSpeed() / 20;
+                    this.tickAcceleration = module.getAcceleration() /20;
+                    this.tickBackSpeed = module.getBackSpeed() / 20;
+                    this.tickMaxSpeed = module.getMaxSpeed() / 20;
+                }
             }
         }
-        ((IEntity)this).setDimensions(new ModDimensions(tank.boundingBox[0],tank.boundingBox[1],tank.boundingBox[2],true));
+        float[] boundingBox = tank.getBoundingBox();
+        ((IEntity)this).setDimensions(new ModDimensions(boundingBox[0],boundingBox[1],boundingBox[2],true));
     }
 
 
@@ -305,6 +311,12 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
     public Packet<ClientGamePacketListener> getAddEntityPacket() {return NetworkHooks.getEntitySpawningPacket(this);}
     @Deprecated
     public TankEntity(EntityType<?> p_19870_, Level p_19871_) {super(p_19870_, p_19871_);}
+
+    @Override
+    public boolean onCannonballHit(CannonballEntity cannonball, EntityHitResult result, DamageSource source, float damage) {
+        return false;
+    }
+
     public static class Cannonball{
         private final CannonballData data;
         private int number;

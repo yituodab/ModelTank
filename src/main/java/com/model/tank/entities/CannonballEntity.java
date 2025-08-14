@@ -1,21 +1,29 @@
 package com.model.tank.entities;
 
+import com.model.tank.api.client.interfaces.ITargetEntity;
+import com.model.tank.events.CannonballHitEntityEvent;
+import com.model.tank.init.ModDamageTypes;
 import com.model.tank.resource.DataLoader;
-import com.model.tank.resource.data.tank.CannonballData;
 import com.model.tank.resource.data.Module;
+import com.model.tank.resource.data.tank.CannonballData;
 import com.model.tank.utils.CannonballType;
+import com.model.tank.utils.EntityHelper;
 import com.model.tank.utils.ExplodeHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -23,7 +31,6 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,29 +63,18 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
             Vec3 startPos = this.position();
             Vec3 endPos = this.position().add(this.getDeltaMovement());
             BlockHitResult blockHitResult = this.level().clip(new ClipContext(startPos, endPos, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, this));
-            if(blockHitResult.getType() != HitResult.Type.MISS)endPos = blockHitResult.getLocation();
-            AABB aabb = this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0);
-            List<Entity> onHitEntities = new ArrayList<>();
-            // 对实体进行命中判定
-            for(Entity entity : this.level().getEntities(this, aabb)) {
-                if (entity.getBoundingBox().clip(startPos, endPos).orElse(null) != null) {
-                    onHitEntities.add(entity);
-                }
+            if(blockHitResult.getType() != HitResult.Type.MISS) {
+                endPos = blockHitResult.getLocation();
             }
+            List<EntityHitResult> onHitEntities = EntityHelper.findEntitiesOnPath(this, startPos, endPos);
             if(!onHitEntities.isEmpty()){
-                TankEntity lastTank = null;
-                for(Entity entity : onHitEntities) {
-                    if(lastTank != null && distanceTo(lastTank) < distanceTo(entity)){
-                        continue;
+                for(EntityHitResult entityHitResult : onHitEntities) {
+                    this.onHitEntity(entityHitResult);
+                    if(this.isRemoved()){
+                        return;
                     }
-                    if(entity instanceof TankEntity tank){
-                        lastTank = tank;
-                        onHitTankEntity(startPos,endPos,tank);
-                        continue;
-                    }
-                    this.onHitEntity(new EntityHitResult(entity));
                 }
-                discard();
+                this.discard();
                 return;
             }
             this.onHitBlock(blockHitResult);
@@ -98,10 +94,40 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
     @Override
     protected void onHitEntity(EntityHitResult pResult) {
         Entity entity = pResult.getEntity();
-        if(entity instanceof LivingEntity livingEntity){
-            livingEntity.hurt(this.damageSources().thrown(this, this.getOwner()), this.entityDamage);
-            switch (this.type){
-                case HE,HEAT,HESH -> ExplodeHelper.createExplode(Objects.requireNonNull(this.getOwner()), this.TNTmass, this.position());
+        Vec3 hitPos = pResult.getLocation();
+        DamageSource damageSource = ModDamageTypes.create(this.level(), ModDamageTypes.Type.CANNONBALL, this, this.getOwner());
+        float damage = this.entityDamage;
+        if(entity instanceof ITargetEntity iTargetEntity){
+            // 发布事件
+            CannonballHitEntityEvent.TargetEntity event = new CannonballHitEntityEvent.TargetEntity(this, entity, hitPos, damageSource, damage);
+            if(MinecraftForge.EVENT_BUS.post(event)){
+                return;
+            }
+            boolean discard = iTargetEntity.onCannonballHit(this, new EntityHitResult(event.getEntity(), event.getHitPos()), event.getSource(), event.getDamage());
+            if(discard){
+                return;
+            }
+            return;
+        }
+        // 发布事件
+        CannonballHitEntityEvent event = new CannonballHitEntityEvent(this, entity, hitPos, damageSource, damage);
+        if(MinecraftForge.EVENT_BUS.post(event)){
+            return;
+        }
+        // 更新变量
+        entity = event.getEntity();
+        hitPos = event.getHitPos();
+        damageSource = event.getSource();
+        damage = event.getDamage();
+        if(entity == null){
+            return;
+        }
+        // 造成伤害
+        entity.hurt(damageSource, damage);
+        switch (this.type) {
+            case HE,HEAT,HESH -> {
+                ExplodeHelper.createExplode(Objects.requireNonNull(this.getOwner()), this.TNTmass, hitPos);
+                this.discard();
             }
         }
     }

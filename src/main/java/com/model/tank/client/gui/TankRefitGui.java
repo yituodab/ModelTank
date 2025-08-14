@@ -5,11 +5,8 @@ import com.model.tank.entities.TankEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public class TankRefitGui extends Screen {
     public static final ResourceLocation REFIT_GUI_TEXTURE_LOCATION = new ResourceLocation(ModularTank.MODID, "textures/gui/tank_refit_gui.png");

@@ -16,7 +16,7 @@ public class Vec3Serializer  implements JsonDeserializer<Vec3>, JsonSerializer<V
         double x = GsonHelper.convertToDouble(array.get(0), "array.0");
         double y = GsonHelper.convertToDouble(array.get(1), "array.1");
         double z = GsonHelper.convertToDouble(array.get(2), "array.2");
-        return new Vec3(x, y, x);
+        return new Vec3(x, y, z);
     }
 
     @Override

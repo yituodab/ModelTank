@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BoatItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -29,7 +28,9 @@ public class TankBoxItem extends Item implements TankBoxDataManager {
     @Override
     public Component getName(ItemStack pStack) {
         TankIndex tank = DataLoader.getTankIndex(this.getTankID(pStack));
-        if(tank != null)return Component.translatable(tank.getDisplay().getName());
+        if(tank != null && tank.getDisplay() != null){
+            return Component.translatable(tank.getDisplay().getName());
+        }
         return super.getName(pStack);
     }
 
