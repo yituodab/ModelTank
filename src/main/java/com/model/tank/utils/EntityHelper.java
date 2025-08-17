@@ -31,20 +31,6 @@ public class EntityHelper {
             }
             hitResults.add(new EntityHitResult(entity, hitPos));
         }
-        for (int i = 1; i < hitResults.size(); i++) {
-            boolean swap = true;
-            for (int j = 0; j < hitResults.size() - i; j++) {
-                if (hitResults.get(j).getLocation().distanceTo(startPos) > hitResults.get(j + 1).getLocation().distanceTo(startPos)) {
-                    EntityHitResult temp = hitResults.get(j);
-                    hitResults.set(j, hitResults.get(j + 1));
-                    hitResults.set(j + 1, temp);
-                    swap = false;
-                }
-            }
-            if (swap) {
-                break;
-            }
-        }
         MathUtils.sort(hitResults, pair -> pair.getLeft().getLocation().distanceTo(startPos) > pair.getRight().getLocation().distanceTo(startPos));
         return hitResults;
     }
