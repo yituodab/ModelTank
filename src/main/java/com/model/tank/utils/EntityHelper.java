@@ -45,6 +45,7 @@ public class EntityHelper {
                 break;
             }
         }
+        MathUtils.sort(hitResults, pair -> pair.getLeft().getLocation().distanceTo(startPos) > pair.getRight().getLocation().distanceTo(startPos));
         return hitResults;
     }
 }
