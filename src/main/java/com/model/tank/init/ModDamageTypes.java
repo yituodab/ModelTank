@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 public class ModDamageTypes {
     public static enum Type{
         CREW_KILLED,
-        CANNONBALL,
+        COMMON,
         MARTYRDOM,
         IGNITE
     }
@@ -22,10 +22,13 @@ public class ModDamageTypes {
     public static final ResourceKey<DamageType> ON_HIT_AMMO = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(ModularTank.MODID, "on_hit_ammo"));
     public static final ResourceKey<DamageType> IGNITE = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(ModularTank.MODID, "ignite"));
 
+    public static DamageSource create(Level level, CannonballEntity cannonball, Entity shooter){
+        return create(level, Type.COMMON, cannonball, shooter);
+    }
     public static DamageSource create(Level level, Type type, CannonballEntity cannonball, Entity shooter){
         var registry = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
         switch (type){
-            case CANNONBALL,CREW_KILLED -> {
+            case COMMON, CREW_KILLED -> {
                 return new DamageSource(registry.getHolderOrThrow(CANNONBALL), cannonball, shooter);
             }
             case MARTYRDOM -> {

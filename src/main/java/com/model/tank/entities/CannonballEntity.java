@@ -9,6 +9,7 @@ import com.model.tank.resource.data.tank.CannonballData;
 import com.model.tank.utils.CannonballType;
 import com.model.tank.utils.EntityHelper;
 import com.model.tank.utils.ExplodeHelper;
+import com.model.tank.utils.MRTEntityHitResult;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -23,6 +24,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
@@ -45,12 +48,13 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
     public CannonballEntity(EntityType<? extends Projectile> p_37248_, Level p_37249_) {
         super(p_37248_, p_37249_);
     }
-    public float entityDamage = 20;
-    public CannonballType type;
+    private double resistance = 0.01;
+    private float entityDamage = 20;
+    private CannonballType type;
     private ResourceLocation id;
     private int life = 100;
-    public float TNTmass;
-    public double speed;
+    private float TNTmass;
+    private double speed;
 
     @Override
     protected void defineSynchedData() {
@@ -59,29 +63,37 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
     @Override
     public void tick() {
         super.tick();
-        if(!this.level().isClientSide){
-            Vec3 startPos = this.position();
-            Vec3 endPos = this.position().add(this.getDeltaMovement());
-            BlockHitResult blockHitResult = this.level().clip(new ClipContext(startPos, endPos, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, this));
-            if(blockHitResult.getType() != HitResult.Type.MISS) {
-                endPos = blockHitResult.getLocation();
-            }
-            List<EntityHitResult> onHitEntities = EntityHelper.findEntitiesOnPath(this, startPos, endPos);
-            if(!onHitEntities.isEmpty()){
-                for(EntityHitResult entityHitResult : onHitEntities) {
-                    this.onHitEntity(entityHitResult);
-                    if(this.isRemoved()){
-                        return;
-                    }
-                }
-                this.discard();
-                return;
-            }
-            this.onHitBlock(blockHitResult);
-            if (this.tickCount >= this.life - 1) {
-                this.discard();
-            }
+        if(!this.level().isClientSide) {
+            onServerTick();
         }
+        Vec3 movement = this.getDeltaMovement();
+        this.setPos(this.position().add(movement));
+        this.setDeltaMovement(this.getDeltaMovement().add(0, -0.49, 0));
+        this.setDeltaMovement(this.getDeltaMovement().scale(1 - resistance));
+        if (this.tickCount >= this.life - 1) {
+            this.discard();
+        }
+    }
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    public void onServerTick(){
+        Vec3 startPos = this.position();
+        Vec3 endPos = this.position().add(this.getDeltaMovement());
+        BlockHitResult blockHitResult = this.level().clip(new ClipContext(startPos, endPos, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, this));
+        if(blockHitResult.getType() != HitResult.Type.MISS) {
+            endPos = blockHitResult.getLocation();
+        }
+        List<EntityHitResult> onHitEntities = EntityHelper.findEntitiesOnPath(this, startPos, endPos);
+        if(!onHitEntities.isEmpty()){
+            for(EntityHitResult entityHitResult : onHitEntities) {
+                this.onHitEntity(new MRTEntityHitResult(entityHitResult, startPos, endPos));
+                if(this.isRemoved()){
+                    return;
+                }
+            }
+            this.discard();
+            return;
+        }
+        this.onHitBlock(blockHitResult);
     }
 
     public void fromCannonballData(CannonballData data){
@@ -91,11 +103,10 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
         this.life = data.life;
     }
 
-    @Override
-    protected void onHitEntity(EntityHitResult pResult) {
+    protected void onHitEntity(MRTEntityHitResult pResult) {
         Entity entity = pResult.getEntity();
         Vec3 hitPos = pResult.getLocation();
-        DamageSource damageSource = ModDamageTypes.create(this.level(), ModDamageTypes.Type.CANNONBALL, this, this.getOwner());
+        DamageSource damageSource = ModDamageTypes.create(this.level(), this, this.getOwner());
         float damage = this.entityDamage;
         if(entity instanceof ITargetEntity iTargetEntity){
             // 发布事件
@@ -103,7 +114,7 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
             if(MinecraftForge.EVENT_BUS.post(event)){
                 return;
             }
-            boolean discard = iTargetEntity.onCannonballHit(this, new EntityHitResult(event.getEntity(), event.getHitPos()), event.getSource(), event.getDamage());
+            boolean discard = iTargetEntity.onCannonballHit(this, new MRTEntityHitResult(event.getEntity(), event.getHitPos(), pResult.getStartPos(), pResult.getStartPos()), event.getSource(), event.getDamage());
             if(discard){
                 return;
             }

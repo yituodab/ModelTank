@@ -1,9 +1,9 @@
 package com.model.tank.api.client.interfaces;
 
 import com.model.tank.entities.CannonballEntity;
+import com.model.tank.utils.MRTEntityHitResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.phys.EntityHitResult;
 
 public interface ITargetEntity {
-    boolean onCannonballHit(CannonballEntity cannonball, EntityHitResult result, DamageSource source, float damage);
+    boolean onCannonballHit(CannonballEntity cannonball, MRTEntityHitResult result, DamageSource source, float damage);
 }

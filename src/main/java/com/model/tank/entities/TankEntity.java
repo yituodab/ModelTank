@@ -16,6 +16,7 @@ import com.model.tank.resource.data.Module;
 import com.model.tank.resource.data.tank.TankData;
 
 
+import com.model.tank.utils.MRTEntityHitResult;
 import com.model.tank.utils.ModDimensions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -313,7 +314,7 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
     public TankEntity(EntityType<?> p_19870_, Level p_19871_) {super(p_19870_, p_19871_);}
 
     @Override
-    public boolean onCannonballHit(CannonballEntity cannonball, EntityHitResult result, DamageSource source, float damage) {
+    public boolean onCannonballHit(CannonballEntity cannonball, MRTEntityHitResult result, DamageSource source, float damage) {
         return false;
     }
 
