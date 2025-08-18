@@ -4,7 +4,6 @@ import com.model.tank.api.client.interfaces.ITargetEntity;
 import com.model.tank.events.CannonballHitEntityEvent;
 import com.model.tank.init.ModDamageTypes;
 import com.model.tank.resource.DataLoader;
-import com.model.tank.resource.data.Module;
 import com.model.tank.resource.data.tank.CannonballData;
 import com.model.tank.utils.CannonballType;
 import com.model.tank.utils.EntityHelper;
@@ -29,6 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -36,19 +36,21 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 public class CannonballEntity extends Projectile implements GeoEntity, IEntityAdditionalSpawnData {
-    public CannonballEntity(EntityType<? extends Projectile> entityType, Level level, TankEntity owner, CannonballData data, ResourceLocation id){
+    public CannonballEntity(EntityType<? extends Projectile> entityType, Level level, Entity owner, CannonballData data, ResourceLocation id, float XRot, float YRot, Vec3 position){
         super(entityType, level);
         this.setOwner(owner);
+        this.shoot(owner, XRot, YRot);
+        this.setPos(position);
         this.id = id;
         fromCannonballData(data);
     }
     public CannonballEntity(EntityType<? extends Projectile> p_37248_, Level p_37249_) {
         super(p_37248_, p_37249_);
     }
-    private double resistance = 0.01;
+    private static final double resistance = 0.01;
+    private static final double gravity = 0.49;
     private float entityDamage = 20;
     private CannonballType type;
     private ResourceLocation id;
@@ -56,8 +58,12 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
     private float TNTmass;
     private double speed;
 
-    @Override
-    protected void defineSynchedData() {
+    public void fromCannonballData(CannonballData data){
+        this.entityDamage = data.getEntityDamage();
+        this.type = data.getType();
+        this.speed = data.getSpeed();
+        this.life = data.getLife();
+        this.TNTmass = data.getTNTmass();
     }
 
     @Override
@@ -66,9 +72,12 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
         if(!this.level().isClientSide) {
             onServerTick();
         }
-        Vec3 movement = this.getDeltaMovement();
-        this.setPos(this.position().add(movement));
-        this.setDeltaMovement(this.getDeltaMovement().add(0, -0.49, 0));
+        // 更新朝向
+        this.updateRotation();
+        // 更新位置
+        this.setPos(this.position().add(this.getDeltaMovement()));
+        // 更新速度
+        this.setDeltaMovement(this.getDeltaMovement().add(0, -gravity, 0));
         this.setDeltaMovement(this.getDeltaMovement().scale(1 - resistance));
         if (this.tickCount >= this.life - 1) {
             this.discard();
@@ -90,18 +99,10 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
                     return;
                 }
             }
-            this.discard();
-            return;
         }
         this.onHitBlock(blockHitResult);
     }
 
-    public void fromCannonballData(CannonballData data){
-        this.entityDamage = data.entityDamage;
-        this.type = data.type;
-        this.speed = data.speed;
-        this.life = data.life;
-    }
 
     protected void onHitEntity(MRTEntityHitResult pResult) {
         Entity entity = pResult.getEntity();
@@ -116,7 +117,7 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
             }
             boolean discard = iTargetEntity.onCannonballHit(this, new MRTEntityHitResult(event.getEntity(), event.getHitPos(), pResult.getStartPos(), pResult.getStartPos()), event.getSource(), event.getDamage());
             if(discard){
-                return;
+                this.discard();
             }
             return;
         }
@@ -135,27 +136,13 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
         }
         // 造成伤害
         entity.hurt(damageSource, damage);
+        entity.invulnerableTime = 0;
         switch (this.type) {
             case HE,HEAT,HESH -> {
                 ExplodeHelper.createExplode(Objects.requireNonNull(this.getOwner()), this.TNTmass, hitPos);
                 this.discard();
             }
         }
-    }
-    protected void onHitTankEntity(Vec3 startPos,Vec3 endPos, TankEntity tank){
-        Module.Armor onHitArmor = null;
-        Vec3 onHitPos = null;
-        for(Module.Armor armor : tank.getArmors()){
-            Optional<Vec3> vec3 = armor.getHitBox().clip(startPos,endPos);
-            if(vec3.isPresent()){
-                if((onHitArmor == null && onHitPos == null) || onHitPos.distanceTo(startPos) > vec3.get().distanceTo(startPos)){
-                    onHitArmor = armor;
-                    onHitPos = vec3.get();
-                }
-            }
-        }
-        if(onHitArmor == null)return;
-        tank.discard();
     }
 
     @Override
@@ -166,11 +153,15 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
             case HE,HEAT,HESH -> ExplodeHelper.createExplode(Objects.requireNonNull(this.getOwner()), this.TNTmass, this.position());
             case AP,APBC,APC,APCBC,APCR,APDS,APFSDS -> this.level().destroyBlock(pResult.getBlockPos(),true,this.getOwner());
         }
-        discard();
+        this.discard();
     }
 
     public void shoot(Entity Shooter, float XRot, float YRot) {
-        super.shootFromRotation(Shooter, XRot, YRot, 0, (float)speed/20, 0);
+        super.shootFromRotation(Shooter, XRot, YRot, 0, (float) speed / 20, 0);
+    }
+
+    @Override
+    protected void defineSynchedData() {
     }
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
@@ -180,7 +171,7 @@ public class CannonballEntity extends Projectile implements GeoEntity, IEntityAd
     public AnimatableInstanceCache getAnimatableInstanceCache() {return GeckoLibUtil.createInstanceCache(this);}
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

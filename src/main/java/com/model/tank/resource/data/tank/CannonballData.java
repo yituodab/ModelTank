@@ -5,13 +5,39 @@ import com.model.tank.utils.CannonballType;
 
 public class CannonballData {
     @SerializedName("name")
-    public String name = "mrt.cannonballs.default";
+    private String name = "mrt.cannonballs.default";
     @SerializedName("speed")
-    public double speed = 300;
+    private double speed = 300;
     @SerializedName("type")
-    public CannonballType type = CannonballType.HE;
+    private CannonballType type = CannonballType.HE;
     @SerializedName("entity_damage")
-    public float entityDamage = 20;
+    private float entityDamage = 20;
+    @SerializedName("tnt_mass")
+    private float TNTmass;
     @SerializedName("life")
-    public int life = 10;
+    private int life = 10;
+
+    public String getName() {
+        return name;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public CannonballType getType() {
+        return type;
+    }
+
+    public float getEntityDamage() {
+        return entityDamage;
+    }
+
+    public float getTNTmass() {
+        return TNTmass;
+    }
+
+    public int getLife() {
+        return life;
+    }
 }

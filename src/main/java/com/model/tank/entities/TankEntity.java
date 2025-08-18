@@ -1,21 +1,19 @@
 package com.model.tank.entities;
 
 
+import com.model.tank.api.client.interfaces.IEntity;
 import com.model.tank.api.client.interfaces.ITargetEntity;
 import com.model.tank.api.entity.ModularEntity;
-import com.model.tank.api.client.interfaces.IEntity;
 import com.model.tank.api.nbt.TankEntityDataManager;
 import com.model.tank.init.ModEntities;
 import com.model.tank.network.NetWorkManager;
 import com.model.tank.network.S2C.ServerTankShoot;
 import com.model.tank.resource.DataLoader;
 import com.model.tank.resource.client.data.tank.TankDisplay;
+import com.model.tank.resource.data.Module;
 import com.model.tank.resource.data.index.TankIndex;
 import com.model.tank.resource.data.tank.CannonballData;
-import com.model.tank.resource.data.Module;
 import com.model.tank.resource.data.tank.TankData;
-
-
 import com.model.tank.utils.MRTEntityHitResult;
 import com.model.tank.utils.ModDimensions;
 import net.minecraft.nbt.CompoundTag;
@@ -32,7 +30,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
@@ -41,7 +38,9 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnData, TankEntityDataManager, ITargetEntity {
@@ -166,9 +165,8 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
             // 获取当前炮弹数
             int number = currentCannonball.getNumber();
             if((number > 0 || isCreative) && !isReload()){
-                CannonballEntity cannonball = new CannonballEntity(ModEntities.CANNONBALLENTITY.get(), level, this, cannonballData, id);
-                cannonball.setPos(player.getEyePosition());
-                cannonball.shoot(player,player.getXRot(),player.getYRot());
+                CannonballEntity cannonball = new CannonballEntity(ModEntities.CANNONBALLENTITY.get(), level, player, cannonballData, id,
+                        player.getXRot(), player.getYRot(), player.getEyePosition());
                 level.addFreshEntity(cannonball);
                 // 减少炮弹数
                 if(!isCreative)currentCannonball.setNumber(number - 1);
@@ -180,6 +178,27 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
             NetWorkManager.sendToPlayer(new ServerTankShoot(id,number,shootSuccess),player);
         }
         return shootSuccess;
+    }
+    @Override
+    public boolean onCannonballHit(CannonballEntity cannonball, MRTEntityHitResult result, DamageSource source, float damage) {
+        Vec3 startPos = result.getStartPos();
+        Vec3 endPos = result.getEndPos();
+        Module.Armor onHitArmor = null;
+        Vec3 onHitPos = null;
+        for(Module.Armor armor : this.getArmors()){
+            Vec3 vec3 = armor.getHitBox().clip(startPos,endPos).orElse(null);
+            if(vec3 != null){
+                if((onHitArmor == null && onHitPos == null) || onHitPos.distanceTo(startPos) > vec3.distanceTo(startPos)){
+                    onHitArmor = armor;
+                    onHitPos = vec3;
+                }
+            }
+        }
+        if(onHitArmor == null){
+            return false;
+        }
+        this.discard();
+        return true;
     }
     public void setInput(boolean up,boolean down,boolean left,boolean right){
         inputUp = up;
@@ -205,7 +224,7 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
             }
             if(inputUp && currentSpeed < tickMaxSpeed){
                 if(tickMaxSpeed -currentSpeed<tickAcceleration)
-                    addSpeed += (tickMaxSpeed -currentSpeed)/ tickMaxSpeed;
+                    addSpeed += (float) ((tickMaxSpeed -currentSpeed)/ tickMaxSpeed);
                 else
                     addSpeed += 1F;
             }
@@ -312,11 +331,6 @@ public class TankEntity extends ModularEntity implements IEntityAdditionalSpawnD
     public Packet<ClientGamePacketListener> getAddEntityPacket() {return NetworkHooks.getEntitySpawningPacket(this);}
     @Deprecated
     public TankEntity(EntityType<?> p_19870_, Level p_19871_) {super(p_19870_, p_19871_);}
-
-    @Override
-    public boolean onCannonballHit(CannonballEntity cannonball, MRTEntityHitResult result, DamageSource source, float damage) {
-        return false;
-    }
 
     public static class Cannonball{
         private final CannonballData data;
